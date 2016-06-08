@@ -6,6 +6,7 @@ var bodyParser = require('body-parser');
 var request = require('request');
 var Botkit = require('botkit');
 var app = express();
+
 app.set('port', (process.env.PORT || 5000))
 // Process application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({extended: false}))
@@ -32,6 +33,4 @@ controller.setupWebserver(process.env.PORT || 5000, function (err, webserver) {
 })
 //
 
-app.listen(app.get('port'), function () {
-    console.log('running on port', app.get('port'))
-})
+
