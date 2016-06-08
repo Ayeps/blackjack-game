@@ -12,7 +12,6 @@ var _ = require('lodash');
 var async = require('async');
 var Cards = require('./cards');
 var Client = require('node-rest-client').Client;
-require('colors');
 var stillPlaying = true;
 var playerId = false;
 var tableId = false;
