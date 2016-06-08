@@ -60,6 +60,7 @@ controller.hears(['hello', 'hi'], 'message_received', function (bot, message) {
             bot.reply(message, 'Hello ' + user.name + '!!');
         } else {
             bot.reply(message, 'Hi, my name is Pepper and I am your Black Jack Dealer.!');
+            bot.startConversation(message, askName);
             bot.reply(message,
                 {
                     attachment: {
@@ -147,3 +148,22 @@ controller.on('facebook_postback', function (bot, message) {
     }
 })
 
+askName = function (response, convo) {
+    convo.ask("What is your name?", function (response, convo) {
+        var name = response.text;
+        controller.storage.users.get(message.user, function (err, user) {
+            if (!user) {
+                user = {
+                    id: message.user,
+                };
+            }
+            user.name = name;
+            controller.storage.users.save(user, function (err, id) {
+                bot.reply(message, 'Got it. I will call you ' + user.name + ' from now on.');
+            });
+        });
+
+        convo.say("Awesome.");
+        convo.next();
+    });
+}
