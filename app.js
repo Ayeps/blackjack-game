@@ -57,7 +57,7 @@ controller.hears(['hello, hi'], 'message_received', function (bot, message) {
             }
         }
     })
-})
+});
 
 controller.hears('message_received', function (bot, message) {
     bot.reply(message, 'Sorry i did not get that!');
