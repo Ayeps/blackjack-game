@@ -23,76 +23,6 @@ controller.setupWebserver(process.env.PORT || 5000, function (err, webserver) {
     });
 })
 
-
-controller.hears(['what is your name', 'who are you'], 'message_received', function (bot, message) {
-    controller.storage.users.get(message.user, function (err, user) {
-        if (user && user.name) {
-            bot.reply(message, 'Your name is ' + user.name);
-        } else {
-            bot.startConversation(message, function (err, convo) {
-                if (!err) {
-                    convo.say('My name is Chappi');
-                    convo.say('I do not know your name yet!');
-                    convo.ask('What should I call you?', function (response, convo) {
-                        convo.ask('You want me to call you ' + response.text + '? (yes/no)', [{
-                            pattern: 'yes',
-                            callback: function (response, convo) {
-                                // since no further messages are queued after this,
-                                // the conversation will end naturally with status == 'completed'
-                                convo.next();
-                            }
-                        }, {
-                            pattern: 'no',
-                            callback: function (response, convo) {
-                                // stop the conversation. this will cause it to end with status == 'stopped'
-                                convo.stop();
-                            }
-                        }, {
-                            default: true,
-                            callback: function (response, convo) {
-                                convo.repeat();
-                                convo.next();
-                            }
-                        }]);
-
-                        convo.next();
-
-                    }, {
-                        'key': 'nickname'
-                    }); // store the results in a field called nickname
-
-                    convo.on('end', function (convo) {
-                        if (convo.status == 'completed') {
-
-                            controller.storage.users.get(message.user, function (err, user) {
-                                if (!user) {
-                                    user = {
-                                        id: message.user,
-                                    };
-                                }
-                                user.name = convo.extractResponse('nickname');
-
-                                controller.storage.users.save(user, function (err, id) {
-                                    bot.reply(message, 'Got it. I will call you ' + user.name + ' from now on.');
-
-
-                                });
-
-                            });
-
-
-                        } else {
-                            // this happens if the conversation ended prematurely for some reason
-                            bot.reply(message, 'OK, nevermind!');
-                        }
-                    });
-                }
-            });
-        }
-    });
-});
-
-
 controller.on('facebook_optin', function (bot, message) {
     bot.reply(message, 'Hello');
     bot.reply(message, 'Hi, my name is Pepper and I am your Black Jack Dealer.Would you like to play a round?!');
@@ -124,32 +54,44 @@ controller.hears('message_received', function (bot, message) {
     bot.reply(message, 'Have a nice day!');
 })
 
-controller.hears(['play'], 'message_received', function (bot, message) {
-    bot.reply(message, 'Hello');
-    bot.reply(message, 'Hi, my name is Pepper and I am your Black Jack Dealer.!');
-    bot.reply(message, {
-        attachment: {
-            type: 'image',
-            payload: {
-                url: 'http://i.imgur.com/1WuDC6y.jpg'
-            }
-        }
-    })
-})
-
-
 controller.hears(['hello', 'hi'], 'message_received', function (bot, message) {
     controller.storage.users.get(message.user, function (err, user) {
         if (user && user.name) {
             bot.reply(message, 'Hello ' + user.name + '!!');
         } else {
-            bot.reply(message, 'Hello.');
+            bot.reply(message, 'Hi, my name is Pepper and I am your Black Jack Dealer.!');
+            bot.reply(message,
+                {
+                    attachment: {
+                        type: "template",
+                        payload: {
+                            template_type: "generic",
+                            elements: [
+                                {
+                                    title: "Would you like to play a round?",
+                                    buttons: [
+                                        {
+                                            type: "postback",
+                                            title: "YES",
+                                            payload: "yes"
+                                        },
+                                        {
+                                            type: "postback",
+                                            title: "NO",
+                                            payload: "no"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                }
+            );
         }
     });
 })
 
-
-controller.hears(['^pattern$'], ['message_received'], function (bot, message) {
+controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, message) {
 
     // do something to respond to message
     bot.reply(message, 'your bet of ' + message.text + ' recieved!');
