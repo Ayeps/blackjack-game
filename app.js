@@ -7,22 +7,22 @@ var request = require('request');
 var Botkit = require('botkit');
 var app = express();
 
-app.set('port', (process.env.PORT || 5000))
+app.set('port', (process.env.PORT || 5000));
 // Process application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({extended: false}))
+app.use(bodyParser.urlencoded({extended: false}));
 // Process application/json
-app.use(bodyParser.json())
+app.use(bodyParser.json());
 
 // Index route
 app.get('/', function (req, res) {
     res.send('Hello world, I am a chat bot')
-})
+});
 
 //
 var controller = Botkit.facebookbot({
     access_token: process.env.access_token,
     verify_token: process.env.verify_token,
-})
+});
 
 var bot = controller.spawn({});
 
@@ -30,7 +30,7 @@ controller.setupWebserver(process.env.PORT || 5000, function (err, webserver) {
     controller.createWebhookEndpoints(webserver, bot, function () {
         console.log('This bot is online!!!');
     });
-})
+});
 
 
 controller.hears(['hello, hi'], 'message_received', function (bot, message) {
@@ -59,6 +59,29 @@ controller.hears(['hello, hi'], 'message_received', function (bot, message) {
     })
 })
 
-//
+controller.hears('message_received', function (bot, message) {
+    bot.reply(message, 'Sorry i did not get that!');
+    bot.reply(message, 'Have a nice day!');
+});
+
+controller.on('facebook_postback', function (bot, message) {
+    switch (message.payload) {
+        case 'yes':
+            bot.reply(message, "How much do you want to bet")
+            break
+        case 'no':
+            bot.reply(message, "Thank for playing the game with us")
+            break
+        case 'hit':
+            //call function to perform hit operation
+            bot.reply(message, "you decided to hit")
+            break
+        case 'stand':
+            //call function to perform stand operation
+            bot.reply(message, "you decide to stand")
+            break
+    }
+});
+
 
 
