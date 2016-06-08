@@ -18,18 +18,18 @@ app.get('/', function (req, res) {
 })
 
 //
-//var controller = Botkit.facebookbot({
-//    access_token: process.env.access_token,
-//    verify_token: process.env.verify_token,
-//})
-//
-//var bot = controller.spawn({});
-//
-//controller.setupWebserver(process.env.PORT || 5000, function (err, webserver) {
-//    controller.createWebhookEndpoints(webserver, bot, function () {
-//        console.log('This bot is online!!!');
-//    });
-//})
+var controller = Botkit.facebookbot({
+    access_token: process.env.access_token,
+    verify_token: process.env.verify_token,
+})
+
+var bot = controller.spawn({});
+
+controller.setupWebserver(process.env.PORT || 5000, function (err, webserver) {
+    controller.createWebhookEndpoints(webserver, bot, function () {
+        console.log('This bot is online!!!');
+    });
+})
 //
 
 app.listen(app.get('port'), function () {
