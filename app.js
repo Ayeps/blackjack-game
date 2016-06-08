@@ -3,6 +3,10 @@
  */
 
 var Botkit = require('./lib/Botkit');
+var client = require('./src/client');
+var playerId = 0;
+var tableid = 0;
+var username;
 
 
 var controller = Botkit.facebookbot({
@@ -18,6 +22,75 @@ controller.setupWebserver(process.env.PORT || 5000, function (err, webserver) {
         console.log('This bot is online!!!');
     });
 })
+
+
+controller.hears(['what is your name', 'who are you'], 'message_received', function (bot, message) {
+    controller.storage.users.get(message.user, function (err, user) {
+        if (user && user.name) {
+            bot.reply(message, 'Your name is ' + user.name);
+        } else {
+            bot.startConversation(message, function (err, convo) {
+                if (!err) {
+                    convo.say('My name is Chappi');
+                    convo.say('I do not know your name yet!');
+                    convo.ask('What should I call you?', function (response, convo) {
+                        convo.ask('You want me to call you ' + response.text + '? (yes/no)', [{
+                            pattern: 'yes',
+                            callback: function (response, convo) {
+                                // since no further messages are queued after this,
+                                // the conversation will end naturally with status == 'completed'
+                                convo.next();
+                            }
+                        }, {
+                            pattern: 'no',
+                            callback: function (response, convo) {
+                                // stop the conversation. this will cause it to end with status == 'stopped'
+                                convo.stop();
+                            }
+                        }, {
+                            default: true,
+                            callback: function (response, convo) {
+                                convo.repeat();
+                                convo.next();
+                            }
+                        }]);
+
+                        convo.next();
+
+                    }, {
+                        'key': 'nickname'
+                    }); // store the results in a field called nickname
+
+                    convo.on('end', function (convo) {
+                        if (convo.status == 'completed') {
+
+                            controller.storage.users.get(message.user, function (err, user) {
+                                if (!user) {
+                                    user = {
+                                        id: message.user,
+                                    };
+                                }
+                                user.name = convo.extractResponse('nickname');
+
+                                controller.storage.users.save(user, function (err, id) {
+                                    bot.reply(message, 'Got it. I will call you ' + user.name + ' from now on.');
+
+
+                                });
+
+                            });
+
+
+                        } else {
+                            // this happens if the conversation ended prematurely for some reason
+                            bot.reply(message, 'OK, nevermind!');
+                        }
+                    });
+                }
+            });
+        }
+    });
+});
 
 
 controller.on('facebook_optin', function (bot, message) {
@@ -63,201 +136,72 @@ controller.hears(['play'], 'message_received', function (bot, message) {
         }
     })
 })
-//
-//controller.hears(['show'], 'message_received', function (bot, message) {
-//    bot.reply(message, 'Hello');
-//    bot.reply(message, 'Hi, my name is Pepper and I am your Black Jack Dealer.Would you like to play a round?!');
-//    bot.reply(message, {
-//        attachment: {
-//            type: "template",
-//            payload: {
-//                template_type: "generic",
-//                elements: [
-//                    {
-//                        title: "Classic White T-Shirt",
-//                        image_url: "http://petersapparel.parseapp.com/img/item100-thumb.png",
-//                        subtitle: "Soft white cotton t-shirt is back in style",
-//                        buttons: [
-//                            {
-//                                type: "web_url",
-//                                url: "https://petersapparel.parseapp.com/view_item?item_id=100",
-//                                title: "View Item"
-//                            },
-//                            {
-//                                type: "web_url",
-//                                url: "https://petersapparel.parseapp.com/buy_item?item_id=100",
-//                                title: "Buy Item"
-//                            },
-//                            {
-//                                type: "postback",
-//                                title: "Bookmark Item",
-//                                payload: "USER_DEFINED_PAYLOAD_FOR_ITEM100"
-//                            }
-//                        ]
-//                    },
-//                    {
-//                        title: "Classic Grey T-Shirt",
-//                        image_url: "http://petersapparel.parseapp.com/img/item101-thumb.png",
-//                        subtitle: "Soft gray cotton t-shirt is back in style",
-//                        buttons: [
-//                            {
-//                                type: "web_url",
-//                                url: "https://petersapparel.parseapp.com/view_item?item_id=101",
-//                                title: "View Item"
-//                            },
-//                            {
-//                                type: "web_url",
-//                                url: "https://petersapparel.parseapp.com/buy_item?item_id=101",
-//                                title: "Buy Item"
-//                            },
-//                            {
-//                                type: "postback",
-//                                title: "Bookmark Item",
-//                                payload: "USER_DEFINED_PAYLOAD_FOR_ITEM101"
-//                            }
-//                        ]
-//                    }
-//                ]
-//            }
-//        }
-//    });
-//})
-//
-//
-//controller.hears(['show'], 'message_received', function (bot, message) {
-//    bot.reply(message, 'Hello');
-//    bot.reply(message, 'Hi, my name is Pepper and I am your Black Jack Dealer.Would you like to play a round?!');
-//    bot.reply(message, {
-//        attachment: {
-//            type: "template",
-//            payload: {
-//                template_type: "generic",
-//                elements: [
-//                    {
-//                        title: "Classic White T-Shirt",
-//                        image_url: "http://petersapparel.parseapp.com/img/item100-thumb.png",
-//                        subtitle: "Soft white cotton t-shirt is back in style",
-//                        buttons: [
-//                            {
-//                                type: "web_url",
-//                                url: "https://petersapparel.parseapp.com/view_item?item_id=100",
-//                                title: "View Item"
-//                            },
-//                            {
-//                                type: "web_url",
-//                                url: "https://petersapparel.parseapp.com/buy_item?item_id=100",
-//                                title: "Buy Item"
-//                            },
-//                            {
-//                                type: "postback",
-//                                title: "Bookmark Item",
-//                                payload: "USER_DEFINED_PAYLOAD_FOR_ITEM100"
-//                            }
-//                        ]
-//                    },
-//                    {
-//                        title: "Classic Grey T-Shirt",
-//                        image_url: "http://petersapparel.parseapp.com/img/item101-thumb.png",
-//                        subtitle: "Soft gray cotton t-shirt is back in style",
-//                        buttons: [
-//                            {
-//                                type: "web_url",
-//                                url: "https://petersapparel.parseapp.com/view_item?item_id=101",
-//                                title: "View Item"
-//                            },
-//                            {
-//                                type: "web_url",
-//                                url: "https://petersapparel.parseapp.com/buy_item?item_id=101",
-//                                title: "Buy Item"
-//                            },
-//                            {
-//                                type: "postback",
-//                                title: "Bookmark Item",
-//                                payload: "USER_DEFINED_PAYLOAD_FOR_ITEM101"
-//                            }
-//                        ]
-//                    }
-//                ]
-//            }
-//        }
-//    });
-//})
-//
-//
-//controller.hears(['hello', 'hi'], 'message_received', function (bot, message) {
-//    controller.storage.users.get(message.user, function (err, user) {
-//        if (user && user.name) {
-//            bot.reply(message, 'Hello ' + user.name + '!!');
-//        } else {
-//            bot.reply(message, 'Hello.');
-//        }
-//    });
-//})
-//
-//
-//controller.hears(['^pattern$'], ['message_received'], function (bot, message) {
-//
-//    // do something to respond to message
-//    bot.reply(message, 'your bet of ' + message.text + ' recieved!');
-//    bot.reply(message,
-//        {
-//            attachment: {
-//                type: "template",
-//                payload: {
-//                    template_type: "generic",
-//                    elements: [
-//                        {
-//                            title: "Classic White T-Shirt",
-//                            image_url: "http://petersapparel.parseapp.com/img/item100-thumb.png",
-//                            subtitle: "Soft white cotton t-shirt is back in style",
-//                            buttons: [
-//                                {
-//                                    type: "postback",
-//                                    title: "HIT",
-//                                    payload: "hit"
-//                                },
-//                                {
-//                                    type: "postback",
-//                                    title: "STAND",
-//                                    payload: "stand"
-//                                }
-//                            ]
-//                        }
-//                    ]
-//                }
-//            }
-//        }
-//    );
-//
-//});
-//
-////controller.hears(['cookies'], 'message_received', function (bot, message) {
-////    bot.startConversation(message, function (err, convo) {
-////        convo.say('Did someone say cookies!?!!');
-////        convo.ask('What is your favorite type of cookie?', function (response, convo) {
-////            convo.say('Golly, I love ' + response.text + ' too!!!');
-////            convo.next();
-////        });
-////    });
-////})
-//
-//
-//controller.on('facebook_postback', function (bot, message) {
-//    switch (message.payload) {
-//        case 'yes':
-//            bot.reply(message, "How much do you want to bet")
-//            break
-//        case 'no':
-//            bot.reply(message, "Thank for playing the game with us")
-//            break
-//        case 'hit':
-//            //call function to perform hit operation
-//            bot.reply(message, "you decided to hit")
-//            break
-//        case 'stand':
-//            //call function to perform stand operation
-//            bot.reply(message, "you decide to stand")
-//            break
-//    }
-//})
-//
+
+
+controller.hears(['hello', 'hi'], 'message_received', function (bot, message) {
+    controller.storage.users.get(message.user, function (err, user) {
+        if (user && user.name) {
+            bot.reply(message, 'Hello ' + user.name + '!!');
+        } else {
+            bot.reply(message, 'Hello.');
+        }
+    });
+})
+
+
+controller.hears(['^pattern$'], ['message_received'], function (bot, message) {
+
+    // do something to respond to message
+    bot.reply(message, 'your bet of ' + message.text + ' recieved!');
+    bot.reply(message,
+        {
+            attachment: {
+                type: "template",
+                payload: {
+                    template_type: "generic",
+                    elements: [
+                        {
+                            title: "Classic White T-Shirt",
+                            image_url: "http://petersapparel.parseapp.com/img/item100-thumb.png",
+                            subtitle: "Soft white cotton t-shirt is back in style",
+                            buttons: [
+                                {
+                                    type: "postback",
+                                    title: "HIT",
+                                    payload: "hit"
+                                },
+                                {
+                                    type: "postback",
+                                    title: "STAND",
+                                    payload: "stand"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+        }
+    );
+
+});
+
+
+controller.on('facebook_postback', function (bot, message) {
+    switch (message.payload) {
+        case 'yes':
+            bot.reply(message, "How much do you want to bet")
+            break
+        case 'no':
+            bot.reply(message, "Thank for playing the game with us")
+            break
+        case 'hit':
+            //call function to perform hit operation
+            bot.reply(message, "you decided to hit")
+            break
+        case 'stand':
+            //call function to perform stand operation
+            bot.reply(message, "you decide to stand")
+            break
+    }
+})
+
