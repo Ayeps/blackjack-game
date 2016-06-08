@@ -2,7 +2,7 @@
  * Created by Softmasters on 6/1/2016.
  */
 
-var Botkit = require('botkit');
+var Botkit = require('./lib/Botkit');
 
 
 var controller = Botkit.facebookbot({
