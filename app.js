@@ -31,6 +31,34 @@ controller.setupWebserver(process.env.PORT || 5000, function (err, webserver) {
         console.log('This bot is online!!!');
     });
 })
+
+
+controller.hears(['hello, hi'], 'message_received', function (bot, message) {
+    bot.reply(message, 'Hello');
+    bot.reply(message, 'Hi, my name is Pepper and I am your Black Jack Dealer.Would you like to play a round?!');
+    bot.reply(message, {
+        attachment: {
+            type: 'template',
+            payload: {
+                template_type: 'button',
+                text: 'Option',
+                buttons: [
+                    {
+                        type: 'postback',
+                        title: 'yes',
+                        payload: 'yes'
+                    },
+                    {
+                        type: 'postback',
+                        title: 'yes',
+                        payload: 'yes'
+                    }
+                ]
+            }
+        }
+    })
+})
+
 //
 
 
