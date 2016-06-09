@@ -306,9 +306,35 @@ controller.on('facebook_postback', function (bot, message) {
             break
         case '1':
             //call function to perform stand operation
-            bot.reply(message, "You are Table 1")
-            bot.reply(message, "You have credit of 1000$")
-            bot.reply(message, "How much do you want to bet")
+            //player:
+            //{ id: 1,
+            //    name: 'Danny',
+            //    credits: 1000,
+            //    online: true,
+            //    tableId: 1,
+            //    bet: -1,
+            //    hand: [],
+            //    busted: false,
+            //    done: false } }
+
+            controller.storage.users.get(message.user, function (err, user) {
+                if (!user) {
+                    user = {
+                        id: message.user,
+                    };
+                }
+                console.log(playerId);
+                client.joinTable(user.playerId, 1, function (response) {
+                    if (response.player.busted == false) {
+                        bot.reply(message, "You are Table 1 with id" + playerId)
+                        bot.reply(message, "You have credit of " + response.player.credits + "$")
+                        bot.reply(message, "How much do you want to bet")
+                    }
+                })
+
+            });
+
+
             break
         case '2':
             //call function to perform stand operation
