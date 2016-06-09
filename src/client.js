@@ -154,7 +154,7 @@ function bet(playerId, amt, cb) {
     }
     client.registerMethod("postMethod", URL + "bet", "POST");
     client.methods.postMethod(bet, function (data, response) {
-        console.log(data);
+
         return cb(data);
     });
 }
