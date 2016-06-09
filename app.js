@@ -7,6 +7,7 @@ var client = require('./src/client');
 var Cards = require('./src/cards');
 var assert = require('assert');
 var is = require('is2');
+var _ = require('lodash');
 var playerId = 0;
 var tableid = 0;
 var username;
@@ -169,27 +170,29 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
         client.bet(user.playerId, 500, function (response) {
             console.log(response);
             bot.reply(message, "Dealer Hand");
-            var dealerHand = response.table.dealer.hand;
-            _.forEach(dealerHand, function (c) {
-                if (is.str(c)) {
-                    //printf('    %s\n', c);
-                    bot.reply(message, c);
-                } else if (is.int(c) && c > -1) {
-                    var card = Cards.getCard(c);
-                    //printf('%s of %s\n', card.rank, card.suit);
-                    bot.reply(message, card.rank + " " + card.suit);
+            //var dealerHand = response.table.dealer.hand;
+            //_.forEach(dealerHand, function (c) {
+            //    if (is.str(c)) {
+            //        //printf('    %s\n', c);
+            //        bot.reply(message, c);
+            //    } else if (is.int(c) && c > -1) {
+            //        var card = Cards.getCard(c);
+            //        //printf('%s of %s\n', card.rank, card.suit);
+            //        bot.reply(message, card.rank + " " + card.suit);
+            //
+            //    } else {
+            //        assert.ok(false);
+            //    }
+            //});
 
-                } else {
-                    assert.ok(false);
-                }
-            });
+            //displayHands();
 
-            //assert.ok(response.player.bet === amt);
-            //tableid = response.player.tableId;
-            //tableState = response.table.state;
-            //assert.ok(is.obj(response.player));
-            //assert.ok(is.array(response.player.hand));
-            //displayHands(response.table, response.player, message);
+            assert.ok(response.player.bet === amt);
+            tableid = response.player.tableId;
+            tableState = response.table.state;
+            assert.ok(is.obj(response.player));
+            assert.ok(is.array(response.player.hand));
+            displayHands(response.table,response.player, message);
 
 
             bot.reply(message,
