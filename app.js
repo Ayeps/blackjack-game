@@ -7,6 +7,7 @@ var client = require('./src/client');
 var playerId = 0;
 var tableid = 0;
 var username;
+var tables;
 
 
 var controller = Botkit.facebookbot({
@@ -63,6 +64,7 @@ controller.hears(['hello', 'hi'], 'message_received', function (bot, message) {
             bot.startConversation(message, function (err, convo) {
                 if (!err) {
                     convo.ask('What should I call you?', function (response, convo) {
+
                         convo.ask('You want me to call you ' + response.text + '? (yes/no)', [{
                             pattern: 'yes',
                             callback: function (response, convo) {
@@ -92,7 +94,6 @@ controller.hears(['hello', 'hi'], 'message_received', function (bot, message) {
 
                     convo.on('end', function (convo) {
                         if (convo.status == 'completed') {
-
                             controller.storage.users.get(message.user, function (err, user) {
                                 if (!user) {
                                     user = {
@@ -102,6 +103,7 @@ controller.hears(['hello', 'hi'], 'message_received', function (bot, message) {
                                 user.name = convo.extractResponse('nickname');
 
                                 controller.storage.users.save(user, function (err, id) {
+
                                     bot.reply(message, 'Got it. I will call you ' + user.name + ' from now on.');
                                     bot.reply(message,
                                         {
@@ -185,7 +187,26 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
 controller.on('facebook_postback', function (bot, message) {
     switch (message.payload) {
         case 'yes':
-            bot.reply(message, "How much do you want to bet")
+            //login
+            controller.storage.users.get(message.user, function (err, user) {
+                if (!user) {
+                    user = {
+                        id: message.user,
+                    };
+                }
+                user.name = convo.extractResponse('nickname');
+                controller.storage.users.save(user, function (err, id) {
+                    client.login(user.name, function (response) {
+                        //tables = response;
+                        playerId = response.player.id;
+                        tables = response.tables;
+                        bot.reply(message, "your Player Id :" + playerId)
+                        //display tables and users in the table
+                        bot.reply(message, tables)
+                    })
+                });
+            });
+
             break
         case 'no':
             bot.reply(message, "Thank for playing the game with us")
@@ -202,20 +223,8 @@ controller.on('facebook_postback', function (bot, message) {
 })
 
 askName = function (response, convo) {
-    convo.ask("What is your name?", function (response, convo) {
-        var name = response.text;
-        controller.storage.users.get(message.user, function (err, user) {
-            if (!user) {
-                user = {
-                    id: message.user,
-                };
-            }
-            user.name = name;
-            controller.storage.users.save(user, function (err, id) {
-                bot.reply(message, 'Got it. I will call you ' + user.name + ' from now on.');
-            });
-        });
-        convo.say("Awesome.");
-        convo.next();
-    });
+    client.login(response.text, function (response) {
+        //tables = response;
+        playerId = response.player.id;
+    })
 }
