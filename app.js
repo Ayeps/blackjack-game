@@ -179,8 +179,9 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
         //        state: 'dealing' } }
 
 
-        console.log(response);
-        var dealerHand = response.table[1].dealer.hand;
+        console.log(response.player.openingMove);
+        bot.reply(message, "Dealer Hand");
+        var dealerHand = response.table.dealer.hand;
         _.forEach(dealerHand, function (c) {
             if (is.str(c)) {
                 //printf('    %s\n', c);
@@ -429,10 +430,10 @@ function displayHands(table, player, message) {
     //displayHand('Dealers hand:', dealerHand);
     if (is.positiveInt(player.bet)) {
         yourHand = table.players[playerId].hand;
-        //displayHand('Your hand:', yourHand);
+        displayHand('Your hand:', yourHand);
     } else if (player.bet === -1 && is.obj(player.result)) {
         yourHand = player.result.players[playerId].hand;
-        //displayHand('Your hand:', yourHand);
+        displayHand('Your hand:', yourHand);
         if (player.result.players[playerId].push) {
             //console.log('Push. You have %s credits.', player.credits);
             bot.reply(message, 'Push. You have %s credits.', player.credits)
