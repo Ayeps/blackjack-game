@@ -103,42 +103,44 @@ controller.hears(['hello', 'hi'], 'message_received', function (bot, message) {
 
                                 controller.storage.users.save(user, function (err, id) {
                                     bot.reply(message, 'Got it. I will call you ' + user.name + ' from now on.');
+                                    bot.reply(message,
+                                        {
+                                            attachment: {
+                                                type: "template",
+                                                payload: {
+                                                    template_type: "generic",
+                                                    elements: [
+                                                        {
+                                                            title: "Would you like to play a round?",
+                                                            buttons: [
+                                                                {
+                                                                    type: "postback",
+                                                                    title: "YES",
+                                                                    payload: "yes"
+                                                                },
+                                                                {
+                                                                    type: "postback",
+                                                                    title: "NO",
+                                                                    payload: "no"
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            }
+                                        }
+                                    );
                                 });
                             });
                         } else {
                             // this happens if the conversation ended prematurely for some reason
                             bot.reply(message, 'OK, nevermind!');
+
                         }
                     });
                 }
             });
-            bot.reply(message,
-                {
-                    attachment: {
-                        type: "template",
-                        payload: {
-                            template_type: "generic",
-                            elements: [
-                                {
-                                    title: "Would you like to play a round?",
-                                    buttons: [
-                                        {
-                                            type: "postback",
-                                            title: "YES",
-                                            payload: "yes"
-                                        },
-                                        {
-                                            type: "postback",
-                                            title: "NO",
-                                            payload: "no"
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    }
-                }
-            );
+
         }
     });
 })
