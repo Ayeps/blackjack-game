@@ -156,6 +156,7 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
     // do something to respond to message
     var text = message.text;
     var amt = text.match(/\d+/g);
+
     bot.reply(message, 'your' + message.text + ' recieved!');
     client.bet(playerId, amt, function (response) {
         //player:
@@ -176,11 +177,13 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
         //    numPlayers: 3,
         //        state: 'dealing' } }
 
-        assert.ok(response.player.bet === amt);
+
+        console.log(response);
+        //assert.ok(response.player.bet === amt);
         tableid = response.player.tableId;
         tableState = response.table.state;
-        assert.ok(is.obj(response.player));
-        assert.ok(is.array(response.player.hand));
+        //assert.ok(is.obj(response.player));
+        //assert.ok(is.array(response.player.hand));
         displayHands(response.table, response.player, message);
         bot.reply(message,
             {
