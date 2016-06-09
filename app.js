@@ -408,6 +408,63 @@ controller.on('facebook_postback', function (bot, message) {
 
             });
             break
+        case '4':
+            //call function to perform stand operation
+            controller.storage.users.get(message.user, function (err, user) {
+                if (!user) {
+                    user = {
+                        id: message.user,
+                    };
+                }
+                console.log(playerId);
+                client.joinTable(user.playerId, 4, function (response) {
+                    if (response.player.busted == false) {
+                        bot.reply(message, "You are on Table 3 ")
+                        bot.reply(message, "You have credit of " + response.player.credits + " $")
+                        bot.reply(message, "How much do you want to bet")
+                    }
+                })
+
+            });
+            break
+        case '5':
+            //call function to perform stand operation
+            controller.storage.users.get(message.user, function (err, user) {
+                if (!user) {
+                    user = {
+                        id: message.user,
+                    };
+                }
+                console.log(playerId);
+                client.joinTable(user.playerId, 5, function (response) {
+                    if (response.player.busted == false) {
+                        bot.reply(message, "You are on Table 3 ")
+                        bot.reply(message, "You have credit of " + response.player.credits + " $")
+                        bot.reply(message, "How much do you want to bet")
+                    }
+                })
+
+            });
+            break
+        case '6':
+            //call function to perform stand operation
+            controller.storage.users.get(message.user, function (err, user) {
+                if (!user) {
+                    user = {
+                        id: message.user,
+                    };
+                }
+                console.log(playerId);
+                client.joinTable(user.playerId, 6, function (response) {
+                    if (response.player.busted == false) {
+                        bot.reply(message, "You are on Table 3 ")
+                        bot.reply(message, "You have credit of " + response.player.credits + " $")
+                        bot.reply(message, "How much do you want to bet")
+                    }
+                })
+
+            });
+            break
     }
 })
 
