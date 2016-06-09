@@ -194,7 +194,6 @@ controller.on('facebook_postback', function (bot, message) {
                         id: message.user,
                     };
                 }
-                user.name = convo.extractResponse('nickname');
                 controller.storage.users.save(user, function (err, id) {
                     client.login(user.name, function (response) {
                         //tables = response;
