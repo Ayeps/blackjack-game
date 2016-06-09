@@ -479,7 +479,7 @@ function displayHands(table, player, message) {
     assert.ok(is.nonEmptyObj(table));
     var dealerHand = table.dealer.hand;
     var yourHand;
-    //displayHand('Dealers hand:', dealerHand);
+    displayHand('Dealers hand:', dealerHand);
     if (is.positiveInt(player.bet)) {
         yourHand = table.players[playerId].hand;
         displayHand('Your hand:', yourHand);
@@ -508,7 +508,7 @@ function displayHands(table, player, message) {
 function displayHand(txt, hand, message) {
     assert.ok(is.str(txt));
     assert.ok(is.nonEmptyArray(hand));
-    console.log(txt);
+    console.log(hand);
     _.forEach(hand, function (c) {
         if (is.str(c)) {
             //printf('    %s\n', c);
