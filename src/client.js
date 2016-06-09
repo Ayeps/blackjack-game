@@ -29,6 +29,7 @@ function displayHand(txt, hand, message) {
     assert.ok(is.str(txt));
     assert.ok(is.nonEmptyArray(hand));
     console.log(hand);
+
     _.forEach(hand, function (c) {
         if (is.str(c)) {
             //printf('    %s\n', c);
@@ -44,9 +45,11 @@ function displayHand(txt, hand, message) {
     });
 }
 
-function displayHands(table, player, message) {
+function displayHands(response, message) {
     assert.ok(is.nonEmptyObj(table));
-    var dealerHand = table.dealer.hand;
+    var dealerHand = response.table.dealer.hand;
+
+
     var yourHand;
     displayHand('Dealers hand:', dealerHand);
     if (is.positiveInt(player.bet)) {
