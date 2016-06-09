@@ -160,41 +160,23 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
     console.log(amt)
     bot.reply(message, 'your' + message.text + ' recieved!');
     client.bet(playerId, 500, function (response) {
-        //player:
-        //{ id: 3,
-        //    name: 'John',
-        //    credits: 1000,
-        //    online: true,
-        //    tableId: 1,
-        //    bet: 25,
-        //    hand: [ 28, 2 ],
-        //    busted: false,
-        //    done: false,
-        //    openingMove: true },
-        //table:
-        //{ id: 1,
-        //    players: { '1': [Object], '2': [Object], '3': [Object] },
-        //    dealer: { name: 'Dealer', hand: [Object] },
-        //    numPlayers: 3,
-        //        state: 'dealing' } }
-
 
         console.log(response.player.openingMove);
         bot.reply(message, "Dealer Hand");
-        var dealerHand = response.table.dealer.hand;
-        _.forEach(dealerHand, function (c) {
-            if (is.str(c)) {
-                //printf('    %s\n', c);
-                bot.reply(message, c);
-            } else if (is.int(c) && c > -1) {
-                var card = Cards.getCard(c);
-                //printf('%s of %s\n', card.rank, card.suit);
-                bot.reply(message, card.rank + " " + card.suit);
-
-            } else {
-                assert.ok(false);
-            }
-        });
+        //var dealerHand = response.table.dealer.hand;
+        //_.forEach(dealerHand, function (c) {
+        //    if (is.str(c)) {
+        //        //printf('    %s\n', c);
+        //        bot.reply(message, c);
+        //    } else if (is.int(c) && c > -1) {
+        //        var card = Cards.getCard(c);
+        //        //printf('%s of %s\n', card.rank, card.suit);
+        //        bot.reply(message, card.rank + " " + card.suit);
+        //
+        //    } else {
+        //        assert.ok(false);
+        //    }
+        //});
 
         //assert.ok(response.player.bet === amt);
         //tableid = response.player.tableId;
