@@ -179,7 +179,7 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
         //        state: 'dealing' } }
 
 
-        console.log(table.dealer.hand);
+        console.log(response.table.dealer.hand);
 
 
         //assert.ok(response.player.bet === amt);
