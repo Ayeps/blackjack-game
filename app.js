@@ -289,6 +289,6 @@ askName = function (response, convo) {
     })
 }
 
-_.forEach(tables, function (table) {
-    printf('%9d %13d\n', table.id, table.numPlayers);
-})
+//_.forEach(tables, function (table) {
+//    printf('%9d %13d\n', table.id, table.numPlayers);
+//})
