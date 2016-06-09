@@ -185,7 +185,9 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
         //tableState = response.table.state;
         //assert.ok(is.obj(response.player));
         //assert.ok(is.array(response.player.hand));
-        displayHands(response.table, response.player, message);
+        //displayHands(response.table, response.player, message);
+
+
         bot.reply(message,
             {
                 attachment: {
@@ -409,13 +411,13 @@ function displayHands(table, player, message) {
     assert.ok(is.nonEmptyObj(table));
     var dealerHand = table.dealer.hand;
     var yourHand;
-    displayHand('Dealers hand:', dealerHand);
+    //displayHand('Dealers hand:', dealerHand);
     if (is.positiveInt(player.bet)) {
         yourHand = table.players[playerId].hand;
-        displayHand('Your hand:', yourHand);
+        //displayHand('Your hand:', yourHand);
     } else if (player.bet === -1 && is.obj(player.result)) {
         yourHand = player.result.players[playerId].hand;
-        displayHand('Your hand:', yourHand);
+        //displayHand('Your hand:', yourHand);
         if (player.result.players[playerId].push) {
             //console.log('Push. You have %s credits.', player.credits);
             bot.reply(message, 'Push. You have %s credits.', player.credits)
@@ -446,7 +448,6 @@ function displayHand(txt, hand, message) {
         } else if (is.int(c) && c > -1) {
             var card = Cards.getCard(c);
             //printf('%s of %s\n', card.rank, card.suit);
-
             bot.reply(message, card.rank + " " + card.suit);
 
         } else {
