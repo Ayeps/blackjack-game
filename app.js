@@ -179,7 +179,7 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
         //        state: 'dealing' } }
 
 
-        //console.log(response.table.state);
+        console.log(response.player.id);
         var dealerHand = response.table[1].dealer.hand;
         _.forEach(dealerHand, function (c) {
             if (is.str(c)) {
