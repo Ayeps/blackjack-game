@@ -159,7 +159,7 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
 
     console.log(amt)
     bot.reply(message, 'your' + message.text + ' recieved!');
-    client.bet(playerId, amt, function (response) {
+    client.bet(playerId, parseInt(amt), function (response) {
         //player:
         //{ id: 3,
         //    name: 'John',
