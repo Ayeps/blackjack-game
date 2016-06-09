@@ -198,7 +198,8 @@ controller.on('facebook_postback', function (bot, message) {
                 client.login(user.name, function (response) {
                     //tables = response;
                     user.playerId = response.player.id;
-                    bot.reply(message, "your Player Id :" + playerId)
+                    playerId = response.player.id;
+                    bot.reply(message, "your Player Id :" + user.playerId)
                     //display tables and users in the table
                     tables = response.tables;
                     controller.storage.users.save(user, function (err, id) {
