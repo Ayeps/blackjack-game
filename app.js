@@ -187,12 +187,13 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
 
             //displayHands();
 
-            assert.ok(response.player.bet === amt);
+            //assert.ok(response.player.bet === amt);
+
             tableid = response.player.tableId;
             tableState = response.table.state;
             assert.ok(is.obj(response.player));
             assert.ok(is.array(response.player.hand));
-            displayHands(response.table,response.player, message);
+            displayHands(response.table, response.player, message);
 
 
             bot.reply(message,
