@@ -159,9 +159,8 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
 
     console.log(amt)
     bot.reply(message, 'your' + message.text + ' recieved!');
-    client.bet(playerId, 500, function (response) {
-
-        console.log(response.player.openingMove);
+    client.bet(1, 500, function (response) {
+        console.log(response);
         bot.reply(message, "Dealer Hand");
         //var dealerHand = response.table.dealer.hand;
         //_.forEach(dealerHand, function (c) {
