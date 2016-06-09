@@ -4,9 +4,13 @@
 
 var Botkit = require('./lib/Botkit');
 var client = require('./src/client');
+var Cards = require('./src/cards');
+var assert = require('assert');
+var is = require('is2');
 var playerId = 0;
 var tableid = 0;
 var username;
+var tableState;
 var tables;
 
 
@@ -150,36 +154,63 @@ controller.hears(['hello', 'hi'], 'message_received', function (bot, message) {
 controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, message) {
 
     // do something to respond to message
-    bot.reply(message, 'your bet of ' + message.text + ' recieved!');
-    bot.reply(message,
-        {
-            attachment: {
-                type: "template",
-                payload: {
-                    template_type: "generic",
-                    elements: [
-                        {
-                            title: "Classic White T-Shirt",
-                            image_url: "http://petersapparel.parseapp.com/img/item100-thumb.png",
-                            subtitle: "Soft white cotton t-shirt is back in style",
-                            buttons: [
-                                {
-                                    type: "postback",
-                                    title: "HIT",
-                                    payload: "hit"
-                                },
-                                {
-                                    type: "postback",
-                                    title: "STAND",
-                                    payload: "stand"
-                                }
-                            ]
-                        }
-                    ]
+    var text = message.text;
+    var amt = text.match(/\d+/g);
+    bot.reply(message, 'your' + message.text + ' recieved!');
+    client.bet(playerId, amt, function (response) {
+        //player:
+        //{ id: 3,
+        //    name: 'John',
+        //    credits: 1000,
+        //    online: true,
+        //    tableId: 1,
+        //    bet: 25,
+        //    hand: [ 28, 2 ],
+        //    busted: false,
+        //    done: false,
+        //    openingMove: true },
+        //table:
+        //{ id: 1,
+        //    players: { '1': [Object], '2': [Object], '3': [Object] },
+        //    dealer: { name: 'Dealer', hand: [Object] },
+        //    numPlayers: 3,
+        //        state: 'dealing' } }
+
+        assert.ok(response.player.bet === amt);
+        tableid = response.player.tableId;
+        tableState = response.table.state;
+        assert.ok(is.obj(response.player));
+        assert.ok(is.array(response.player.hand));
+        displayHands(response.table, response.player, message);
+        bot.reply(message,
+            {
+                attachment: {
+                    type: "template",
+                    payload: {
+                        template_type: "generic",
+                        elements: [
+                            {
+                                title: "Do you want to hit or Stand",
+                                buttons: [
+                                    {
+                                        type: "postback",
+                                        title: "HIT",
+                                        payload: "hit"
+                                    },
+                                    {
+                                        type: "postback",
+                                        title: "STAND",
+                                        payload: "stand"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
                 }
             }
-        }
-    );
+        );
+
+    });
 
 });
 
@@ -305,18 +336,6 @@ controller.on('facebook_postback', function (bot, message) {
             bot.reply(message, "you decide to stand")
             break
         case '1':
-            //call function to perform stand operation
-            //player:
-            //{ id: 1,
-            //    name: 'Danny',
-            //    credits: 1000,
-            //    online: true,
-            //    tableId: 1,
-            //    bet: -1,
-            //    hand: [],
-            //    busted: false,
-            //    done: false } }
-
             controller.storage.users.get(message.user, function (err, user) {
                 if (!user) {
                     user = {
@@ -326,8 +345,8 @@ controller.on('facebook_postback', function (bot, message) {
                 console.log(playerId);
                 client.joinTable(user.playerId, 1, function (response) {
                     if (response.player.busted == false) {
-                        bot.reply(message, "You are Table 1 with id" + playerId)
-                        bot.reply(message, "You have credit of " + response.player.credits + "$")
+                        bot.reply(message, "You are  on Table 1 with id" + playerId)
+                        bot.reply(message, "You have credit of " + response.player.credits + " $")
                         bot.reply(message, "How much do you want to bet")
                     }
                 })
@@ -345,8 +364,8 @@ controller.on('facebook_postback', function (bot, message) {
                 console.log(playerId);
                 client.joinTable(user.playerId, 1, function (response) {
                     if (response.player.busted == false) {
-                        bot.reply(message, "You are Table 2 with id" + playerId)
-                        bot.reply(message, "You have credit of " + response.player.credits + "$")
+                        bot.reply(message, "You are on Table 2")
+                        bot.reply(message, "You have credit of " + response.player.credits + " $")
                         bot.reply(message, "How much do you want to bet")
                     }
                 })
@@ -364,8 +383,8 @@ controller.on('facebook_postback', function (bot, message) {
                 console.log(playerId);
                 client.joinTable(user.playerId, 1, function (response) {
                     if (response.player.busted == false) {
-                        bot.reply(message, "You are Table 3 with id" + playerId)
-                        bot.reply(message, "You have credit of " + response.player.credits + "$")
+                        bot.reply(message, "You are on Table 3 ")
+                        bot.reply(message, "You have credit of " + response.player.credits + " $")
                         bot.reply(message, "How much do you want to bet")
                     }
                 })
@@ -382,3 +401,53 @@ askName = function (response, convo) {
     })
 }
 
+function displayHands(table, player, message) {
+    assert.ok(is.nonEmptyObj(table));
+    var dealerHand = table.dealer.hand;
+    var yourHand;
+    displayHand('Dealers hand:', dealerHand);
+    if (is.positiveInt(player.bet)) {
+        yourHand = table.players[playerId].hand;
+        displayHand('Your hand:', yourHand);
+    } else if (player.bet === -1 && is.obj(player.result)) {
+        yourHand = player.result.players[playerId].hand;
+        displayHand('Your hand:', yourHand);
+        if (player.result.players[playerId].push) {
+            //console.log('Push. You have %s credits.', player.credits);
+            bot.reply(message, 'Push. You have %s credits.', player.credits)
+        } else {
+
+            //console.log('You %s %s and currently have %s credits.',
+            //    (player.result.players[playerId].win ? 'won' : 'lost'),
+            //    player.result.players[playerId].bet,
+            //    player.credits);
+            bot.reply(message, 'You %s %s and currently have %s credits.',
+                (player.result.players[playerId].win ? 'won' : 'lost'),
+                player.result.players[playerId].bet,
+                player.credits)
+
+        }
+    }
+}
+
+
+function displayHand(txt, hand, message) {
+    assert.ok(is.str(txt));
+    assert.ok(is.nonEmptyArray(hand));
+    console.log(txt);
+    _.forEach(hand, function (c) {
+        if (is.str(c)) {
+            //printf('    %s\n', c);
+            bot.reply(message, c);
+        } else if (is.int(c) && c > -1) {
+            var card = Cards.getCard(c);
+            //printf('%s of %s\n', card.rank, card.suit);
+
+            bot.reply(message, card.rank + " " + card.suit);
+
+        } else {
+            assert.ok(false);
+        }
+    });
+    //return hand;
+}
