@@ -201,7 +201,68 @@ controller.on('facebook_postback', function (bot, message) {
                         tables = response.tables;
                         bot.reply(message, "your Player Id :" + playerId)
                         //display tables and users in the table
-                        bot.reply(message, tables)
+                        console.log(tables);
+                        bot.reply(message,
+                            {
+                                attachment: {
+                                    type: "template",
+                                    payload: {
+                                        template_type: "generic",
+                                        elements: [
+                                            {
+                                                title: "Table 1",
+                                                image_url: "http://petersapparel.parseapp.com/img/item100-thumb.png",
+                                                subtitle: "Wating for users",
+                                                buttons: [
+                                                    {
+                                                        type: "postback",
+                                                        title: "Join",
+                                                        payload: "1"
+                                                    }
+                                                ]
+                                            }
+                                            , {
+                                                title: "Table 2",
+                                                image_url: "http://petersapparel.parseapp.com/img/item100-thumb.png",
+                                                subtitle: "Soft white cotton t-shirt is back in style",
+                                                buttons: [
+                                                    {
+                                                        type: "postback",
+                                                        title: "HIT",
+                                                        payload: "2"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                title: "Table 3",
+                                                image_url: "http://petersapparel.parseapp.com/img/item100-thumb.png",
+                                                subtitle: "Soft white cotton t-shirt is back in style",
+                                                buttons: [
+                                                    {
+                                                        type: "postback",
+                                                        title: "HIT",
+                                                        payload: "3"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                title: "Table 4",
+                                                image_url: "http://petersapparel.parseapp.com/img/item100-thumb.png",
+                                                subtitle: "State of the table",
+                                                buttons: [
+                                                    {
+                                                        type: "postback",
+                                                        title: "HIT",
+                                                        payload: "4"
+                                                    }
+
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        );
                     })
                 });
             });
@@ -227,3 +288,7 @@ askName = function (response, convo) {
         playerId = response.player.id;
     })
 }
+
+_.forEach(tables, function (table) {
+    printf('%9d %13d\n', table.id, table.numPlayers);
+})
