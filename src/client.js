@@ -25,30 +25,26 @@ var client = new Client();
  *      prompt result with the name.
  */
 
-function displayHand(txt, hand) {
+function displayHand(txt, hand, message) {
     assert.ok(is.str(txt));
     assert.ok(is.nonEmptyArray(hand));
-    console.log(txt);
+    console.log(hand);
     _.forEach(hand, function (c) {
         if (is.str(c)) {
-            printf('    %s\n', c);
+            //printf('    %s\n', c);
+            bot.reply(message, c);
         } else if (is.int(c) && c > -1) {
             var card = Cards.getCard(c);
-            printf('    %s of %s\n', card.rank, card.suit);
+            //printf('%s of %s\n', card.rank, card.suit);
+            bot.reply(message, card.rank + " " + card.suit);
+
         } else {
             assert.ok(false);
         }
     });
-    //return hand;
 }
-//
-///**
-// * Display the dealer's and the player's hand of cards to standard out.
-// * @param {Object} table The table object
-// * @param {Object} player The player object
-// */
-function displayHands(table, player) {
 
+function displayHands(table, player, message) {
     assert.ok(is.nonEmptyObj(table));
     var dealerHand = table.dealer.hand;
     var yourHand;
@@ -56,22 +52,27 @@ function displayHands(table, player) {
     if (is.positiveInt(player.bet)) {
         yourHand = table.players[playerId].hand;
         displayHand('Your hand:', yourHand);
-
     } else if (player.bet === -1 && is.obj(player.result)) {
         yourHand = player.result.players[playerId].hand;
         displayHand('Your hand:', yourHand);
         if (player.result.players[playerId].push) {
-            console.log('Push. You have %s credits.', player.credits);
+            //console.log('Push. You have %s credits.', player.credits);
+            bot.reply(message, 'Push. You have %s credits.', player.credits)
         } else {
-            console.log('You %s %s and currently have %s credits.',
+
+            //console.log('You %s %s and currently have %s credits.',
+            //    (player.result.players[playerId].win ? 'won' : 'lost'),
+            //    player.result.players[playerId].bet,
+            //    player.credits);
+            bot.reply(message, 'You %s %s and currently have %s credits.',
                 (player.result.players[playerId].win ? 'won' : 'lost'),
                 player.result.players[playerId].bet,
-                player.credits);
-
+                player.credits)
 
         }
     }
 }
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // commands
@@ -176,6 +177,7 @@ function hit(playerId, cb) {
     });
 
 }
+
 /**
  * Players wants no more cards and risks the bet on the current hand.
  * @param {Function} cb The callback of for fn(err, json) where json is the
