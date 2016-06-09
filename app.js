@@ -179,21 +179,21 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
         //        state: 'dealing' } }
 
 
-        //console.log(response);
-        //var dealerHand = response.table[1].dealer.hand;
-        //_.forEach(dealerHand, function (c) {
-        //    if (is.str(c)) {
-        //        //printf('    %s\n', c);
-        //        bot.reply(message, c);
-        //    } else if (is.int(c) && c > -1) {
-        //        var card = Cards.getCard(c);
-        //        //printf('%s of %s\n', card.rank, card.suit);
-        //        bot.reply(message, card.rank + " " + card.suit);
-        //
-        //    } else {
-        //        assert.ok(false);
-        //    }
-        //});
+        console.log(response);
+        var dealerHand = response.table[1].dealer.hand;
+        _.forEach(dealerHand, function (c) {
+            if (is.str(c)) {
+                //printf('    %s\n', c);
+                bot.reply(message, c);
+            } else if (is.int(c) && c > -1) {
+                var card = Cards.getCard(c);
+                //printf('%s of %s\n', card.rank, card.suit);
+                bot.reply(message, card.rank + " " + card.suit);
+
+            } else {
+                assert.ok(false);
+            }
+        });
 
         //assert.ok(response.player.bet === amt);
         //tableid = response.player.tableId;
