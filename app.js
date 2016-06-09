@@ -155,7 +155,7 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
 
     // do something to respond to message
     var text = message.text;
-    var amt = text.match(/\d+/g);
+    var amt = text.match(/\d+/g).join("");
 
     console.log(amt)
     bot.reply(message, 'your' + message.text + ' recieved!');
