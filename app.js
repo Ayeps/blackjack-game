@@ -194,77 +194,101 @@ controller.on('facebook_postback', function (bot, message) {
                         id: message.user,
                     };
                 }
-                controller.storage.users.save(user, function (err, id) {
-                    client.login(user.name, function (response) {
-                        //tables = response;
-                        playerId = response.player.id;
-                        tables = response.tables;
-                        bot.reply(message, "your Player Id :" + playerId)
-                        //display tables and users in the table
-                        console.log(tables);
-                        bot.reply(message,
-                            {
-                                attachment: {
-                                    type: "template",
-                                    payload: {
-                                        template_type: "generic",
-                                        elements: [
-                                            {
-                                                title: "Table 1",
-                                                image_url: "http://petersapparel.parseapp.com/img/item100-thumb.png",
-                                                subtitle: "Wating for users",
-                                                buttons: [
-                                                    {
-                                                        type: "postback",
-                                                        title: "Join",
-                                                        payload: "1"
-                                                    }
-                                                ]
-                                            }
-                                            , {
-                                                title: "Table 2",
-                                                image_url: "http://petersapparel.parseapp.com/img/item100-thumb.png",
-                                                subtitle: "Soft white cotton t-shirt is back in style",
-                                                buttons: [
-                                                    {
-                                                        type: "postback",
-                                                        title: "HIT",
-                                                        payload: "2"
-                                                    }
-                                                ]
-                                            },
-                                            {
-                                                title: "Table 3",
-                                                image_url: "http://petersapparel.parseapp.com/img/item100-thumb.png",
-                                                subtitle: "Soft white cotton t-shirt is back in style",
-                                                buttons: [
-                                                    {
-                                                        type: "postback",
-                                                        title: "HIT",
-                                                        payload: "3"
-                                                    }
-                                                ]
-                                            },
-                                            {
-                                                title: "Table 4",
-                                                image_url: "http://petersapparel.parseapp.com/img/item100-thumb.png",
-                                                subtitle: "State of the table",
-                                                buttons: [
-                                                    {
-                                                        type: "postback",
-                                                        title: "HIT",
-                                                        payload: "4"
-                                                    }
 
-                                                ]
-                                            }
-                                        ]
-                                    }
+                client.login(user.name, function (response) {
+                    //tables = response;
+                    user.playerId = response.player.id;
+                    bot.reply(message, "your Player Id :" + playerId)
+                    //display tables and users in the table
+                    tables = response.tables;
+                    controller.storage.users.save(user, function (err, id) {
+                    })
+                    bot.reply(message,
+                        {
+                            attachment: {
+                                type: "template",
+                                payload: {
+                                    template_type: "generic",
+                                    elements: [
+                                        {
+                                            title: "Table 1",
+                                            image_url: "http://i.imgur.com/dmkDnSb.jpg",
+                                            subtitle: tables[1].numPlayers + " players, State: " + tables[1].state,
+                                            buttons: [
+                                                {
+                                                    type: "postback",
+                                                    title: "Join",
+                                                    payload: "1"
+                                                }
+                                            ]
+                                        }
+                                        , {
+                                            title: "Table 2",
+                                            image_url: "http://i.imgur.com/dmkDnSb.jpg",
+                                            subtitle: tables[2].numPlayers + " players , State: " + tables[2].state,
+                                            buttons: [
+                                                {
+                                                    type: "postback",
+                                                    title: "Join",
+                                                    payload: "2"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            title: "Table 3",
+                                            image_url: "http://i.imgur.com/dmkDnSb.jpg",
+                                            subtitle: tables[3].numPlayers + " players , State: " + tables[3].state,
+                                            buttons: [
+                                                {
+                                                    type: "postback",
+                                                    title: "Join",
+                                                    payload: "3"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            title: "Table 4",
+                                            image_url: "http://i.imgur.com/dmkDnSb.jpg",
+                                            subtitle: tables[4].numPlayers + " players , State: " + tables[4].state,
+                                            buttons: [
+                                                {
+                                                    type: "postback",
+                                                    title: "Join",
+                                                    payload: "4"
+                                                }
+
+                                            ]
+                                        }, {
+                                            title: "Table 5",
+                                            image_url: "http://i.imgur.com/dmkDnSb.jpg",
+                                            subtitle: tables[5].numPlayers + " players , State: " + tables[5].state,
+                                            buttons: [
+                                                {
+                                                    type: "postback",
+                                                    title: "Join",
+                                                    payload: "5"
+                                                }
+
+                                            ]
+                                        }, {
+                                            title: "Table 6",
+                                            image_url: "http://i.imgur.com/dmkDnSb.jpg",
+                                            subtitle: tables[6].numPlayers + " players , State: " + tables[6].state,
+                                            buttons: [
+                                                {
+                                                    type: "postback",
+                                                    title: "Join",
+                                                    payload: "6"
+                                                }
+
+                                            ]
+                                        }
+                                    ]
                                 }
                             }
-                        );
-                    })
-                });
+                        }
+                    );
+                })
             });
 
             break
@@ -279,6 +303,24 @@ controller.on('facebook_postback', function (bot, message) {
             //call function to perform stand operation
             bot.reply(message, "you decide to stand")
             break
+        case '1':
+            //call function to perform stand operation
+            bot.reply(message, "You are Table 1")
+            bot.reply(message, "You have credit of 1000$")
+            bot.reply(message, "How much do you want to bet")
+            break
+        case '2':
+            //call function to perform stand operation
+            bot.reply(message, "You are Table 2")
+            bot.reply(message, "You have credit of 1000$")
+            bot.reply(message, "How much do you want to bet")
+            break
+        case '3':
+            //call function to perform stand operation
+            bot.reply(message, "You are Table 3")
+            bot.reply(message, "You have credit of 1000$")
+            bot.reply(message, "How much do you want to bet")
+            break
     }
 })
 
@@ -289,6 +331,3 @@ askName = function (response, convo) {
     })
 }
 
-//_.forEach(tables, function (table) {
-//    printf('%9d %13d\n', table.id, table.numPlayers);
-//})
