@@ -46,10 +46,11 @@ function displayHand(txt, hand, message) {
 }
 
 function displayHands(response, message) {
+
+    var table = response.table;
+    var player = response.player;
     assert.ok(is.nonEmptyObj(table));
-    var dealerHand = response.table.dealer.hand;
-
-
+    var dealerHand = table.dealer.hand;
     var yourHand;
     displayHand('Dealers hand:', dealerHand);
     if (is.positiveInt(player.bet)) {
