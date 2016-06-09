@@ -159,61 +159,71 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
 
     console.log(amt)
     bot.reply(message, 'your' + message.text + ' recieved!');
-    client.bet(1, 500, function (response) {
-        console.log(response);
-        bot.reply(message, "Dealer Hand");
-        //var dealerHand = response.table.dealer.hand;
-        //_.forEach(dealerHand, function (c) {
-        //    if (is.str(c)) {
-        //        //printf('    %s\n', c);
-        //        bot.reply(message, c);
-        //    } else if (is.int(c) && c > -1) {
-        //        var card = Cards.getCard(c);
-        //        //printf('%s of %s\n', card.rank, card.suit);
-        //        bot.reply(message, card.rank + " " + card.suit);
-        //
-        //    } else {
-        //        assert.ok(false);
-        //    }
-        //});
 
-        //assert.ok(response.player.bet === amt);
-        //tableid = response.player.tableId;
-        //tableState = response.table.state;
-        //assert.ok(is.obj(response.player));
-        //assert.ok(is.array(response.player.hand));
-        //displayHands(response.table, response.player, message);
+    controller.storage.users.get(message.user, function (err, user) {
+        if (!user) {
+            user = {
+                id: message.user,
+            };
+        }
+        client.bet(user.playerId, 500, function (response) {
+            console.log(response);
+            bot.reply(message, "Dealer Hand");
+            var dealerHand = response.table.dealer.hand;
+            _.forEach(dealerHand, function (c) {
+                if (is.str(c)) {
+                    //printf('    %s\n', c);
+                    bot.reply(message, c);
+                } else if (is.int(c) && c > -1) {
+                    var card = Cards.getCard(c);
+                    //printf('%s of %s\n', card.rank, card.suit);
+                    bot.reply(message, card.rank + " " + card.suit);
+
+                } else {
+                    assert.ok(false);
+                }
+            });
+
+            //assert.ok(response.player.bet === amt);
+            //tableid = response.player.tableId;
+            //tableState = response.table.state;
+            //assert.ok(is.obj(response.player));
+            //assert.ok(is.array(response.player.hand));
+            //displayHands(response.table, response.player, message);
 
 
-        bot.reply(message,
-            {
-                attachment: {
-                    type: "template",
-                    payload: {
-                        template_type: "generic",
-                        elements: [
-                            {
-                                title: "Do you want to hit or Stand",
-                                buttons: [
-                                    {
-                                        type: "postback",
-                                        title: "HIT",
-                                        payload: "hit"
-                                    },
-                                    {
-                                        type: "postback",
-                                        title: "STAND",
-                                        payload: "stand"
-                                    }
-                                ]
-                            }
-                        ]
+            bot.reply(message,
+                {
+                    attachment: {
+                        type: "template",
+                        payload: {
+                            template_type: "generic",
+                            elements: [
+                                {
+                                    title: "Do you want to hit or Stand",
+                                    buttons: [
+                                        {
+                                            type: "postback",
+                                            title: "HIT",
+                                            payload: "hit"
+                                        },
+                                        {
+                                            type: "postback",
+                                            title: "STAND",
+                                            payload: "stand"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
                     }
                 }
-            }
-        );
+            );
+
+        });
 
     });
+
 
 });
 
@@ -365,7 +375,7 @@ controller.on('facebook_postback', function (bot, message) {
                     };
                 }
                 console.log(playerId);
-                client.joinTable(user.playerId, 1, function (response) {
+                client.joinTable(user.playerId, 2, function (response) {
                     if (response.player.busted == false) {
                         bot.reply(message, "You are on Table 2")
                         bot.reply(message, "You have credit of " + response.player.credits + " $")
@@ -384,7 +394,7 @@ controller.on('facebook_postback', function (bot, message) {
                     };
                 }
                 console.log(playerId);
-                client.joinTable(user.playerId, 1, function (response) {
+                client.joinTable(user.playerId, 3, function (response) {
                     if (response.player.busted == false) {
                         bot.reply(message, "You are on Table 3 ")
                         bot.reply(message, "You have credit of " + response.player.credits + " $")
