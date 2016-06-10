@@ -237,8 +237,6 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
                     assert.ok(false);
                 }
             });
-
-
             bot.reply(message, "Your Hand");
             var yourHand = response.table.players[playerId].hand;
             _.forEach(yourHand, function (c) {
@@ -411,10 +409,24 @@ controller.on('facebook_postback', function (bot, message) {
 
             break
         case 'no':
+            controller.storage.users.get(message.user, function (err, user) {
+                if (!user) {
+                    user = {
+                        id: message.user,
+                    };
+                }
+                console.log(playerId);
+                client.leaveTable(user.playerId, function (response) {
+
+                })
+
+            });
+
             bot.reply(message, "Thank for playing the game with us")
             break
         case 'hit':
             //call function to perform hit operation
+
             controller.storage.users.get(message.user, function (err, user) {
                 if (!user) {
                     user = {
@@ -424,6 +436,169 @@ controller.on('facebook_postback', function (bot, message) {
 
                 client.hit(user.playerId, function (response) {
 
+                    var table = response.table;
+                    var player = response.player;
+                    assert.ok(is.nonEmptyObj(table));
+                    var dealerHand = table.dealer.hand;
+                    var yourHand;
+                    //displayHand('Dealers hand:', dealerHand);
+                    _.forEach(dealerHand, function (c) {
+                        if (is.str(c)) {
+                            //printf('    %s\n', c);
+                            bot.reply(message, c);
+                        } else if (is.int(c) && c > -1) {
+                            var card = Cards.getCard(c);
+                            //printf('%s of %s\n', card.rank, card.suit);
+                            bot.reply(message, card.rank + " " + card.suit);
+                        } else {
+                            assert.ok(false);
+                        }
+                    });
+
+                    if (is.positiveInt(player.bet)) {
+                        //yourHand = table.players[playerId].hand;
+                        yourHand = response.table.players[user.playerId].hand;
+                        _.forEach(yourHand, function (c) {
+                            if (is.str(c)) {
+                                //printf('    %s\n', c);
+                                bot.reply(message, c);
+                            } else if (is.int(c) && c > -1) {
+                                var card = Cards.getCard(c);
+                                //printf('%s of %s\n', card.rank, card.suit);
+                                bot.reply(message, card.rank + " " + card.suit);
+                            } else {
+                                assert.ok(false);
+                            }
+                        });
+                    } else if (player.bet === -1 && is.obj(player.result)) {
+                        //displayHand('Your hand:', yourHand);
+                        yourHand = response.table.players[user.playerId].hand;
+                        _.forEach(yourHand, function (c) {
+                            if (is.str(c)) {
+                                //printf('    %s\n', c);
+                                bot.reply(message, c);
+                            } else if (is.int(c) && c > -1) {
+                                var card = Cards.getCard(c);
+                                //printf('%s of %s\n', card.rank, card.suit);
+                                bot.reply(message, card.rank + " " + card.suit);
+                            } else {
+                                assert.ok(false);
+                            }
+                        });
+                        if (player.result.players[user.playerId].push) {
+                            //console.log('Push. You have %s credits.', player.credits);
+                            bot.reply(message, 'Push. You have ' + player.credits + ' credits.')
+                            bot.reply(message,
+                                {
+                                    attachment: {
+                                        type: "template",
+                                        payload: {
+                                            template_type: "generic",
+                                            elements: [
+                                                {
+                                                    title: "Would you like to play a again?",
+                                                    buttons: [
+                                                        {
+                                                            type: "postback",
+                                                            title: "HIT",
+                                                            payload: "hit"
+                                                        },
+                                                        {
+                                                            type: "postback",
+                                                            title: "STAND",
+                                                            payload: "stand"
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            );
+                        } else {
+
+                            //console.log('You %s %s and currently have %s credits.',
+                            //    (player.result.players[playerId].win ? 'won' : 'lost'),
+                            //    player.result.players[playerId].bet,
+                            //    player.credits);
+                            bot.reply(message, 'You ' + (player.result.players[user.playerId].win ? 'won' : 'lost') + '' +
+                                ' ' + player.result.players[user.playerId].bet + 'and currently have ' + player.credits + 'credits.'
+                            )
+                            bot.reply(message,
+                                {
+                                    attachment: {
+                                        type: "template",
+                                        payload: {
+                                            template_type: "generic",
+                                            elements: [
+                                                {
+                                                    title: "Would you like to play a again?",
+                                                    buttons: [
+                                                        {
+                                                            type: "postback",
+                                                            title: "HOT",
+                                                            payload: "yes"
+                                                        },
+                                                        {
+                                                            type: "postback",
+                                                            title: "NO",
+                                                            payload: "no"
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            );
+                        }
+                    }
+
+                    if (response.player.busted == false) {
+                        bot.reply(message,
+                            {
+                                attachment: {
+                                    type: "template",
+                                    payload: {
+                                        template_type: "generic",
+                                        elements: [
+                                            {
+                                                title: "Would you like to play a again?",
+                                                buttons: [
+                                                    {
+                                                        type: "postback",
+                                                        title: "YES",
+                                                        payload: "yes"
+                                                    },
+                                                    {
+                                                        type: "postback",
+                                                        title: "NO",
+                                                        payload: "no"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                }
+                            })
+                    }
+                })
+            });
+
+
+            break
+        case 'stand':
+            //call function to perform stand operation
+
+
+            controller.storage.users.get(message.user, function (err, user) {
+                if (!user) {
+                    user = {
+                        id: message.user,
+                    };
+                }
+
+                client.stand(user.playerId, function (response) {
 
                     var table = response.table;
                     var player = response.player;
@@ -458,6 +633,33 @@ controller.on('facebook_postback', function (bot, message) {
                                 assert.ok(false);
                             }
                         });
+                        bot.reply(message,
+                            {
+                                attachment: {
+                                    type: "template",
+                                    payload: {
+                                        template_type: "generic",
+                                        elements: [
+                                            {
+                                                title: "Would you like to play a again?",
+                                                buttons: [
+                                                    {
+                                                        type: "postback",
+                                                        title: "YES",
+                                                        payload: "yes"
+                                                    },
+                                                    {
+                                                        type: "postback",
+                                                        title: "NO",
+                                                        payload: "no"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        );
                     } else if (player.bet === -1 && is.obj(player.result)) {
                         //displayHand('Your hand:', yourHand);
                         yourHand = response.table.players[user.playerId].hand;
@@ -473,7 +675,35 @@ controller.on('facebook_postback', function (bot, message) {
                             } else {
                                 assert.ok(false);
                             }
+
                         });
+                        bot.reply(message,
+                            {
+                                attachment: {
+                                    type: "template",
+                                    payload: {
+                                        template_type: "generic",
+                                        elements: [
+                                            {
+                                                title: "Would you like to play a again?",
+                                                buttons: [
+                                                    {
+                                                        type: "postback",
+                                                        title: "YES",
+                                                        payload: "yes"
+                                                    },
+                                                    {
+                                                        type: "postback",
+                                                        title: "NO",
+                                                        payload: "no"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        );
                         if (player.result.players[user.playerId].push) {
                             //console.log('Push. You have %s credits.', player.credits);
                             bot.reply(message, 'Push. You have %s credits.', player.credits)
@@ -483,10 +713,9 @@ controller.on('facebook_postback', function (bot, message) {
                             //    (player.result.players[playerId].win ? 'won' : 'lost'),
                             //    player.result.players[playerId].bet,
                             //    player.credits);
-                            bot.reply(message, 'You %s %s and currently have %s credits.',
-                                (player.result.players[user.playerId].win ? 'won' : 'lost'),
-                                player.result.players[user.playerId].bet,
-                                player.credits)
+                            bot.reply(message, 'You ' + (player.result.players[user.playerId].win ? 'won' : 'lost') + '' +
+                                ' ' + player.result.players[user.playerId].bet + 'and currently have ' + player.credits + 'credits.'
+                            )
 
                             bot.reply(message,
                                 {
@@ -527,13 +756,6 @@ controller.on('facebook_postback', function (bot, message) {
                     //);
                 })
             });
-
-
-            bot.reply(message, "you decided to hit")
-            break
-        case 'stand':
-            //call function to perform stand operation
-            bot.reply(message, "you decide to stand")
             break
         case '1':
             controller.storage.users.get(message.user, function (err, user) {
@@ -547,7 +769,7 @@ controller.on('facebook_postback', function (bot, message) {
                     if (response.player.busted == false) {
                         bot.reply(message, "You are  on Table 1 with id" + playerId)
                         bot.reply(message, "You have credit of " + response.player.credits + " $")
-                        bot.reply(message, "How much do you want to bet")
+                        bot.reply(message, "How much do you want to bet (bet amount $)")
                     }
                 })
 
@@ -566,7 +788,7 @@ controller.on('facebook_postback', function (bot, message) {
                     if (response.player.busted == false) {
                         bot.reply(message, "You are on Table 2")
                         bot.reply(message, "You have credit of " + response.player.credits + " $")
-                        bot.reply(message, "How much do you want to bet")
+                        bot.reply(message, "How much do you want to bet (bet amount $)")
                     }
                 })
 
@@ -585,7 +807,7 @@ controller.on('facebook_postback', function (bot, message) {
                     if (response.player.busted == false) {
                         bot.reply(message, "You are on Table 3 ")
                         bot.reply(message, "You have credit of " + response.player.credits + " $")
-                        bot.reply(message, "How much do you want to bet")
+                        bot.reply(message, "How much do you want to bet (bet amount $)")
                     }
                 })
 
@@ -604,7 +826,7 @@ controller.on('facebook_postback', function (bot, message) {
                     if (response.player.busted == false) {
                         bot.reply(message, "You are on Table 5 ")
                         bot.reply(message, "You have credit of " + response.player.credits + " $")
-                        bot.reply(message, "How much do you want to bet")
+                        bot.reply(message, "How much do you want to bet (bet amount $)")
                     }
                 })
 
@@ -623,7 +845,7 @@ controller.on('facebook_postback', function (bot, message) {
                     if (response.player.busted == false) {
                         bot.reply(message, "You are on Table 5 ")
                         bot.reply(message, "You have credit of " + response.player.credits + " $")
-                        bot.reply(message, "How much do you want to bet")
+                        bot.reply(message, "How much do you want to bet (bet amount $)")
                     }
                 })
 
@@ -642,7 +864,7 @@ controller.on('facebook_postback', function (bot, message) {
                     if (response.player.busted == false) {
                         bot.reply(message, "You are on Table 6 ")
                         bot.reply(message, "You have credit of " + response.player.credits + " $")
-                        bot.reply(message, "How much do you want to bet")
+                        bot.reply(message, "How much do you want to bet (bet amount $)")
                     }
                 })
 
