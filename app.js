@@ -454,7 +454,6 @@ controller.on('facebook_postback', function (bot, message) {
                             assert.ok(false);
                         }
                     });
-
                     if (is.positiveInt(player.bet)) {
                         //yourHand = table.players[playerId].hand;
                         yourHand = response.table.players[user.playerId].hand;
@@ -470,6 +469,33 @@ controller.on('facebook_postback', function (bot, message) {
                                 assert.ok(false);
                             }
                         });
+                        bot.reply(message,
+                            {
+                                attachment: {
+                                    type: "template",
+                                    payload: {
+                                        template_type: "generic",
+                                        elements: [
+                                            {
+                                                title: "Would you like to play a again?",
+                                                buttons: [
+                                                    {
+                                                        type: "postback",
+                                                        title: "HIT",
+                                                        payload: "hit"
+                                                    },
+                                                    {
+                                                        type: "postback",
+                                                        title: "STAND",
+                                                        payload: "stand"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        );
                     } else if (player.bet === -1 && is.obj(player.result)) {
                         //displayHand('Your hand:', yourHand);
                         yourHand = response.table.players[user.playerId].hand;
@@ -485,36 +511,37 @@ controller.on('facebook_postback', function (bot, message) {
                                 assert.ok(false);
                             }
                         });
+                        bot.reply(message,
+                            {
+                                attachment: {
+                                    type: "template",
+                                    payload: {
+                                        template_type: "generic",
+                                        elements: [
+                                            {
+                                                title: "Would you like to play a again?",
+                                                buttons: [
+                                                    {
+                                                        type: "postback",
+                                                        title: "HIT",
+                                                        payload: "hit"
+                                                    },
+                                                    {
+                                                        type: "postback",
+                                                        title: "STAND",
+                                                        payload: "stand"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        );
                         if (player.result.players[user.playerId].push) {
                             //console.log('Push. You have %s credits.', player.credits);
                             bot.reply(message, 'Push. You have ' + player.credits + ' credits.')
-                            bot.reply(message,
-                                {
-                                    attachment: {
-                                        type: "template",
-                                        payload: {
-                                            template_type: "generic",
-                                            elements: [
-                                                {
-                                                    title: "Would you like to play a again?",
-                                                    buttons: [
-                                                        {
-                                                            type: "postback",
-                                                            title: "HIT",
-                                                            payload: "hit"
-                                                        },
-                                                        {
-                                                            type: "postback",
-                                                            title: "STAND",
-                                                            payload: "stand"
-                                                        }
-                                                    ]
-                                                }
-                                            ]
-                                        }
-                                    }
-                                }
-                            );
+
                         } else {
 
                             //console.log('You %s %s and currently have %s credits.',
@@ -554,34 +581,7 @@ controller.on('facebook_postback', function (bot, message) {
                         }
                     }
 
-                    if (response.player.busted == false) {
-                        bot.reply(message,
-                            {
-                                attachment: {
-                                    type: "template",
-                                    payload: {
-                                        template_type: "generic",
-                                        elements: [
-                                            {
-                                                title: "Would you like to play a again?",
-                                                buttons: [
-                                                    {
-                                                        type: "postback",
-                                                        title: "YES",
-                                                        payload: "yes"
-                                                    },
-                                                    {
-                                                        type: "postback",
-                                                        title: "NO",
-                                                        payload: "no"
-                                                    }
-                                                ]
-                                            }
-                                        ]
-                                    }
-                                }
-                            })
-                    }
+
                 })
             });
 
@@ -645,13 +645,13 @@ controller.on('facebook_postback', function (bot, message) {
                                                 buttons: [
                                                     {
                                                         type: "postback",
-                                                        title: "YES",
-                                                        payload: "yes"
+                                                        title: "HIT",
+                                                        payload: "hit"
                                                     },
                                                     {
                                                         type: "postback",
-                                                        title: "NO",
-                                                        payload: "no"
+                                                        title: "STAND",
+                                                        payload: "stand"
                                                     }
                                                 ]
                                             }
@@ -689,13 +689,13 @@ controller.on('facebook_postback', function (bot, message) {
                                                 buttons: [
                                                     {
                                                         type: "postback",
-                                                        title: "YES",
-                                                        payload: "yes"
+                                                        title: "HIT",
+                                                        payload: "hit"
                                                     },
                                                     {
                                                         type: "postback",
-                                                        title: "NO",
-                                                        payload: "no"
+                                                        title: "STAND",
+                                                        payload: "stand"
                                                     }
                                                 ]
                                             }
