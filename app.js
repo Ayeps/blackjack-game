@@ -551,33 +551,7 @@ controller.on('facebook_postback', function (bot, message) {
                             bot.reply(message, 'You ' + (player.result.players[user.playerId].win ? 'won' : 'lost') + '' +
                                 ' ' + player.result.players[user.playerId].bet + 'and currently have ' + player.credits + 'credits.'
                             )
-                            bot.reply(message,
-                                {
-                                    attachment: {
-                                        type: "template",
-                                        payload: {
-                                            template_type: "generic",
-                                            elements: [
-                                                {
-                                                    title: "Would you like to play a again?",
-                                                    buttons: [
-                                                        {
-                                                            type: "postback",
-                                                            title: "HOT",
-                                                            payload: "yes"
-                                                        },
-                                                        {
-                                                            type: "postback",
-                                                            title: "NO",
-                                                            payload: "no"
-                                                        }
-                                                    ]
-                                                }
-                                            ]
-                                        }
-                                    }
-                                }
-                            );
+
                         }
                     }
 
@@ -716,36 +690,6 @@ controller.on('facebook_postback', function (bot, message) {
                             bot.reply(message, 'You ' + (player.result.players[user.playerId].win ? 'won' : 'lost') + '' +
                                 ' ' + player.result.players[user.playerId].bet + 'and currently have ' + player.credits + 'credits.'
                             )
-
-                            bot.reply(message,
-                                {
-                                    attachment: {
-                                        type: "template",
-                                        payload: {
-                                            template_type: "generic",
-                                            elements: [
-                                                {
-                                                    title: "Would you like to play a again?",
-                                                    buttons: [
-                                                        {
-                                                            type: "postback",
-                                                            title: "YES",
-                                                            payload: "yes"
-                                                        },
-                                                        {
-                                                            type: "postback",
-                                                            title: "NO",
-                                                            payload: "no"
-                                                        }
-                                                    ]
-                                                }
-                                            ]
-                                        }
-                                    }
-                                }
-                            );
-
-
                         }
                     }
 
