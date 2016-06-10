@@ -25,7 +25,7 @@ var client = new Client();
  *      prompt result with the name.
  */
 
-function displayHand(txt, hand, message) {
+function displayHand(txt, hand, message,bot) {
     assert.ok(is.str(txt));
     assert.ok(is.nonEmptyArray(hand));
     console.log(hand);
@@ -45,20 +45,20 @@ function displayHand(txt, hand, message) {
     });
 }
 
-function displayHands(response, message) {
+function displayHands(response, message,bot) {
 
     var table = response.table;
     var player = response.player;
     assert.ok(is.nonEmptyObj(table));
     var dealerHand = table.dealer.hand;
     var yourHand;
-    displayHand('Dealers hand:', dealerHand);
+    displayHand('Dealers hand:', dealerHand,bot);
     if (is.positiveInt(player.bet)) {
         yourHand = table.players[playerId].hand;
-        displayHand('Your hand:', yourHand);
+        displayHand('Your hand:', yourHand,bot);
     } else if (player.bet === -1 && is.obj(player.result)) {
         yourHand = player.result.players[playerId].hand;
-        displayHand('Your hand:', yourHand);
+        displayHand('Your hand:', yourHand,bot);
         if (player.result.players[playerId].push) {
             //console.log('Push. You have %s credits.', player.credits);
             bot.reply(message, 'Push. You have %s credits.', player.credits)
