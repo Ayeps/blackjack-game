@@ -219,7 +219,7 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
                 id: message.user,
             };
         }
-        client.bet(user.playerId, 500, function (response) {
+        client.bet(user.playerId, parseInt(amt), function (response) {
             console.log(response);
 
             bot.reply(message, "Dealer Hand");
@@ -456,6 +456,7 @@ controller.on('facebook_postback', function (bot, message) {
                     });
                     if (is.positiveInt(player.bet)) {
                         //yourHand = table.players[playerId].hand;
+                        bot.reply(message, 'your hand')
                         yourHand = response.table.players[user.playerId].hand;
                         _.forEach(yourHand, function (c) {
                             if (is.str(c)) {
@@ -477,7 +478,7 @@ controller.on('facebook_postback', function (bot, message) {
                                         template_type: "generic",
                                         elements: [
                                             {
-                                                title: "Would you like to play a again?",
+                                                title: "HIT or STAND?",
                                                 buttons: [
                                                     {
                                                         type: "postback",
@@ -498,6 +499,7 @@ controller.on('facebook_postback', function (bot, message) {
                         );
                     } else if (player.bet === -1 && is.obj(player.result)) {
                         //displayHand('Your hand:', yourHand);
+                        bot.reply(message, 'your hand')
                         yourHand = response.table.players[user.playerId].hand;
                         _.forEach(yourHand, function (c) {
                             if (is.str(c)) {
@@ -564,14 +566,12 @@ controller.on('facebook_postback', function (bot, message) {
         case 'stand':
             //call function to perform stand operation
 
-
             controller.storage.users.get(message.user, function (err, user) {
                 if (!user) {
                     user = {
                         id: message.user,
                     };
                 }
-
                 client.stand(user.playerId, function (response) {
 
                     var table = response.table;
@@ -580,6 +580,7 @@ controller.on('facebook_postback', function (bot, message) {
                     var dealerHand = table.dealer.hand;
                     var yourHand;
                     //displayHand('Dealers hand:', dealerHand);
+                    bot.reply(message, 'delers hand')
                     _.forEach(dealerHand, function (c) {
                         if (is.str(c)) {
                             //printf('    %s\n', c);
@@ -594,6 +595,7 @@ controller.on('facebook_postback', function (bot, message) {
                     });
                     if (is.positiveInt(player.bet)) {
                         //yourHand = table.players[playerId].hand;
+                        bot.reply(message, 'your hand')
                         yourHand = response.table.players[user.playerId].hand;
                         _.forEach(yourHand, function (c) {
                             if (is.str(c)) {
@@ -636,6 +638,7 @@ controller.on('facebook_postback', function (bot, message) {
                         );
                     } else if (player.bet === -1 && is.obj(player.result)) {
                         //displayHand('Your hand:', yourHand);
+                        bot.reply(message, 'your hand')
                         yourHand = response.table.players[user.playerId].hand;
                         _.forEach(yourHand, function (c) {
                             if (is.str(c)) {
@@ -692,12 +695,7 @@ controller.on('facebook_postback', function (bot, message) {
                             )
                         }
                     }
-
-                    //displayHands(response, message,user.playerId);
-
-                    //bot.reply(message,""
-                    //
-                    //);
+ 
                 })
             });
             break
