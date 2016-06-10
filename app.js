@@ -421,7 +421,6 @@ controller.on('facebook_postback', function (bot, message) {
                 })
 
             });
-
             bot.reply(message, "Thank for playing the game with us")
             break
         case 'hit':
@@ -435,7 +434,6 @@ controller.on('facebook_postback', function (bot, message) {
                 }
 
                 client.hit(user.playerId, function (response) {
-
                     var table = response.table;
                     var player = response.player;
                     assert.ok(is.nonEmptyObj(table));
@@ -617,7 +615,7 @@ controller.on('facebook_postback', function (bot, message) {
                                         template_type: "generic",
                                         elements: [
                                             {
-                                                title: "Would you like to play a again?",
+                                                title: "HIT or STAND?",
                                                 buttons: [
                                                     {
                                                         type: "postback",
@@ -638,7 +636,7 @@ controller.on('facebook_postback', function (bot, message) {
                         );
                     } else if (player.bet === -1 && is.obj(player.result)) {
                         //displayHand('Your hand:', yourHand);
-                        bot.reply(message, 'your hand')
+                        bot.reply(message, 'your hand : result')
                         yourHand = response.table.players[user.playerId].hand;
                         _.forEach(yourHand, function (c) {
                             if (is.str(c)) {
@@ -666,13 +664,13 @@ controller.on('facebook_postback', function (bot, message) {
                                                 buttons: [
                                                     {
                                                         type: "postback",
-                                                        title: "HIT",
-                                                        payload: "hit"
+                                                        title: "YES",
+                                                        payload: "yes"
                                                     },
                                                     {
                                                         type: "postback",
-                                                        title: "STAND",
-                                                        payload: "stand"
+                                                        title: "NO",
+                                                        payload: "no"
                                                     }
                                                 ]
                                             }
@@ -685,17 +683,12 @@ controller.on('facebook_postback', function (bot, message) {
                             //console.log('Push. You have %s credits.', player.credits);
                             bot.reply(message, 'Push. You have %s credits.', player.credits)
                         } else {
-
-                            //console.log('You %s %s and currently have %s credits.',
-                            //    (player.result.players[playerId].win ? 'won' : 'lost'),
-                            //    player.result.players[playerId].bet,
-                            //    player.credits);
                             bot.reply(message, 'You ' + (player.result.players[user.playerId].win ? 'won' : 'lost') + '' +
                                 ' ' + player.result.players[user.playerId].bet + 'and currently have ' + player.credits + 'credits.'
                             )
                         }
                     }
- 
+
                 })
             });
             break
@@ -733,7 +726,6 @@ controller.on('facebook_postback', function (bot, message) {
                         bot.reply(message, "How much do you want to bet (bet amount $)")
                     }
                 })
-
             });
             break
         case '3':
