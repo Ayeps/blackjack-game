@@ -680,8 +680,8 @@ controller.on('facebook_postback', function (bot, message) {
                             }
                         );
                         if (player.result.players[user.playerId].push) {
-                            //console.log('Push. You have %s credits.', player.credits);
-                            bot.reply(message, 'Push. You have %s credits.', player.credits)
+
+                            bot.reply(message, 'Push. You have ' + player.credits + ' credits.')
                         } else {
                             bot.reply(message, 'You ' + (player.result.players[user.playerId].win ? 'won' : 'lost') + '' +
                                 ' ' + player.result.players[user.playerId].bet + 'and currently have ' + player.credits + 'credits.'
