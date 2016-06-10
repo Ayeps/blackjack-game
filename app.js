@@ -636,7 +636,7 @@ controller.on('facebook_postback', function (bot, message) {
                         );
                     } else if (player.bet === -1 && is.obj(player.result)) {
                         //displayHand('Your hand:', yourHand);
-                        bot.reply(message, 'your hand : result')
+                        bot.reply(message, 'your hand : result' + player.result)
                         yourHand = response.table.players[user.playerId].hand;
                         _.forEach(yourHand, function (c) {
                             if (is.str(c)) {
@@ -680,7 +680,6 @@ controller.on('facebook_postback', function (bot, message) {
                             }
                         );
                         if (player.result.players[user.playerId].push) {
-
                             bot.reply(message, 'Push. You have ' + player.credits + ' credits.')
                         } else {
                             bot.reply(message, 'You ' + (player.result.players[user.playerId].win ? 'won' : 'lost') + '' +
