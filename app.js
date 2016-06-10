@@ -15,6 +15,23 @@ var tableState;
 var tables;
 
 
+
+
+var controller = Botkit.facebookbot({
+    access_token: process.env.access_token,
+    verify_token: process.env.verify_token,
+})
+
+var bot = controller.spawn({});
+
+
+controller.setupWebserver(process.env.PORT || 5000, function (err, webserver) {
+    controller.createWebhookEndpoints(controller.webserver, bot, function () {
+        console.log('This bot is online!!!');
+    });
+})
+
+
 function displayHand(txt, hand, message) {
     assert.ok(is.str(txt));
     assert.ok(is.nonEmptyArray(hand));
@@ -65,20 +82,6 @@ function displayHands(response, message) {
         }
     }
 }
-
-var controller = Botkit.facebookbot({
-    access_token: process.env.access_token,
-    verify_token: process.env.verify_token,
-})
-
-var bot = controller.spawn({});
-
-
-controller.setupWebserver(process.env.PORT || 5000, function (err, webserver) {
-    controller.createWebhookEndpoints(controller.webserver, bot, function () {
-        console.log('This bot is online!!!');
-    });
-})
 
 controller.on('facebook_optin', function (bot, message) {
     bot.reply(message, 'Hello');
