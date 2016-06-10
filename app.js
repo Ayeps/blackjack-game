@@ -298,105 +298,10 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
 
 });
 
-
-controller.hears(['^pattern$'], ['message_received'], function (bot, message) {
-
-    // do something to respond to message
-    var text = message.text;
-    var amt = text.match(/\d+/g).join("");
-
-    console.log(amt)
-    bot.reply(message, 'your' + message.text + ' recieved!');
-
-    controller.storage.users.get(message.user, function (err, user) {
-        if (!user) {
-            user = {
-                id: message.user,
-            };
-        }
-        client.bet(user.playerId, parseInt(amt), function (response) {
-            console.log(response);
-
-            bot.reply(message, "Dealer Hand");
-            var dealerHand = response.table.dealer.hand;
-            _.forEach(dealerHand, function (c) {
-                if (is.str(c)) {
-                    //printf('    %s\n', c);
-                    bot.reply(message, c);
-                } else if (is.int(c) && c > -1) {
-                    var card = Cards.getCard(c);
-                    //printf('%s of %s\n', card.rank, card.suit);
-                    bot.reply(message, card.rank + " " + card.suit);
-
-                } else {
-                    assert.ok(false);
-                }
-            });
-            bot.reply(message, "Your Hand");
-            var yourHand = response.table.players[playerId].hand;
-            _.forEach(yourHand, function (c) {
-                if (is.str(c)) {
-                    //printf('    %s\n', c);
-                    bot.reply(message, c);
-                } else if (is.int(c) && c > -1) {
-                    var card = Cards.getCard(c);
-                    //printf('%s of %s\n', card.rank, card.suit);
-                    bot.reply(message, card.rank + " " + card.suit);
-
-                } else {
-                    assert.ok(false);
-                }
-            });
-
-            //displayHands();
-
-            //assert.ok(response.player.bet === amt);
-            //
-            //tableid = response.player.tableId;
-            //tableState = response.table.state;
-            //assert.ok(is.obj(response.player));
-            //assert.ok(is.array(response.player.hand));
-            //displayHands(response, message, bot, user.playerId);
-
-            bot.reply(message,
-                {
-                    attachment: {
-                        type: "template",
-                        payload: {
-                            template_type: "generic",
-                            elements: [
-                                {
-                                    title: "Do you want to hit or Stand",
-                                    buttons: [
-                                        {
-                                            type: "postback",
-                                            title: "HIT",
-                                            payload: "hit"
-                                        },
-                                        {
-                                            type: "postback",
-                                            title: "STAND",
-                                            payload: "stand"
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    }
-                }
-            );
-
-        });
-
-    });
-
-
+controller.on(['(.*)'], 'message_received', function (bot, message) {
+    bot.reply(message, 'My name is Pipper');
+    return false;
 });
-
- controller.on(['(.*)'],'message_received', function(bot, message) {
-     bot.reply(message, 'My name is Pipper');
-     return false;
- });
 
 controller.on('facebook_postback', function (bot, message) {
     switch (message.payload) {
@@ -622,13 +527,13 @@ controller.on('facebook_postback', function (bot, message) {
                                                 buttons: [
                                                     {
                                                         type: "postback",
-                                                        title: "HIT",
-                                                        payload: "hit"
+                                                        title: "YES",
+                                                        payload: "yes"
                                                     },
                                                     {
                                                         type: "postback",
-                                                        title: "STAND",
-                                                        payload: "stand"
+                                                        title: "Yes",
+                                                        payload: "no"
                                                     }
                                                 ]
                                             }
@@ -904,7 +809,6 @@ controller.on('facebook_postback', function (bot, message) {
             break
     }
 })
-
 
 
 askName = function (response, convo) {
