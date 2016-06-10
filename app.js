@@ -19,7 +19,6 @@ function displayHand(txt, hand, message) {
     assert.ok(is.str(txt));
     assert.ok(is.nonEmptyArray(hand));
     console.log(hand);
-
     _.forEach(hand, function (c) {
         if (is.str(c)) {
             //printf('    %s\n', c);
