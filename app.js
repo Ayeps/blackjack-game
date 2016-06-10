@@ -15,8 +15,6 @@ var tableState;
 var tables;
 
 
-
-
 var controller = Botkit.facebookbot({
     access_token: process.env.access_token,
     verify_token: process.env.verify_token,
@@ -264,7 +262,7 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
             tableState = response.table.state;
             assert.ok(is.obj(response.player));
             assert.ok(is.array(response.player.hand));
-            displayHands(response, message,bot);
+            displayHands(response, message);
 
 
             bot.reply(message,
