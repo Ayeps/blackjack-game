@@ -424,52 +424,103 @@ controller.on('facebook_postback', function (bot, message) {
 
                 client.hit(user.playerId, function (response) {
 
-                    //display tables and users in the table
-                    //var table = response.table;
-                    //var player = response.player;
-                    //assert.ok(is.nonEmptyObj(table));
-                    //var dealerHand = table.dealer.hand;
-                    //var yourHand;
-                    //displayHand('Dealers hand:', dealerHand);
-                    //
-                    //
-                    //if (is.positiveInt(player.bet)) {
-                    //    //yourHand = table.players[playerId].hand;
-                    //    var yourHand = response.table.players[playerId].hand;
-                    //    _.forEach(yourHand, function (c) {
-                    //        if (is.str(c)) {
-                    //            //printf('    %s\n', c);
-                    //            bot.reply(message, c);
-                    //        } else if (is.int(c) && c > -1) {
-                    //            var card = Cards.getCard(c);
-                    //            //printf('%s of %s\n', card.rank, card.suit);
-                    //            bot.reply(message, card.rank + " " + card.suit);
-                    //
-                    //        } else {
-                    //            assert.ok(false);
-                    //        }
-                    //    });
-                    //} else if (player.bet === -1 && is.obj(player.result)) {
-                    //    yourHand = player.result.players[playerId].hand;
-                    //    displayHand('Your hand:', yourHand);
-                    //    if (player.result.players[playerId].push) {
-                    //        //console.log('Push. You have %s credits.', player.credits);
-                    //        bot.reply(message, 'Push. You have %s credits.', player.credits)
-                    //    } else {
-                    //
-                    //        //console.log('You %s %s and currently have %s credits.',
-                    //        //    (player.result.players[playerId].win ? 'won' : 'lost'),
-                    //        //    player.result.players[playerId].bet,
-                    //        //    player.credits);
-                    //        bot.reply(message, 'You %s %s and currently have %s credits.',
-                    //            (player.result.players[playerId].win ? 'won' : 'lost'),
-                    //            player.result.players[playerId].bet,
-                    //            player.credits)
-                    //
-                    //    }
-                    //}
 
-                    displayHands(response, message, bot, user.playerId);
+                    var table = response.table;
+                    var player = response.player;
+                    assert.ok(is.nonEmptyObj(table));
+                    var dealerHand = table.dealer.hand;
+                    var yourHand;
+                    //displayHand('Dealers hand:', dealerHand);
+                    _.forEach(dealerHand, function (c) {
+                        if (is.str(c)) {
+                            //printf('    %s\n', c);
+                            bot.reply(message, c);
+                        } else if (is.int(c) && c > -1) {
+                            var card = Cards.getCard(c);
+                            //printf('%s of %s\n', card.rank, card.suit);
+                            bot.reply(message, card.rank + " " + card.suit);
+                        } else {
+                            assert.ok(false);
+                        }
+                    });
+                    if (is.positiveInt(player.bet)) {
+                        //yourHand = table.players[playerId].hand;
+                        yourHand = response.table.players[user.playerId].hand;
+                        _.forEach(yourHand, function (c) {
+                            if (is.str(c)) {
+                                //printf('    %s\n', c);
+                                bot.reply(message, c);
+                            } else if (is.int(c) && c > -1) {
+                                var card = Cards.getCard(c);
+                                //printf('%s of %s\n', card.rank, card.suit);
+                                bot.reply(message, card.rank + " " + card.suit);
+                            } else {
+                                assert.ok(false);
+                            }
+                        });
+                    } else if (player.bet === -1 && is.obj(player.result)) {
+                        //displayHand('Your hand:', yourHand);
+                        yourHand = response.table.players[user.playerId].hand;
+                        _.forEach(yourHand, function (c) {
+                            if (is.str(c)) {
+                                //printf('    %s\n', c);
+                                bot.reply(message, c);
+                            } else if (is.int(c) && c > -1) {
+                                var card = Cards.getCard(c);
+                                //printf('%s of %s\n', card.rank, card.suit);
+                                bot.reply(message, card.rank + " " + card.suit);
+
+                            } else {
+                                assert.ok(false);
+                            }
+                        });
+                        if (player.result.players[user.playerId].push) {
+                            //console.log('Push. You have %s credits.', player.credits);
+                            bot.reply(message, 'Push. You have %s credits.', player.credits)
+                        } else {
+
+                            //console.log('You %s %s and currently have %s credits.',
+                            //    (player.result.players[playerId].win ? 'won' : 'lost'),
+                            //    player.result.players[playerId].bet,
+                            //    player.credits);
+                            bot.reply(message, 'You %s %s and currently have %s credits.',
+                                (player.result.players[user.playerId].win ? 'won' : 'lost'),
+                                player.result.players[user.playerId].bet,
+                                player.credits)
+
+                            bot.reply(message,
+                                {
+                                    attachment: {
+                                        type: "template",
+                                        payload: {
+                                            template_type: "generic",
+                                            elements: [
+                                                {
+                                                    title: "Would you like to play a again?",
+                                                    buttons: [
+                                                        {
+                                                            type: "postback",
+                                                            title: "YES",
+                                                            payload: "yes"
+                                                        },
+                                                        {
+                                                            type: "postback",
+                                                            title: "NO",
+                                                            payload: "no"
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            );
+
+
+                        }
+                    }
+
+                    //displayHands(response, message,user.playerId);
 
                     //bot.reply(message,""
                     //
@@ -551,7 +602,7 @@ controller.on('facebook_postback', function (bot, message) {
                 console.log(playerId);
                 client.joinTable(user.playerId, 4, function (response) {
                     if (response.player.busted == false) {
-                        bot.reply(message, "You are on Table 3 ")
+                        bot.reply(message, "You are on Table 5 ")
                         bot.reply(message, "You have credit of " + response.player.credits + " $")
                         bot.reply(message, "How much do you want to bet")
                     }
@@ -570,7 +621,7 @@ controller.on('facebook_postback', function (bot, message) {
                 console.log(playerId);
                 client.joinTable(user.playerId, 5, function (response) {
                     if (response.player.busted == false) {
-                        bot.reply(message, "You are on Table 3 ")
+                        bot.reply(message, "You are on Table 5 ")
                         bot.reply(message, "You have credit of " + response.player.credits + " $")
                         bot.reply(message, "How much do you want to bet")
                     }
@@ -589,7 +640,7 @@ controller.on('facebook_postback', function (bot, message) {
                 console.log(playerId);
                 client.joinTable(user.playerId, 6, function (response) {
                     if (response.player.busted == false) {
-                        bot.reply(message, "You are on Table 3 ")
+                        bot.reply(message, "You are on Table 6 ")
                         bot.reply(message, "You have credit of " + response.player.credits + " $")
                         bot.reply(message, "How much do you want to bet")
                     }
