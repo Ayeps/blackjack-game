@@ -30,7 +30,7 @@ controller.setupWebserver(process.env.PORT || 5000, function (err, webserver) {
 })
 
 
-function displayHand(txt, hand, message) {
+function displayHand(txt, hand, message,bot) {
     assert.ok(is.str(txt));
     assert.ok(is.nonEmptyArray(hand));
     console.log(hand);
@@ -49,7 +49,7 @@ function displayHand(txt, hand, message) {
     });
 }
 
-function displayHands(response, message) {
+function displayHands(response, message,bot) {
 
     var table = response.table;
     var player = response.player;
@@ -262,8 +262,7 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
             tableState = response.table.state;
             assert.ok(is.obj(response.player));
             assert.ok(is.array(response.player.hand));
-            client.displayHands(response, message, bot);
-
+            displayHands(response, message);
 
             bot.reply(message,
                 {
