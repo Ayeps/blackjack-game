@@ -108,7 +108,7 @@ controller.on('facebook_optin', function (bot, message) {
 })
 
 
-controller.hears(['hello', 'hi', ,'Play','start','lets play','can we start?','Hallo'], 'message_received', function (bot, message) {
+controller.hears(['hello', 'hi', , 'Play', 'start', 'lets play', 'can we start?', 'Hallo'], 'message_received', function (bot, message) {
     controller.storage.users.get(message.user, function (err, user) {
         if (user && user.name) {
             bot.reply(message, 'Hello ' + user.name + '!!');
@@ -952,6 +952,7 @@ controller.hears(['(.*)(get|want|order|would like)(.*)pizza(.*)'], 'message_rece
                             // this happens if the conversation ended prematurely for some reason
                             bot.reply(message, 'OK, nevermind!');
 
+                            convo.next();
                         }
                     });
                 }
@@ -965,7 +966,7 @@ controller.on(['(.*)'], 'message_received', function (bot, message) {
     bot.reply(message, 'My name is Pipper');
     return false;
 });
-controller.on(['draw' ],'message_received', function (bot, message) {
+controller.on(['draw'], 'message_received', function (bot, message) {
     bot.reply(message, "I don't understand that yet, Please try Hello and follow the intructions thank you.");
     bot.reply(message, "I can also help you order pizza");
     return false;
