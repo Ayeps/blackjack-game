@@ -108,7 +108,7 @@ controller.on('facebook_optin', function (bot, message) {
 })
 
 
-controller.hears(['hello', 'hi', 'can we start?','Hallo'], 'message_received', function (bot, message) {
+controller.hears(['hello', 'hi', ,'Play','start','lets play','can we start?','Hallo'], 'message_received', function (bot, message) {
     controller.storage.users.get(message.user, function (err, user) {
         if (user && user.name) {
             bot.reply(message, 'Hello ' + user.name + '!!');
@@ -965,11 +965,11 @@ controller.on(['(.*)'], 'message_received', function (bot, message) {
     bot.reply(message, 'My name is Pipper');
     return false;
 });
-//controller.on('message_received', function (bot, message) {
-//    bot.reply(message, "I don't understand that yet, Please try Hello and follow the intructions thank you.");
-//    bot.reply(message, "I can also help you order pizza");
-//    return false;
-//});
+controller.on(['draw' ],'message_received', function (bot, message) {
+    bot.reply(message, "I don't understand that yet, Please try Hello and follow the intructions thank you.");
+    bot.reply(message, "I can also help you order pizza");
+    return false;
+});
 
 
 //return hand;
