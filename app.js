@@ -108,7 +108,6 @@ controller.on('facebook_optin', function (bot, message) {
 })
 
 
-
 controller.hears(['hello', 'hi', 'can we start?'], 'message_received', function (bot, message) {
     controller.storage.users.get(message.user, function (err, user) {
         if (user && user.name) {
@@ -201,7 +200,7 @@ controller.hears(['hello', 'hi', 'can we start?'], 'message_received', function 
     });
 })
 
-controller.hears(['(*.$)'], ['message_received'], function (bot, message) {
+controller.hears(['(*.)($)'], ['message_received'], function (bot, message) {
 
     // do something to respond to message
     var text = message.text;
@@ -295,10 +294,6 @@ controller.hears(['(*.$)'], ['message_received'], function (bot, message) {
 
 });
 
-controller.on(['(.*)'], 'message_received', function (bot, message) {
-    bot.reply(message, 'My name is Pipper');
-    return false;
-});
 
 controller.on('facebook_postback', function (bot, message) {
     switch (message.payload) {
@@ -970,14 +965,16 @@ controller.hears(['(.*)(get|want|order|would like)(.*)pizza(.*)'], 'message_rece
     });
 });
 
-controller.on('message_received', function(bot, message) {
+
+controller.on(['(.*)'], 'message_received', function (bot, message) {
+    bot.reply(message, 'My name is Pipper');
+    return false;
+});
+controller.on('message_received', function (bot, message) {
     bot.reply(message, "I don't understand that yet, Please try Hello and follow the intructions thank you.");
     bot.reply(message, "I can also help you order pizza");
     return false;
 });
-
-
-
 
 
 //return hand;
