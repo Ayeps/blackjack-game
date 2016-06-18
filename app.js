@@ -107,10 +107,7 @@ controller.on('facebook_optin', function (bot, message) {
     })
 })
 
-controller.hears('message_received', function (bot, message) {
-    bot.reply(message, 'Sorry i did not get that!');
-    bot.reply(message, 'Have a nice day!');
-})
+
 
 controller.hears(['hello', 'hi', 'can we start?'], 'message_received', function (bot, message) {
     controller.storage.users.get(message.user, function (err, user) {
@@ -204,7 +201,7 @@ controller.hears(['hello', 'hi', 'can we start?'], 'message_received', function 
     });
 })
 
-controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, message) {
+controller.hears(['(*.$)'], ['message_received'], function (bot, message) {
 
     // do something to respond to message
     var text = message.text;
@@ -532,7 +529,7 @@ controller.on('facebook_postback', function (bot, message) {
                                                     },
                                                     {
                                                         type: "postback",
-                                                        title: "Yes",
+                                                        title: "NO",
                                                         payload: "no"
                                                     }
                                                 ]
@@ -707,7 +704,8 @@ controller.on('facebook_postback', function (bot, message) {
                     if (response.player.busted == false) {
                         bot.reply(message, "You are  on Table 1 with id" + playerId)
                         bot.reply(message, "You have credit of " + response.player.credits + " $")
-                        bot.reply(message, "How much do you want to bet (bet amount $)")
+                        bot.reply(message, "How much do you want to bet (eg. bet amount $)")
+                        bot.reply(message, "example (eg. bet amount $)")
                     }
                 })
 
@@ -811,12 +809,175 @@ controller.on('facebook_postback', function (bot, message) {
 })
 
 
-askName = function (response, convo) {
-    client.login(response.text, function (response) {
-        //tables = response;
-        playerId = response.player.id;
-    })
-}
+controller.hears('message_received', function (bot, message) {
+    bot.reply(message, 'Sorry i did not get that!');
+    bot.reply(message, 'Have a nice day!');
+})
+
+
+controller.hears(['(.*)(get|want|order|would like)(.*)pizza(.*)'], 'message_received', function (bot, message) {
+    controller.storage.users.get(message.user, function (err, user) {
+        if (1 == 0) {
+            bot.reply(message, 'What kind of pizza would you like ' + user.name);
+        } else {
+            bot.startConversation(message, function (err, convo) {
+                if (user && user.name) {
+                    convo.say('!');
+                    convo.ask('What kind of pizza would you like?', function (response, convo) {
+                        convo.ask('You want me to buy you ' + response.text + '?', [{
+                            pattern: 'yes',
+                            callback: function (response, convo) {
+                                // since no further messages are queued after this,
+                                // the conversation will end naturally with status == 'completed'
+                                convo.next();
+                            }
+                        }, {
+                            pattern: 'no',
+                            callback: function (response, convo) {
+                                // stop the conversation. this will cause it to end with status == 'stopped'
+                                convo.stop();
+                            }
+                        }, {
+                            default: true,
+                            callback: function (response, convo) {
+                                convo.repeat();
+                                convo.next();
+                            }
+                        }]);
+
+                        convo.next();
+
+                    }, {
+                        'key': 'choice'
+                    }); // store the results in a field called choice
+
+                    convo.on('end', function (convo) {
+                        if (convo.status == 'completed') {
+                            bot.reply(message, 'OK! I will get you that pizza...');
+
+                            controller.storage.users.get(message.user, function (err, user) {
+                                if (!user) {
+                                    user = {
+                                        id: message.user,
+                                    };
+                                }
+                                user.pizzaType = convo.extractResponse('choice');
+                                controller.storage.users.save(user, function (err, id) {
+                                    bot.reply(message, 'Here is the options for ' + user.pizzaType + ' you selected.');
+                                });
+
+                                if (user.pizzaType.toLowerCase().indexOf('pepperoni') > -1) { //(.*)(pepperoni)(.*)pizza(.*)
+                                    bot.reply(message, {
+                                        attachment: {
+                                            'type': 'template',
+                                            'payload': {
+                                                'template_type': 'generic',
+                                                'elements': [{
+                                                    'title': 'Classic pepperoni pizza',
+                                                    'image_url': 'https://cache.dominos.com/olo/3_16_1/assets/build/market/US/_en/images/img/products/thumbnails/S_PIZZA.jpg',
+                                                    'subtitle': 'Dominos Online Ordering',
+                                                    'buttons': [{
+                                                        'type': 'web_url',
+                                                        'url': 'https://www.dominos.com/en/pages/order/menu.jsp#/menu/category/all/',
+                                                        'title': 'Place order'
+                                                    }, {
+                                                        'type': 'web_url',
+                                                        'url': 'https://www.dominos.com/en/pages/order/menu.jsp#/menu/category/all/',
+                                                        'title': 'Buy Item'
+                                                    }, {
+                                                        'type': 'postback',
+                                                        'title': 'Bookmark Item',
+                                                        'payload': 'Pepperoni Pizza'
+                                                    }]
+                                                }, {
+                                                    'title': 'PEPPERONI LOVERs',
+                                                    'image_url': 'https://www.pizzahut.com/assets/w/tile/thor/Pepperoni_Lovers_Pizza.png',
+                                                    'subtitle': 'Classic marinara sauce piled high with cheese and over 50% more authentic, old-world pepperoni hand-placed on your pizza',
+                                                    'buttons': [{
+                                                        'type': 'web_url',
+                                                        'url': 'https://order.pizzahut.com/site/menu/pizza',
+                                                        'title': 'View Item'
+                                                    }, {
+                                                        'type': 'web_url',
+                                                        'url': 'https://order.pizzahut.com/site/menu/pizza',
+                                                        'title': 'Buy Item'
+                                                    }, {
+                                                        'type': 'postback',
+                                                        'title': 'Bookmark Item',
+                                                        'payload': 'PEPPERONI'
+                                                    }]
+                                                }]
+                                            }
+                                        }
+                                    });
+                                } else if (user.pizzaType.toLowerCase().indexOf('cheese') > -1) {
+
+                                    bot.reply(message, {
+                                        attachment: {
+                                            'type': 'template',
+                                            'payload': {
+                                                'template_type': 'generic',
+                                                'elements': [{
+                                                    'title': 'Classic cheese pizza',
+                                                    'image_url': 'https://cdn.nexternal.com/cincyfav3/images/larosas_cheese_pizzas1.jpg',
+                                                    'subtitle': 'Dominos Online Ordering',
+                                                    'buttons': [{
+                                                        'type': 'web_url',
+                                                        'url': 'https://www.dominos.com/en/pages/order/menu.jsp#/menu/category/all/',
+                                                        'title': 'Place order'
+                                                    }, {
+                                                        'type': 'web_url',
+                                                        'url': 'https://www.dominos.com/en/pages/order/menu.jsp#/menu/category/all/',
+                                                        'title': 'Buy Item'
+                                                    }, {
+                                                        'type': 'postback',
+                                                        'title': 'Bookmark Item',
+                                                        'payload': 'Pepperoni Pizza'
+                                                    }]
+                                                }, {
+                                                    'title': 'Cheese Pizza',
+                                                    'image_url': 'http://cdn.schwans.com/media/images/products/56719-1-1540.jpg',
+                                                    'subtitle': 'Classic cheese piled high with cheese',
+                                                    'buttons': [{
+                                                        'type': 'web_url',
+                                                        'url': 'https://order.pizzahut.com/site/menu/pizza',
+                                                        'title': 'View Item'
+                                                    }, {
+                                                        'type': 'web_url',
+                                                        'url': 'https://order.pizzahut.com/site/menu/pizza',
+                                                        'title': 'Buy Item'
+                                                    }, {
+                                                        'type': 'postback',
+                                                        'title': 'Bookmark Item',
+                                                        'payload': 'Cheese Pizza'
+                                                    }]
+                                                }]
+                                            }
+                                        }
+                                    });
+                                }
+
+                            });
+                        } else {
+                            // this happens if the conversation ended prematurely for some reason
+                            bot.reply(message, 'OK, nevermind!');
+
+                        }
+                    });
+                }
+            });
+        }
+    });
+});
+
+controller.on('message_received', function(bot, message) {
+    bot.reply(message, "I don't understand that yet, Please try Hello and follow the intructions thank you.");
+    bot.reply(message, "I can also help you order pizza");
+    return false;
+});
+
+
+
 
 
 //return hand;
