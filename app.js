@@ -108,7 +108,7 @@ controller.on('facebook_optin', function (bot, message) {
 })
 
 
-controller.hears(['hello', 'hi', 'can we start?'], 'message_received', function (bot, message) {
+controller.hears(['hello', 'hi', 'can we start?','Hallo'], 'message_received', function (bot, message) {
     controller.storage.users.get(message.user, function (err, user) {
         if (user && user.name) {
             bot.reply(message, 'Hello ' + user.name + '!!');
@@ -447,7 +447,7 @@ controller.on('facebook_postback', function (bot, message) {
                         } else if (is.int(c) && c > -1) {
                             var card = Cards.getCard(c);
                             //printf('%s of %s\n', card.rank, card.suit);
-                            bot.reply(message,"Dealer Card"+ card.rank + " " + card.suit);
+                            bot.reply(message, "Dealer Card" + card.rank + " " + card.suit);
                         } else {
                             assert.ok(false);
                         }
@@ -463,7 +463,7 @@ controller.on('facebook_postback', function (bot, message) {
                             } else if (is.int(c) && c > -1) {
                                 var card = Cards.getCard(c);
                                 //printf('%s of %s\n', card.rank, card.suit);
-                                bot.reply(message,"Your hand"+ card.rank + " " + card.suit);
+                                bot.reply(message, "Your hand" + card.rank + " " + card.suit);
                             } else {
                                 assert.ok(false);
                             }
@@ -506,7 +506,7 @@ controller.on('facebook_postback', function (bot, message) {
                             } else if (is.int(c) && c > -1) {
                                 var card = Cards.getCard(c);
                                 //printf('%s of %s\n', card.rank, card.suit);
-                                bot.reply(message, "Your hand"+card.rank + " " + card.suit);
+                                bot.reply(message, "Your hand" + card.rank + " " + card.suit);
                             } else {
                                 assert.ok(false);
                             }
@@ -551,11 +551,8 @@ controller.on('facebook_postback', function (bot, message) {
                             bot.reply(message, 'You ' + (player.result.players[user.playerId].win ? 'won' : 'lost') + '' +
                                 ' ' + player.result.players[user.playerId].bet + 'and currently have ' + player.credits + 'credits.'
                             )
-
                         }
                     }
-
-
                 })
             });
 
