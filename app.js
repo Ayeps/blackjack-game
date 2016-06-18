@@ -200,7 +200,7 @@ controller.hears(['hello', 'hi', 'can we start?'], 'message_received', function 
     });
 })
 
-controller.hears(['(*.)$(.*)'], ['message_received'], function (bot, message) {
+controller.hears(['(.*)', '^pattern$'], ['message_received'], function (bot, message) {
 
     // do something to respond to message
     var text = message.text;
