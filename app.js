@@ -108,7 +108,7 @@ controller.on('facebook_optin', function (bot, message) {
 })
 
 
-controller.hears(['hello', 'hi', , 'Play', 'start', 'lets play', 'can we start?', 'Hallo'], 'message_received', function (bot, message) {
+controller.hears(['hello', 'hi','Play', 'start', 'lets play', 'can we start?', 'Hallo'], 'message_received', function (bot, message) {
     controller.storage.users.get(message.user, function (err, user) {
         if (user && user.name) {
             bot.reply(message, 'Hello ' + user.name + '!!');
@@ -700,6 +700,10 @@ controller.on('facebook_postback', function (bot, message) {
                     if (response.player.busted == false) {
                         bot.reply(message, "You are  on Table 1 with id" + playerId)
                         bot.reply(message, "You have credit of " + response.player.credits + " $")
+
+
+
+
                         bot.reply(message, "How much do you want to bet (eg. bet amount $)")
                         bot.reply(message, "example (eg. bet amount $)")
                     }
@@ -757,6 +761,12 @@ controller.on('facebook_postback', function (bot, message) {
                     if (response.player.busted == false) {
                         bot.reply(message, "You are on Table 5 ")
                         bot.reply(message, "You have credit of " + response.player.credits + " $")
+
+
+
+
+
+
                         bot.reply(message, "How much do you want to bet (bet amount $)")
                     }
                 })
