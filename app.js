@@ -113,6 +113,21 @@ controller.hears(['hello', 'hi', 'can we start?'], 'message_received', function 
         if (user && user.name) {
             bot.reply(message, 'Hello ' + user.name + '!!');
         } else {
+            var reply_with_attachments = {
+                'username': 'My bot',
+                'text': 'This is a pre-text',
+                'attachments': [
+                    {
+                        'fallback': 'To be useful, I need you to invite me in a channel.',
+                        'title': 'How can I help you?',
+                        'text': 'To be useful, I need you to invite me in a channel ',
+                        'color': '#7CD197'
+                    }
+                ],
+                'icon_url': 'http://lorempixel.com/48/48'
+            }
+
+            bot.reply(message, reply_with_attachments);
             bot.reply(message, 'Hi, my name is Pepper and I am your Black Jack Dealer.!');
             bot.startConversation(message, function (err, convo) {
                 if (!err) {
@@ -804,12 +819,6 @@ controller.on('facebook_postback', function (bot, message) {
 })
 
 
-controller.hears('message_received', function (bot, message) {
-    bot.reply(message, 'Sorry i did not get that!');
-    bot.reply(message, 'Have a nice day!');
-})
-
-
 controller.hears(['(.*)(get|want|order|would like)(.*)pizza(.*)'], 'message_received', function (bot, message) {
     controller.storage.users.get(message.user, function (err, user) {
         if (1 == 0) {
@@ -970,11 +979,11 @@ controller.on(['(.*)'], 'message_received', function (bot, message) {
     bot.reply(message, 'My name is Pipper');
     return false;
 });
-controller.on('message_received', function (bot, message) {
-    bot.reply(message, "I don't understand that yet, Please try Hello and follow the intructions thank you.");
-    bot.reply(message, "I can also help you order pizza");
-    return false;
-});
+//controller.on('message_received', function (bot, message) {
+//    bot.reply(message, "I don't understand that yet, Please try Hello and follow the intructions thank you.");
+//    bot.reply(message, "I can also help you order pizza");
+//    return false;
+//});
 
 
 //return hand;
