@@ -113,21 +113,8 @@ controller.hears(['hello', 'hi', 'can we start?'], 'message_received', function 
         if (user && user.name) {
             bot.reply(message, 'Hello ' + user.name + '!!');
         } else {
-            var reply_with_attachments = {
-                'username': 'My bot',
-                'text': 'This is a pre-text',
-                'attachments': [
-                    {
-                        'fallback': 'To be useful, I need you to invite me in a channel.',
-                        'title': 'How can I help you?',
-                        'text': 'To be useful, I need you to invite me in a channel ',
-                        'color': '#7CD197'
-                    }
-                ],
-                'icon_url': 'http://lorempixel.com/48/48'
-            }
 
-            bot.reply(message, reply_with_attachments);
+
             bot.reply(message, 'Hi, my name is Pepper and I am your Black Jack Dealer.!');
             bot.startConversation(message, function (err, convo) {
                 if (!err) {
@@ -233,7 +220,7 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
         client.bet(user.playerId, parseInt(amt), function (response) {
             console.log(response);
 
-            bot.reply(message, "Dealer Hand");
+            //bot.reply(message, "Dealer Hand");
             var dealerHand = response.table.dealer.hand;
             _.forEach(dealerHand, function (c) {
                 if (is.str(c)) {
@@ -242,13 +229,15 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
                 } else if (is.int(c) && c > -1) {
                     var card = Cards.getCard(c);
                     //printf('%s of %s\n', card.rank, card.suit);
-                    bot.reply(message, card.rank + " " + card.suit);
+                    bot.reply(message, "Dealer Card " + card.rank + " " + card.suit);
 
                 } else {
                     assert.ok(false);
                 }
             });
-            bot.reply(message, "Your Hand");
+
+
+            //bot.reply(message, "Your Hand");
             var yourHand = response.table.players[playerId].hand;
             _.forEach(yourHand, function (c) {
                 if (is.str(c)) {
@@ -257,7 +246,7 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
                 } else if (is.int(c) && c > -1) {
                     var card = Cards.getCard(c);
                     //printf('%s of %s\n', card.rank, card.suit);
-                    bot.reply(message, card.rank + " " + card.suit);
+                    bot.reply(message, "Your card :" + card.rank + " " + card.suit);
 
                 } else {
                     assert.ok(false);
@@ -458,14 +447,14 @@ controller.on('facebook_postback', function (bot, message) {
                         } else if (is.int(c) && c > -1) {
                             var card = Cards.getCard(c);
                             //printf('%s of %s\n', card.rank, card.suit);
-                            bot.reply(message, card.rank + " " + card.suit);
+                            bot.reply(message,"Dealer Card"+ card.rank + " " + card.suit);
                         } else {
                             assert.ok(false);
                         }
                     });
                     if (is.positiveInt(player.bet)) {
                         //yourHand = table.players[playerId].hand;
-                        bot.reply(message, 'your hand')
+                        //bot.reply(message, 'your hand')
                         yourHand = response.table.players[user.playerId].hand;
                         _.forEach(yourHand, function (c) {
                             if (is.str(c)) {
@@ -474,7 +463,7 @@ controller.on('facebook_postback', function (bot, message) {
                             } else if (is.int(c) && c > -1) {
                                 var card = Cards.getCard(c);
                                 //printf('%s of %s\n', card.rank, card.suit);
-                                bot.reply(message, card.rank + " " + card.suit);
+                                bot.reply(message,"Your hand"+ card.rank + " " + card.suit);
                             } else {
                                 assert.ok(false);
                             }
@@ -508,7 +497,7 @@ controller.on('facebook_postback', function (bot, message) {
                         );
                     } else if (player.bet === -1 && is.obj(player.result)) {
                         //displayHand('Your hand:', yourHand);
-                        bot.reply(message, 'your hand')
+                        //bot.reply(message, 'your hand')
                         yourHand = response.table.players[user.playerId].hand;
                         _.forEach(yourHand, function (c) {
                             if (is.str(c)) {
@@ -517,7 +506,7 @@ controller.on('facebook_postback', function (bot, message) {
                             } else if (is.int(c) && c > -1) {
                                 var card = Cards.getCard(c);
                                 //printf('%s of %s\n', card.rank, card.suit);
-                                bot.reply(message, card.rank + " " + card.suit);
+                                bot.reply(message, "Your hand"+card.rank + " " + card.suit);
                             } else {
                                 assert.ok(false);
                             }
