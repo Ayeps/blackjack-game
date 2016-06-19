@@ -108,7 +108,7 @@ controller.on('facebook_optin', function (bot, message) {
 })
 
 
-controller.hears(['hello', 'hi','Play', 'start', 'lets play', 'can we start?', 'Hallo'], 'message_received', function (bot, message) {
+controller.hears(['hello', 'hi','Play', 'start', 'lets play', 'can we start?', 'Hallo','Give me a card'], 'message_received', function (bot, message) {
     controller.storage.users.get(message.user, function (err, user) {
         if (user && user.name) {
             bot.reply(message, 'Hello ' + user.name + '!!');
