@@ -108,7 +108,7 @@ controller.on('facebook_optin', function (bot, message) {
 })
 
 
-controller.hears(['hello', 'hi','Play', 'start', 'lets play', 'can we start?', 'Hallo','Give me a card'], 'message_received', function (bot, message) {
+controller.hears(['(.*)','hello', 'hi', 'Play', 'start', 'lets play', 'can we start?', 'Hallo', 'Give me a card'], 'message_received', function (bot, message) {
     controller.storage.users.get(message.user, function (err, user) {
         if (user && user.name) {
             bot.reply(message, 'Hello ' + user.name + '!!');
@@ -219,82 +219,80 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
         }
         client.bet(user.playerId, parseInt(amt), function (response) {
             console.log(response);
-if(response.success == true)
-{
-    var dealerHand = response.table.dealer.hand;
-    _.forEach(dealerHand, function (c) {
-        if (is.str(c)) {
-            //printf('    %s\n', c);
-            bot.reply(message, c);
-        } else if (is.int(c) && c > -1) {
-            var card = Cards.getCard(c);
-            //printf('%s of %s\n', card.rank, card.suit);
-            bot.reply(message, "Dealer Card " + card.rank + " " + card.suit);
+            if (response.success == true) {
+                var dealerHand = response.table.dealer.hand;
+                _.forEach(dealerHand, function (c) {
+                    if (is.str(c)) {
+                        //printf('    %s\n', c);
+                        bot.reply(message, c);
+                    } else if (is.int(c) && c > -1) {
+                        var card = Cards.getCard(c);
+                        //printf('%s of %s\n', card.rank, card.suit);
+                        bot.reply(message, "Dealer Card " + card.rank + " " + card.suit);
 
-        } else {
-            assert.ok(false);
-        }
-    });
+                    } else {
+                        assert.ok(false);
+                    }
+                });
 
 
-    //bot.reply(message, "Your Hand");
-    var yourHand = response.table.players[playerId].hand;
-    _.forEach(yourHand, function (c) {
-        if (is.str(c)) {
-            //printf('    %s\n', c);
-            bot.reply(message, c);
-        } else if (is.int(c) && c > -1) {
-            var card = Cards.getCard(c);
-            //printf('%s of %s\n', card.rank, card.suit);
-            bot.reply(message, "Your card :" + card.rank + " " + card.suit);
+                //bot.reply(message, "Your Hand");
+                var yourHand = response.table.players[playerId].hand;
+                _.forEach(yourHand, function (c) {
+                    if (is.str(c)) {
+                        //printf('    %s\n', c);
+                        bot.reply(message, c);
+                    } else if (is.int(c) && c > -1) {
+                        var card = Cards.getCard(c);
+                        //printf('%s of %s\n', card.rank, card.suit);
+                        bot.reply(message, "Your card :" + card.rank + " " + card.suit);
 
-        } else {
-            assert.ok(false);
-        }
-    });
+                    } else {
+                        assert.ok(false);
+                    }
+                });
 
-    //displayHands();
+                //displayHands();
 
-    //assert.ok(response.player.bet === amt);
-    //
-    //tableid = response.player.tableId;
-    //tableState = response.table.state;
-    //assert.ok(is.obj(response.player));
-    //assert.ok(is.array(response.player.hand));
-    //displayHands(response, message, bot, user.playerId);
+                //assert.ok(response.player.bet === amt);
+                //
+                //tableid = response.player.tableId;
+                //tableState = response.table.state;
+                //assert.ok(is.obj(response.player));
+                //assert.ok(is.array(response.player.hand));
+                //displayHands(response, message, bot, user.playerId);
 
-    bot.reply(message,
-        {
-            attachment: {
-                type: "template",
-                payload: {
-                    template_type: "generic",
-                    elements: [
-                        {
-                            title: "Do you want to hit or Stand",
-                            buttons: [
-                                {
-                                    type: "postback",
-                                    title: "HIT",
-                                    payload: "hit"
-                                },
-                                {
-                                    type: "postback",
-                                    title: "STAND",
-                                    payload: "stand"
-                                }
-                            ]
+                bot.reply(message,
+                    {
+                        attachment: {
+                            type: "template",
+                            payload: {
+                                template_type: "generic",
+                                elements: [
+                                    {
+                                        title: "Do you want to hit or Stand",
+                                        buttons: [
+                                            {
+                                                type: "postback",
+                                                title: "HIT",
+                                                payload: "hit"
+                                            },
+                                            {
+                                                type: "postback",
+                                                title: "STAND",
+                                                payload: "stand"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
                         }
-                    ]
-                }
-            }
-        }
-    );
-}else
-{
-    bot.reply(message, "Please type play to join a table ");
+                    }
+                );
+            } else {
+                bot.reply(message, "Please type play to join a table ");
 
-}
+            }
 
         });
 
@@ -580,7 +578,7 @@ controller.on('facebook_postback', function (bot, message) {
                     var dealerHand = table.dealer.hand;
                     var yourHand;
                     //displayHand('Dealers hand:', dealerHand);
-                    bot.reply(message, 'delers hand')
+                    //bot.reply(message, 'delers hand')
                     _.forEach(dealerHand, function (c) {
                         if (is.str(c)) {
                             //printf('    %s\n', c);
@@ -588,7 +586,7 @@ controller.on('facebook_postback', function (bot, message) {
                         } else if (is.int(c) && c > -1) {
                             var card = Cards.getCard(c);
                             //printf('%s of %s\n', card.rank, card.suit);
-                            bot.reply(message, card.rank + " " + card.suit);
+                            bot.reply(message, "Dealer Hand" + card.rank + " " + card.suit);
                         } else {
                             assert.ok(false);
                         }
@@ -604,7 +602,7 @@ controller.on('facebook_postback', function (bot, message) {
                             } else if (is.int(c) && c > -1) {
                                 var card = Cards.getCard(c);
                                 //printf('%s of %s\n', card.rank, card.suit);
-                                bot.reply(message, card.rank + " " + card.suit);
+                                bot.reply(message, "your hand" + card.rank + " " + card.suit);
                             } else {
                                 assert.ok(false);
                             }
@@ -638,7 +636,7 @@ controller.on('facebook_postback', function (bot, message) {
                         );
                     } else if (player.bet === -1 && is.obj(player.result)) {
                         //displayHand('Your hand:', yourHand);
-                        bot.reply(message, 'your hand : result' + player.result)
+                        //bot.reply(message, 'your hand : result' + player.result)
                         yourHand = response.table.players[user.playerId].hand;
                         _.forEach(yourHand, function (c) {
                             if (is.str(c)) {
@@ -647,7 +645,7 @@ controller.on('facebook_postback', function (bot, message) {
                             } else if (is.int(c) && c > -1) {
                                 var card = Cards.getCard(c);
                                 //printf('%s of %s\n', card.rank, card.suit);
-                                bot.reply(message, card.rank + " " + card.suit);
+                                bot.reply(message, 'Your card :' + card.rank + " " + card.suit);
 
                             } else {
                                 assert.ok(false);
@@ -707,8 +705,6 @@ controller.on('facebook_postback', function (bot, message) {
                         bot.reply(message, "You have credit of " + response.player.credits + " $")
 
 
-
-
                         bot.reply(message, "How much do you want to bet (eg. bet amount $)")
                         bot.reply(message, "example (eg. bet amount $)")
                     }
@@ -766,10 +762,6 @@ controller.on('facebook_postback', function (bot, message) {
                     if (response.player.busted == false) {
                         bot.reply(message, "You are on Table 5 ")
                         bot.reply(message, "You have credit of " + response.player.credits + " $")
-
-
-
-
 
 
                         bot.reply(message, "How much do you want to bet (bet amount $)")
@@ -981,11 +973,11 @@ controller.on(['(.*)'], 'message_received', function (bot, message) {
     bot.reply(message, 'My name is Pipper');
     return false;
 });
-controller.on(['draw'], 'message_received', function (bot, message) {
-    bot.reply(message, "I don't understand that yet, Please try Hello and follow the intructions thank you.");
-    bot.reply(message, "I can also help you order pizza");
-    return false;
-});
+//controller.on(['draw'], 'message_received', function (bot, message) {
+//    bot.reply(message, "I don't understand that yet, Please try Hello and follow the intructions thank you.");
+//    bot.reply(message, "I can also help you order pizza");
+//    return false;
+//});
 
 
 //return hand;
