@@ -212,9 +212,11 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
 
     // do something to respond to message
     var text = message.text;
-    var amt = text.match(/\d+/g).join("");
+    //var amt = text.match(/\d+/g).join("");
 
-    console.log(amt)
+    text.replace(/\D+/g, '');
+
+    console.log(text)
     bot.reply(message, 'your' + message.text + ' recieved!');
 
     controller.storage.users.get(message.user, function (err, user) {
@@ -223,7 +225,7 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
                 id: message.user,
             };
         }
-        client.bet(user.playerId, parseInt(amt), function (response) {
+        client.bet(user.playerId, parseInt(text), function (response) {
             console.log(response);
             if (response.success == true) {
                 var dealerHand = response.table.dealer.hand;
