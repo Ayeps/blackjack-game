@@ -56,6 +56,9 @@ message = function (response, message, bot, playerId) {
 
 displayHands = function (response, message, bot, playerId, _) {
 
+    console.log(response.player + " is the player id");
+    bot.reply(message, "inside display hands");
+
     var table = response.table;
     var player = response.player;
     assert.ok(is.nonEmptyObj(table));
