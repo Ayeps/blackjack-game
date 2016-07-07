@@ -288,6 +288,8 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
                     }
                 );
             } else {
+                bot.reply(message, response);
+
                 bot.reply(message, "Please type play to join a table ");
 
             }
