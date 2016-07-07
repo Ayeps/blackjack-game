@@ -119,34 +119,7 @@ controller.on('facebook_optin', function (bot, message) {
 controller.hears(['hello', 'hi', 'Play', 'start', 'lets play', 'can we start?', 'Hallo', 'Give me a card'], 'message_received', function (bot, message) {
     controller.storage.users.get(message.user, function (err, user) {
         if (user && user.name) {
-            bot.reply(message, 'Welcome back  ' + user.name + '!!');
-            bot.reply(message,
-                {
-                    attachment: {
-                        type: "template",
-                        payload: {
-                            template_type: "generic",
-                            elements: [
-                                {
-                                    title: "Would you like to play a round?",
-                                    buttons: [
-                                        {
-                                            type: "postback",
-                                            title: "YES",
-                                            payload: "yes"
-                                        },
-                                        {
-                                            type: "postback",
-                                            title: "NO",
-                                            payload: "no"
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    }
-                }
-            );
+            bot.reply(message, 'Hello ' + user.name + '!!');
         } else {
             bot.reply(message, 'Hi, my name is Pepper and I am your Black Jack Dealer.!');
             bot.startConversation(message, function (err, convo) {
@@ -191,7 +164,6 @@ controller.hears(['hello', 'hi', 'Play', 'start', 'lets play', 'can we start?', 
                                 user.name = convo.extractResponse('nickname');
 
                                 controller.storage.users.save(user, function (err, id) {
-
                                     bot.reply(message, 'Got it. I will call you ' + user.name + ' from now on.');
                                     bot.reply(message,
                                         {
@@ -225,33 +197,6 @@ controller.hears(['hello', 'hi', 'Play', 'start', 'lets play', 'can we start?', 
                         } else {
                             // this happens if the conversation ended prematurely for some reason
                             bot.reply(message, 'OK, nevermind!');
-                            bot.reply(message,
-                                {
-                                    attachment: {
-                                        type: "template",
-                                        payload: {
-                                            template_type: "generic",
-                                            elements: [
-                                                {
-                                                    title: "Would you like to play a round?",
-                                                    buttons: [
-                                                        {
-                                                            type: "postback",
-                                                            title: "YES",
-                                                            payload: "yes"
-                                                        },
-                                                        {
-                                                            type: "postback",
-                                                            title: "NO",
-                                                            payload: "no"
-                                                        }
-                                                    ]
-                                                }
-                                            ]
-                                        }
-                                    }
-                                }
-                            );
 
                         }
                     });
@@ -320,7 +265,7 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
                 //tableState = response.table.state;
                 //assert.ok(is.obj(response.player));
                 //assert.ok(is.array(response.player.hand));
-                //displayHands(response, message, bot, user.playerId,_);
+                //displayHands(response, message, bot, user.playerId);
 
                 bot.reply(message,
                     {
