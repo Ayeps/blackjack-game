@@ -222,7 +222,7 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
                 id: message.user,
             };
         }
-        client.bet(user.playerId, parseInt(amt), function (response) {
+        client.bet(user.playerId, 100, function (response) {
             console.log(response);
             if (response.success == true) {
                 var dealerHand = response.table.dealer.hand;
