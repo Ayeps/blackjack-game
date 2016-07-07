@@ -28,7 +28,7 @@ controller.setupWebserver(process.env.PORT || 5000, function (err, webserver) {
 })
 
 
-displayHand = function (txt, hand, message, bot, _) {
+function displayHand(txt, hand, message, bot) {
     assert.ok(is.str(txt));
     assert.ok(is.nonEmptyArray(hand));
     console.log(hand);
@@ -39,38 +39,28 @@ displayHand = function (txt, hand, message, bot, _) {
         } else if (is.int(c) && c > -1) {
             var card = Cards.getCard(c);
             //printf('%s of %s\n', card.rank, card.suit);
-            bot.reply(message, card.rank + " " + card.suit, " " + card.image);
+            bot.reply(message, card.rank + " " + card.suit);
+
         } else {
             assert.ok(false);
         }
     });
 }
 
-imagetemplate = function (response, message, bot, playerId) {
-
-}
-
-message = function (response, message, bot, playerId) {
-
-}
-
-displayHands = function (response, message, bot, playerId, _) {
-
-    console.log(response.player + " is the player id");
-    bot.reply(message, "inside display hands");
+function displayHands(response, message, bot, playerId) {
 
     var table = response.table;
     var player = response.player;
     assert.ok(is.nonEmptyObj(table));
     var dealerHand = table.dealer.hand;
     var yourHand;
-    displayHand('Dealers hand:', dealerHand, _);
+    displayHand('Dealers hand:', dealerHand);
     if (is.positiveInt(player.bet)) {
         yourHand = table.players[playerId].hand;
-        displayHand('Your hand:', yourHand, _);
+        displayHand('Your hand:', yourHand);
     } else if (player.bet === -1 && is.obj(player.result)) {
         yourHand = player.result.players[playerId].hand;
-        displayHand('Your hand:', yourHand, _);
+        displayHand('Your hand:', yourHand);
         if (player.result.players[playerId].push) {
             //console.log('Push. You have %s credits.', player.credits);
             bot.reply(message, 'Push. You have %s credits.', player.credits)
@@ -164,6 +154,7 @@ controller.hears(['hello', 'hi', 'Play', 'start', 'lets play', 'can we start?', 
                                 user.name = convo.extractResponse('nickname');
 
                                 controller.storage.users.save(user, function (err, id) {
+
                                     bot.reply(message, 'Got it. I will call you ' + user.name + ' from now on.');
                                     bot.reply(message,
                                         {
@@ -211,9 +202,9 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
 
     // do something to respond to message
     var text = message.text;
-    //var amt = text.match(/\d+/g).join("");
-    var amt = text.replace(/\D+/g, '');
-    console.log("amount " + amt)
+    var amt = text.match(/\d+/g).join("");
+
+    console.log(amt)
     bot.reply(message, 'your' + message.text + ' recieved!');
 
     controller.storage.users.get(message.user, function (err, user) {
@@ -222,7 +213,7 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
                 id: message.user,
             };
         }
-        client.bet(user.playerId, 100, function (response) {
+        client.bet(user.playerId, parseInt(amt), function (response) {
             console.log(response);
             if (response.success == true) {
                 var dealerHand = response.table.dealer.hand;
@@ -233,7 +224,7 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
                     } else if (is.int(c) && c > -1) {
                         var card = Cards.getCard(c);
                         //printf('%s of %s\n', card.rank, card.suit);
-                        bot.reply(message, "Dealer Card " + card.rank + " " + card.suit + " " + card.image);
+                        bot.reply(message, "Dealer Card " + card.rank + " " + card.suit);
 
                     } else {
                         assert.ok(false);
