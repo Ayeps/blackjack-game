@@ -2,7 +2,7 @@
  * Created by Softmasters on 6/1/2016.
  */
 
-var Botkit = require('./lib/Botkit');
+var Botkit = require('botkit');
 var client = require('./src/client');
 var Cards = require('./src/cards');
 var assert = require('assert');
@@ -202,7 +202,9 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
 
     // do something to respond to message
     var text = message.text;
-    var amt = text.match(/\d+/g).join("");
+    var amt = text.replace(/\D+/g, '');
+
+    //var amt = text.match(/\d+/g).join("");
 
     console.log(amt)
     bot.reply(message, 'your' + message.text + ' recieved!');
@@ -213,7 +215,7 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
                 id: message.user,
             };
         }
-        client.bet(user.playerId, parseInt(amt), function (response) {
+        client.bet(user.playerId, 100, function (response) {
             console.log(response);
             if (response.success == true) {
                 var dealerHand = response.table.dealer.hand;
@@ -698,8 +700,6 @@ controller.on('facebook_postback', function (bot, message) {
                     if (response.player.busted == false) {
                         bot.reply(message, "You are  on Table 1 with id" + playerId)
                         bot.reply(message, "You have credit of " + response.player.credits + " $")
-
-
                         bot.reply(message, "How much do you want to bet (eg. bet amount $)")
                         bot.reply(message, "example (eg. bet amount $)")
                     }
