@@ -65,10 +65,10 @@ displayHands = function (response, message, bot, playerId, _) {
     displayHand('Dealers hand:', dealerHand, _);
     if (is.positiveInt(player.bet)) {
         yourHand = table.players[playerId].hand;
-        displayHand('Your hand:', yourHand, _);
+        displayHand('Your hand:', yourHand, message, bot, _);
     } else if (player.bet === -1 && is.obj(player.result)) {
         yourHand = player.result.players[playerId].hand;
-        displayHand('Your hand:', yourHand, _);
+        displayHand('Your hand:', message, bot, yourHand, _);
         if (player.result.players[playerId].push) {
             //console.log('Push. You have %s credits.', player.credits);
             bot.reply(message, 'Push. You have %s credits.', player.credits)
@@ -256,66 +256,66 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
         client.bet(playerId, 100, function (response) {
             console.log(response);
             if (response.success == true) {
-                var dealerHand = response.table.dealer.hand;
-                _.forEach(dealerHand, function (c) {
-                    if (is.str(c)) {
-                        //printf('    %s\n', c);
-                        bot.reply(message, c);
-                    } else if (is.int(c) && c > -1) {
-                        var card = Cards.getCard(c);
-                        //printf('%s of %s\n', card.rank, card.suit);
-                        console.log(card.image);
-                        bot.reply(message, "Dealer Card :" + card.rank + " " + card.suit, +" " + card.image);
-                        bot.reply(message, {
-                            attachment: {
-                                type: "template",
-                                payload: {
-                                    template_type: "generic",
-                                    elements: [
-                                        {
-                                            title: "Dealer card",
-                                            image_url: card.image,
-                                            subtitle: card.rank + " " + card.suit,
-                                        }]
-                                }
-                            }
-                        });
-
-                    } else {
-                        assert.ok(false);
-                    }
-                });
-                //bot.reply(message, "Your Hand");
-                var yourHand = response.table.players[playerId].hand;
-                _.forEach(yourHand, function (c) {
-                    if (is.str(c)) {
-                        //printf('    %s\n', c);
-                        bot.reply(message, c);
-                    } else if (is.int(c) && c > -1) {
-                        var card = Cards.getCard(c);
-                        //printf('%s of %s\n', card.rank, card.suit);
-                        bot.reply(message, "Your card :" + card.rank + " " + card.suit);
-                        bot.reply(message, {
-                            attachment: {
-                                type: "template",
-                                payload: {
-                                    template_type: "generic",
-                                    elements: [
-                                        {
-                                            title: "Your card",
-                                            image_url: card.image,
-                                            subtitle: card.rank + " " + card.suit,
-
-                                        }]
-                                }
-                            }
-                        });
-
-
-                    } else {
-                        assert.ok(false);
-                    }
-                });
+                //var dealerHand = response.table.dealer.hand;
+                //_.forEach(dealerHand, function (c) {
+                //    if (is.str(c)) {
+                //        //printf('    %s\n', c);
+                //        bot.reply(message, c);
+                //    } else if (is.int(c) && c > -1) {
+                //        var card = Cards.getCard(c);
+                //        //printf('%s of %s\n', card.rank, card.suit);
+                //        console.log(card.image);
+                //        bot.reply(message, "Dealer Card :" + card.rank + " " + card.suit, +" " + card.image);
+                //        bot.reply(message, {
+                //            attachment: {
+                //                type: "template",
+                //                payload: {
+                //                    template_type: "generic",
+                //                    elements: [
+                //                        {
+                //                            title: "Dealer card",
+                //                            image_url: card.image,
+                //                            subtitle: card.rank + " " + card.suit,
+                //                        }]
+                //                }
+                //            }
+                //        });
+                //
+                //    } else {
+                //        assert.ok(false);
+                //    }
+                //});
+                ////bot.reply(message, "Your Hand");
+                //var yourHand = response.table.players[playerId].hand;
+                //_.forEach(yourHand, function (c) {
+                //    if (is.str(c)) {
+                //        //printf('    %s\n', c);
+                //        bot.reply(message, c);
+                //    } else if (is.int(c) && c > -1) {
+                //        var card = Cards.getCard(c);
+                //        //printf('%s of %s\n', card.rank, card.suit);
+                //        bot.reply(message, "Your card :" + card.rank + " " + card.suit);
+                //        bot.reply(message, {
+                //            attachment: {
+                //                type: "template",
+                //                payload: {
+                //                    template_type: "generic",
+                //                    elements: [
+                //                        {
+                //                            title: "Your card",
+                //                            image_url: card.image,
+                //                            subtitle: card.rank + " " + card.suit,
+                //
+                //                        }]
+                //                }
+                //            }
+                //        });
+                //
+                //
+                //    } else {
+                //        assert.ok(false);
+                //    }
+                //});
 
                 //displayHands();
 
@@ -325,7 +325,7 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
                 //tableState = response.table.state;
                 //assert.ok(is.obj(response.player));
                 //assert.ok(is.array(response.player.hand));
-                //displayHands(response, message, bot, user.playerId, _);
+                displayHands(response, message, bot, user.playerId, _);
                 bot.reply(message,
                     {
                         attachment: {
