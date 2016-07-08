@@ -243,7 +243,7 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
     //var amt = text.match(/\d+/g).join("");
 
     console.log(amt)
-    bot.reply(message, 'your' + message.text + ' recieved!');
+    bot.reply(message, 'your' + message.text + 'recieved!');
 
     controller.storage.users.get(message.user, function (err, user) {
         if (!user) {
@@ -264,7 +264,8 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
                     } else if (is.int(c) && c > -1) {
                         var card = Cards.getCard(c);
                         //printf('%s of %s\n', card.rank, card.suit);
-                        bot.reply(message, "Dealer Card " + card.rank + " " + card.suit, +" " + card.image);
+                        console.log(card.image);
+                        bot.reply(message, "Dealer Card :" + card.rank + " " + card.suit, +" " + card.image);
                         bot.reply(message, {
                             attachment: {
                                 type: "template",
@@ -275,7 +276,6 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
                                             title: "Dealer card",
                                             image_url: card.image,
                                             subtitle: card.rank + " " + card.suit,
-
                                         }]
                                 }
                             }
@@ -285,8 +285,6 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
                         assert.ok(false);
                     }
                 });
-
-
                 //bot.reply(message, "Your Hand");
                 var yourHand = response.table.players[playerId].hand;
                 _.forEach(yourHand, function (c) {
@@ -357,7 +355,6 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
                 );
             } else {
                 bot.reply(message, "see" + response.success);
-
                 bot.reply(message, "Please type play to join a table ");
 
             }
