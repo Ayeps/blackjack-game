@@ -251,10 +251,8 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
             };
         }
         console.log(user.playerId);
-        if (user.playerId != 0) {
-            playerId = user.playerId;
-        }
-        client.bet(playerId, 100, function (response) {
+        
+        client.bet(user.playerId, 100, function (response) {
             console.log("player id " + response);
             if (response.success == true) {
                 //var dealerHand = response.table.dealer.hand;
