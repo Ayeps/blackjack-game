@@ -28,7 +28,7 @@ controller.setupWebserver(process.env.PORT || 5000, function (err, webserver) {
 })
 
 
-function displayHand(txt, hand, message, bot) {
+displayHand = function (txt, hand, message, bot, _) {
     assert.ok(is.str(txt));
     assert.ok(is.nonEmptyArray(hand));
     console.log(hand);
@@ -39,28 +39,38 @@ function displayHand(txt, hand, message, bot) {
         } else if (is.int(c) && c > -1) {
             var card = Cards.getCard(c);
             //printf('%s of %s\n', card.rank, card.suit);
-            bot.reply(message, card.rank + " " + card.suit);
-
+            bot.reply(message, card.rank + " " + card.suit, " " + card.image);
         } else {
             assert.ok(false);
         }
     });
 }
 
-function displayHands(response, message, bot, playerId) {
+imagetemplate = function (response, message, bot, playerId) {
+
+}
+
+message = function (response, message, bot, playerId) {
+
+}
+
+displayHands = function (response, message, bot, playerId, _) {
+
+    console.log(response.player + " is the player id");
+    bot.reply(message, "inside display hands");
 
     var table = response.table;
     var player = response.player;
     assert.ok(is.nonEmptyObj(table));
     var dealerHand = table.dealer.hand;
     var yourHand;
-    displayHand('Dealers hand:', dealerHand);
+    displayHand('Dealers hand:', dealerHand, _);
     if (is.positiveInt(player.bet)) {
         yourHand = table.players[playerId].hand;
-        displayHand('Your hand:', yourHand);
+        displayHand('Your hand:', yourHand, _);
     } else if (player.bet === -1 && is.obj(player.result)) {
         yourHand = player.result.players[playerId].hand;
-        displayHand('Your hand:', yourHand);
+        displayHand('Your hand:', yourHand, _);
         if (player.result.players[playerId].push) {
             //console.log('Push. You have %s credits.', player.credits);
             bot.reply(message, 'Push. You have %s credits.', player.credits)
@@ -78,6 +88,7 @@ function displayHands(response, message, bot, playerId) {
         }
     }
 }
+
 
 controller.on('facebook_optin', function (bot, message) {
     bot.reply(message, 'Hello');
@@ -110,6 +121,33 @@ controller.hears(['hello', 'hi', 'Play', 'start', 'lets play', 'can we start?', 
     controller.storage.users.get(message.user, function (err, user) {
         if (user && user.name) {
             bot.reply(message, 'Hello ' + user.name + '!!');
+            bot.reply(message,
+                {
+                    attachment: {
+                        type: "template",
+                        payload: {
+                            template_type: "generic",
+                            elements: [
+                                {
+                                    title: "Do you want to hit or Stand",
+                                    buttons: [
+                                        {
+                                            type: "postback",
+                                            title: "HIT",
+                                            payload: "hit"
+                                        },
+                                        {
+                                            type: "postback",
+                                            title: "STAND",
+                                            payload: "stand"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                }
+            );
         } else {
             bot.reply(message, 'Hi, my name is Pepper and I am your Black Jack Dealer.!');
             bot.startConversation(message, function (err, convo) {
@@ -226,7 +264,7 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
                     } else if (is.int(c) && c > -1) {
                         var card = Cards.getCard(c);
                         //printf('%s of %s\n', card.rank, card.suit);
-                        bot.reply(message, "Dealer Card " + card.rank + " " + card.suit,+ " " + card.image);
+                        bot.reply(message, "Dealer Card " + card.rank + " " + card.suit, +" " + card.image);
 
                     } else {
                         assert.ok(false);
@@ -289,6 +327,7 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
                 );
             } else {
                 bot.reply(message, response);
+
 
                 bot.reply(message, "Please type play to join a table ");
 
