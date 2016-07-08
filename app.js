@@ -226,7 +226,7 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
                     } else if (is.int(c) && c > -1) {
                         var card = Cards.getCard(c);
                         //printf('%s of %s\n', card.rank, card.suit);
-                        bot.reply(message, "Dealer Card " + card.rank + " " + card.suit);
+                        bot.reply(message, "Dealer Card " + card.rank + " " + card.suit,+ " " + card.image);
 
                     } else {
                         assert.ok(false);
