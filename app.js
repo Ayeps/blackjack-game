@@ -255,7 +255,7 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
             playerId = user.playerId;
         }
         client.bet(playerId, 100, function (response) {
-            console.log(response);
+            console.log("player id " + response);
             if (response.success == true) {
                 //var dealerHand = response.table.dealer.hand;
                 //_.forEach(dealerHand, function (c) {
@@ -326,7 +326,7 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
                 //tableState = response.table.state;
                 //assert.ok(is.obj(response.player));
                 //assert.ok(is.array(response.player.hand));
-                displayHands(response, message, bot,user.playerId, _);
+                displayHands(response, message, bot, user.playerId, _);
                 bot.reply(message,
                     {
                         attachment: {
