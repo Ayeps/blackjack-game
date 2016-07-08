@@ -8,7 +8,7 @@ var Cards = require('./src/cards');
 var assert = require('assert');
 var is = require('is2');
 var _ = require('lodash');
-var playerId = 1;
+var playerId = 0;
 var tableid = 0;
 var username;
 var tableState;
@@ -326,7 +326,7 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
                 //tableState = response.table.state;
                 //assert.ok(is.obj(response.player));
                 //assert.ok(is.array(response.player.hand));
-                displayHands(response, message, bot, user.playerId, _);
+                displayHands(response, message, bot,user.playerId, _);
                 bot.reply(message,
                     {
                         attachment: {
