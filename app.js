@@ -8,7 +8,7 @@ var Cards = require('./src/cards');
 var assert = require('assert');
 var is = require('is2');
 var _ = require('lodash');
-var playerId = 0;
+var playerId = 1;
 var tableid = 0;
 var username;
 var tableState;
@@ -62,18 +62,17 @@ displayHands = function (response, message, bot, playerId, _) {
     assert.ok(is.nonEmptyObj(table));
     var dealerHand = table.dealer.hand;
     var yourHand;
-    displayHand('Dealers hand:', dealerHand, _);
+    displayHand('Dealers hand:', dealerHand, message, bot, _);
     if (is.positiveInt(player.bet)) {
         yourHand = table.players[playerId].hand;
         displayHand('Your hand:', yourHand, message, bot, _);
     } else if (player.bet === -1 && is.obj(player.result)) {
         yourHand = player.result.players[playerId].hand;
-        displayHand('Your hand:', message, bot, yourHand, _);
+        displayHand('Your hand:', yourHand, message, bot, yourHand, _);
         if (player.result.players[playerId].push) {
             //console.log('Push. You have %s credits.', player.credits);
             bot.reply(message, 'Push. You have %s credits.', player.credits)
         } else {
-
             //console.log('You %s %s and currently have %s credits.',
             //    (player.result.players[playerId].win ? 'won' : 'lost'),
             //    player.result.players[playerId].bet,
@@ -251,8 +250,10 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
                 id: message.user,
             };
         }
-        console.log(playerId);
-
+        console.log(user.playerId);
+        if (user.playerId != 0) {
+            playerId = user.playerId;
+        }
         client.bet(playerId, 100, function (response) {
             console.log(response);
             if (response.success == true) {
