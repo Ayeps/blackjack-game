@@ -297,7 +297,6 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
                 //assert.ok(is.obj(response.player));
                 //assert.ok(is.array(response.player.hand));
                 displayHands(response, message, bot, user.playerId,_);
-
                 bot.reply(message,
                     {
                         attachment: {
@@ -326,8 +325,7 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
                     }
                 );
             } else {
-                bot.reply(message, response);
-
+                bot.reply(message, "see"+response);
 
                 bot.reply(message, "Please type play to join a table ");
 
