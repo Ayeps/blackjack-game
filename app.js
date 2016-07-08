@@ -253,7 +253,9 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
                 id: message.user,
             };
         }
-        client.bet(user.playerId, 100, function (response) {
+        console.log(playerId);
+
+        client.bet(playerId, 100, function (response) {
             console.log(response);
             if (response.success == true) {
                 var dealerHand = response.table.dealer.hand;
@@ -296,7 +298,7 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
                 //tableState = response.table.state;
                 //assert.ok(is.obj(response.player));
                 //assert.ok(is.array(response.player.hand));
-                displayHands(response, message, bot, user.playerId,_);
+                displayHands(response, message, bot, user.playerId, _);
                 bot.reply(message,
                     {
                         attachment: {
@@ -325,7 +327,7 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
                     }
                 );
             } else {
-                bot.reply(message, "see"+response.success);
+                bot.reply(message, "see" + response.success);
 
                 bot.reply(message, "Please type play to join a table ");
 
