@@ -55,10 +55,8 @@ message = function (response, message, bot, playerId) {
 }
 
 displayHands = function (response, message, bot, playerId, _) {
-
     console.log(response.player + " is the player id");
     bot.reply(message, "inside display hands");
-
     var table = response.table;
     var player = response.player;
     assert.ok(is.nonEmptyObj(table));
@@ -259,36 +257,67 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
             console.log(response);
             if (response.success == true) {
                 var dealerHand = response.table.dealer.hand;
-                //_.forEach(dealerHand, function (c) {
-                //    if (is.str(c)) {
-                //        //printf('    %s\n', c);
-                //        bot.reply(message, c);
-                //    } else if (is.int(c) && c > -1) {
-                //        var card = Cards.getCard(c);
-                //        //printf('%s of %s\n', card.rank, card.suit);
-                //        bot.reply(message, "Dealer Card " + card.rank + " " + card.suit, +" " + card.image);
-                //
-                //    } else {
-                //        assert.ok(false);
-                //    }
-                //});
-                //
-                //
-                ////bot.reply(message, "Your Hand");
-                //var yourHand = response.table.players[playerId].hand;
-                //_.forEach(yourHand, function (c) {
-                //    if (is.str(c)) {
-                //        //printf('    %s\n', c);
-                //        bot.reply(message, c);
-                //    } else if (is.int(c) && c > -1) {
-                //        var card = Cards.getCard(c);
-                //        //printf('%s of %s\n', card.rank, card.suit);
-                //        bot.reply(message, "Your card :" + card.rank + " " + card.suit);
-                //
-                //    } else {
-                //        assert.ok(false);
-                //    }
-                //});
+                _.forEach(dealerHand, function (c) {
+                    if (is.str(c)) {
+                        //printf('    %s\n', c);
+                        bot.reply(message, c);
+                    } else if (is.int(c) && c > -1) {
+                        var card = Cards.getCard(c);
+                        //printf('%s of %s\n', card.rank, card.suit);
+                        bot.reply(message, "Dealer Card " + card.rank + " " + card.suit, +" " + card.image);
+                        bot.reply(message, {
+                            attachment: {
+                                type: "template",
+                                payload: {
+                                    template_type: "generic",
+                                    elements: [
+                                        {
+                                            title: "Dealer card",
+                                            image_url: card.image,
+                                            subtitle: card.rank + " " + card.suit,
+
+                                        }]
+                                }
+                            }
+                        });
+
+                    } else {
+                        assert.ok(false);
+                    }
+                });
+
+
+                //bot.reply(message, "Your Hand");
+                var yourHand = response.table.players[playerId].hand;
+                _.forEach(yourHand, function (c) {
+                    if (is.str(c)) {
+                        //printf('    %s\n', c);
+                        bot.reply(message, c);
+                    } else if (is.int(c) && c > -1) {
+                        var card = Cards.getCard(c);
+                        //printf('%s of %s\n', card.rank, card.suit);
+                        bot.reply(message, "Your card :" + card.rank + " " + card.suit);
+                        bot.reply(message, {
+                            attachment: {
+                                type: "template",
+                                payload: {
+                                    template_type: "generic",
+                                    elements: [
+                                        {
+                                            title: "Your card",
+                                            image_url: card.image,
+                                            subtitle: card.rank + " " + card.suit,
+
+                                        }]
+                                }
+                            }
+                        });
+
+
+                    } else {
+                        assert.ok(false);
+                    }
+                });
 
                 //displayHands();
 
@@ -298,7 +327,7 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
                 //tableState = response.table.state;
                 //assert.ok(is.obj(response.player));
                 //assert.ok(is.array(response.player.hand));
-                displayHands(response, message, bot, user.playerId, _);
+                //displayHands(response, message, bot, user.playerId, _);
                 bot.reply(message,
                     {
                         attachment: {
