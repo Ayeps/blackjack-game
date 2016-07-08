@@ -25,7 +25,7 @@ var client = new Client();
  *      prompt result with the name.
  */
 
-function displayHand(txt, hand, message,bot) {
+function displayHand(txt, hand, message, bot,_) {
     assert.ok(is.str(txt));
     assert.ok(is.nonEmptyArray(hand));
     console.log(hand);
@@ -45,20 +45,20 @@ function displayHand(txt, hand, message,bot) {
     });
 }
 
-function displayHands(response, message,bot) {
+function displayHands(response, message, bot,_) {
 
     var table = response.table;
     var player = response.player;
     assert.ok(is.nonEmptyObj(table));
     var dealerHand = table.dealer.hand;
     var yourHand;
-    displayHand('Dealers hand:', dealerHand,bot);
+    displayHand('Dealers hand:', dealerHand, bot,_);
     if (is.positiveInt(player.bet)) {
         yourHand = table.players[playerId].hand;
-        displayHand('Your hand:', yourHand,bot);
+        displayHand('Your hand:', yourHand, bot,_);
     } else if (player.bet === -1 && is.obj(player.result)) {
         yourHand = player.result.players[playerId].hand;
-        displayHand('Your hand:', yourHand,bot);
+        displayHand('Your hand:', yourHand, bot,_);
         if (player.result.players[playerId].push) {
             //console.log('Push. You have %s credits.', player.credits);
             bot.reply(message, 'Push. You have %s credits.', player.credits)
@@ -84,7 +84,7 @@ function displayHands(response, message,bot) {
 //login
 function login(username, cb) {
     var args = {
-        data: {playerName: username}, // data passed to REST method (only useful in POST, PUT or PATCH methods)
+        data: {"playerName": username}, // data passed to REST method (only useful in POST, PUT or PATCH methods)
         headers: {"Content-Type": "application/json"}
     }
     client.registerMethod("postMethod", URL + "login", "POST");
@@ -119,7 +119,7 @@ function viewTables(cb) {
 function joinTable(playerId, table, cb) {
     assert.ok(is.func(cb));
     var joinargs = {
-        data: {playerId: playerId, tableId: table}, // data passed to REST method (only useful in POST, PUT or PATCH methods)
+        data: {"playerId": playerId, "tableId": table}, // data passed to REST method (only useful in POST, PUT or PATCH methods)
         headers: {"Content-Type": "application/json"}
     }
     client.registerMethod("postMethod", URL + "joinTable", "POST");
