@@ -8,7 +8,7 @@ var Cards = require('./src/cards');
 var assert = require('assert');
 var is = require('is2');
 var _ = require('lodash');
-var playerId;
+var playerId = 0;
 var tableid;
 var username;
 var tableState;
