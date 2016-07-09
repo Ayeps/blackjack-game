@@ -130,7 +130,7 @@ continuegame = function (bot, message) {
 
 
 displayHands = function (response, message, bot, playerId, _) {
-    console.log(response.player + " is the player id");
+    console.log(playerId + " is the player id");
     var table = response.table;
     var player = response.player;
     assert.ok(is.nonEmptyObj(table));
@@ -422,7 +422,6 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
 });
 
 
-
 //(.*)(get|want|order|would like)(.*)pizza(.*)
 
 controller.hears(['(.*)(Lets) (.*)go(.*)'], 'message_received', function (bot, message) {
@@ -582,14 +581,14 @@ controller.on('facebook_postback', function (bot, message) {
                     };
                 }
 
-                client.hit(user.playerId, function (response) {
+                client.hit(playerId, function (response) {
                     var option = displayHands(response, message, bot, user.playerId, _);
 
                     if (option === 'playagain') {
                         gamepromt(bot, message)
                     }
                     else {
-                        continuegame();
+                        continuegame(bot, message);
                     }
 
                 })
@@ -604,8 +603,14 @@ controller.on('facebook_postback', function (bot, message) {
                         id: message.user,
                     };
                 }
-                client.stand(user.playerId, function (response) {
+                client.stand(playerId, function (response) {
                     displayHands(response, message, bot, user.playerId, _);
+                    if (option === 'playagain') {
+                        gamepromt(bot, message)
+                    }
+                    else {
+                        continuegame(bot, message);
+                    }
                 })
             });
             break
@@ -617,7 +622,7 @@ controller.on('facebook_postback', function (bot, message) {
                     };
                 }
                 console.log(playerId);
-                client.joinTable(user.playerId, 1, function (response) {
+                client.joinTable(playerId, 1, function (response) {
                     if (response.player.busted == false) {
                         bot.reply(message, "You are  on Table 1 with id" + playerId)
                         bot.reply(message, "You have credit of " + response.player.credits + " $")
