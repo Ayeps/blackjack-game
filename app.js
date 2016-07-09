@@ -39,7 +39,21 @@ displayHand = function (txt, hand, message, bot, _) {
         } else if (is.int(c) && c > -1) {
             var card = Cards.getCard(c);
             //printf('%s of %s\n', card.rank, card.suit);
-            bot.reply(message, card.rank + " " + card.suit, " " + card.image);
+            bot.reply(message, txt + ":" + card.rank + " " + card.suit, " " + card.image);
+            bot.reply(message, {
+                attachment: {
+                    type: "template",
+                    payload: {
+                        template_type: "generic",
+                        elements: [
+                            {
+                                title: txt,
+                                image_url: "http://deckofcardsapi.com/static/img/AC.png",
+                                subtitle: card.rank + " " + card.suit,
+                            }]
+                    }
+                }
+            });
         } else {
             assert.ok(false);
         }
@@ -56,7 +70,6 @@ message = function (response, message, bot, playerId) {
 
 displayHands = function (response, message, bot, playerId, _) {
     console.log(response.player + " is the player id");
-    bot.reply(message, "inside display hands");
     var table = response.table;
     var player = response.player;
     assert.ok(is.nonEmptyObj(table));
@@ -85,33 +98,6 @@ displayHands = function (response, message, bot, playerId, _) {
         }
     }
 }
-
-
-controller.on('facebook_optin', function (bot, message) {
-    bot.reply(message, 'Hello');
-    bot.reply(message, 'Hi, my name is Pepper and I am your Black Jack Dealer.Would you like to play a round?!');
-    bot.reply(message, {
-        attachment: {
-            type: 'template',
-            payload: {
-                template_type: 'button',
-                text: 'Option',
-                buttons: [
-                    {
-                        type: 'postback',
-                        title: 'yes',
-                        payload: 'yes'
-                    },
-                    {
-                        type: 'postback',
-                        title: 'yes',
-                        payload: 'yes'
-                    }
-                ]
-            }
-        }
-    })
-})
 
 
 controller.hears(['hello', 'hi', 'Play', 'start', 'lets play', 'can we start?', 'Hallo', 'Give me a card'], 'message_received', function (bot, message) {
@@ -251,7 +237,7 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
             };
         }
         console.log(user.playerId);
-        
+
         client.bet(user.playerId, 100, function (response) {
             console.log("player id " + response);
             if (response.success == true) {
@@ -375,9 +361,9 @@ controller.on('facebook_postback', function (bot, message) {
                         id: message.user,
                     };
                 }
-
                 client.login(user.name, function (response) {
                     //tables = response;
+
                     user.playerId = response.player.id;
                     playerId = response.player.id;
                     bot.reply(message, "your Player Id :" + user.playerId)
@@ -472,7 +458,6 @@ controller.on('facebook_postback', function (bot, message) {
                     );
                 })
             });
-
             break
         case 'no':
             controller.storage.users.get(message.user, function (err, user) {
@@ -487,7 +472,7 @@ controller.on('facebook_postback', function (bot, message) {
                 })
 
             });
-            bot.reply(message, "Thank for playing the game with us")
+            bot.reply(message, "Thankss for playing the game with us")
             break
         case 'hit':
             //call function to perform hit operation
@@ -498,127 +483,8 @@ controller.on('facebook_postback', function (bot, message) {
                         id: message.user,
                     };
                 }
-
                 client.hit(user.playerId, function (response) {
-                    var table = response.table;
-                    var player = response.player;
-                    assert.ok(is.nonEmptyObj(table));
-                    var dealerHand = table.dealer.hand;
-                    var yourHand;
-                    //displayHand('Dealers hand:', dealerHand);
-                    _.forEach(dealerHand, function (c) {
-                        if (is.str(c)) {
-                            //printf('    %s\n', c);
-                            bot.reply(message, c);
-                        } else if (is.int(c) && c > -1) {
-                            var card = Cards.getCard(c);
-                            //printf('%s of %s\n', card.rank, card.suit);
-                            bot.reply(message, "Dealer Card" + card.rank + " " + card.suit);
-                        } else {
-                            assert.ok(false);
-                        }
-                    });
-                    if (is.positiveInt(player.bet)) {
-                        //yourHand = table.players[playerId].hand;
-                        //bot.reply(message, 'your hand')
-                        yourHand = response.table.players[user.playerId].hand;
-                        _.forEach(yourHand, function (c) {
-                            if (is.str(c)) {
-                                //printf('    %s\n', c);
-                                bot.reply(message, c);
-                            } else if (is.int(c) && c > -1) {
-                                var card = Cards.getCard(c);
-                                //printf('%s of %s\n', card.rank, card.suit);
-                                bot.reply(message, "Your hand" + card.rank + " " + card.suit);
-                            } else {
-                                assert.ok(false);
-                            }
-                        });
-                        bot.reply(message,
-                            {
-                                attachment: {
-                                    type: "template",
-                                    payload: {
-                                        template_type: "generic",
-                                        elements: [
-                                            {
-                                                title: "HIT or STAND?",
-                                                buttons: [
-                                                    {
-                                                        type: "postback",
-                                                        title: "HIT",
-                                                        payload: "hit"
-                                                    },
-                                                    {
-                                                        type: "postback",
-                                                        title: "STAND",
-                                                        payload: "stand"
-                                                    }
-                                                ]
-                                            }
-                                        ]
-                                    }
-                                }
-                            }
-                        );
-                    } else if (player.bet === -1 && is.obj(player.result)) {
-                        //displayHand('Your hand:', yourHand);
-                        //bot.reply(message, 'your hand')
-                        yourHand = response.table.players[user.playerId].hand;
-                        _.forEach(yourHand, function (c) {
-                            if (is.str(c)) {
-                                //printf('    %s\n', c);
-                                bot.reply(message, c);
-                            } else if (is.int(c) && c > -1) {
-                                var card = Cards.getCard(c);
-                                //printf('%s of %s\n', card.rank, card.suit);
-                                bot.reply(message, "Your hand" + card.rank + " " + card.suit);
-                            } else {
-                                assert.ok(false);
-                            }
-                        });
-                        bot.reply(message,
-                            {
-                                attachment: {
-                                    type: "template",
-                                    payload: {
-                                        template_type: "generic",
-                                        elements: [
-                                            {
-                                                title: "Would you like to play a again?",
-                                                buttons: [
-                                                    {
-                                                        type: "postback",
-                                                        title: "YES",
-                                                        payload: "yes"
-                                                    },
-                                                    {
-                                                        type: "postback",
-                                                        title: "NO",
-                                                        payload: "no"
-                                                    }
-                                                ]
-                                            }
-                                        ]
-                                    }
-                                }
-                            }
-                        );
-                        if (player.result.players[user.playerId].push) {
-                            //console.log('Push. You have %s credits.', player.credits);
-                            bot.reply(message, 'Push. You have ' + player.credits + ' credits.')
-
-                        } else {
-
-                            //console.log('You %s %s and currently have %s credits.',
-                            //    (player.result.players[playerId].win ? 'won' : 'lost'),
-                            //    player.result.players[playerId].bet,
-                            //    player.credits);
-                            bot.reply(message, 'You ' + (player.result.players[user.playerId].win ? 'won' : 'lost') + '' +
-                                ' ' + player.result.players[user.playerId].bet + 'and currently have ' + player.credits + 'credits.'
-                            )
-                        }
-                    }
+                    displayHands(response, message, bot, user.playerId, _);
                 })
             });
 
@@ -635,121 +501,123 @@ controller.on('facebook_postback', function (bot, message) {
                 }
                 client.stand(user.playerId, function (response) {
 
-                    var table = response.table;
-                    var player = response.player;
-                    assert.ok(is.nonEmptyObj(table));
-                    var dealerHand = table.dealer.hand;
-                    var yourHand;
-                    //displayHand('Dealers hand:', dealerHand);
-                    //bot.reply(message, 'delers hand')
-                    _.forEach(dealerHand, function (c) {
-                        if (is.str(c)) {
-                            //printf('    %s\n', c);
-                            bot.reply(message, c);
-                        } else if (is.int(c) && c > -1) {
-                            var card = Cards.getCard(c);
-                            //printf('%s of %s\n', card.rank, card.suit);
-                            bot.reply(message, "Dealer Hand" + card.rank + " " + card.suit);
-                        } else {
-                            assert.ok(false);
-                        }
-                    });
-                    if (is.positiveInt(player.bet)) {
-                        //yourHand = table.players[playerId].hand;
-                        bot.reply(message, 'your hand')
-                        yourHand = response.table.players[user.playerId].hand;
-                        _.forEach(yourHand, function (c) {
-                            if (is.str(c)) {
-                                //printf('    %s\n', c);
-                                bot.reply(message, c);
-                            } else if (is.int(c) && c > -1) {
-                                var card = Cards.getCard(c);
-                                //printf('%s of %s\n', card.rank, card.suit);
-                                bot.reply(message, "your hand" + card.rank + " " + card.suit);
-                            } else {
-                                assert.ok(false);
-                            }
-                        });
-                        bot.reply(message,
-                            {
-                                attachment: {
-                                    type: "template",
-                                    payload: {
-                                        template_type: "generic",
-                                        elements: [
-                                            {
-                                                title: "HIT or STAND?",
-                                                buttons: [
-                                                    {
-                                                        type: "postback",
-                                                        title: "HIT",
-                                                        payload: "hit"
-                                                    },
-                                                    {
-                                                        type: "postback",
-                                                        title: "STAND",
-                                                        payload: "stand"
-                                                    }
-                                                ]
-                                            }
-                                        ]
-                                    }
-                                }
-                            }
-                        );
-                    } else if (player.bet === -1 && is.obj(player.result)) {
-                        //displayHand('Your hand:', yourHand);
-                        //bot.reply(message, 'your hand : result' + player.result)
-                        yourHand = response.table.players[user.playerId].hand;
-                        _.forEach(yourHand, function (c) {
-                            if (is.str(c)) {
-                                //printf('    %s\n', c);
-                                bot.reply(message, c);
-                            } else if (is.int(c) && c > -1) {
-                                var card = Cards.getCard(c);
-                                //printf('%s of %s\n', card.rank, card.suit);
-                                bot.reply(message, 'Your card :' + card.rank + " " + card.suit);
+                    displayHands(response, message, bot, user.playerId, _);
 
-                            } else {
-                                assert.ok(false);
-                            }
-
-                        });
-                        bot.reply(message,
-                            {
-                                attachment: {
-                                    type: "template",
-                                    payload: {
-                                        template_type: "generic",
-                                        elements: [
-                                            {
-                                                title: "Would you like to play a again?",
-                                                buttons: [
-                                                    {
-                                                        type: "postback",
-                                                        title: "YES",
-                                                        payload: "yes"
-                                                    },
-                                                    {
-                                                        type: "postback",
-                                                        title: "NO",
-                                                        payload: "no"
-                                                    }
-                                                ]
-                                            }
-                                        ]
-                                    }
-                                }
-                            }
-                        );
-                        if (player.result.players[user.playerId].push) {
-                            bot.reply(message, 'Push. You have ' + player.credits + ' credits.')
-                        } else {
-                            bot.reply(message, 'You ' + (player.result.players[user.playerId].win ? 'won' : 'lost') + '' +
-                                ' ' + player.result.players[user.playerId].bet + 'and currently have ' + player.credits + 'credits.'
-                            )
-                        }
-                    }
+                    //var table = response.table;
+                    //var player = response.player;
+                    //assert.ok(is.nonEmptyObj(table));
+                    //var dealerHand = table.dealer.hand;
+                    //var yourHand;
+                    ////displayHand('Dealers hand:', dealerHand);
+                    ////bot.reply(message, 'delers hand')
+                    //_.forEach(dealerHand, function (c) {
+                    //    if (is.str(c)) {
+                    //        //printf('    %s\n', c);
+                    //        bot.reply(message, c);
+                    //    } else if (is.int(c) && c > -1) {
+                    //        var card = Cards.getCard(c);
+                    //        //printf('%s of %s\n', card.rank, card.suit);
+                    //        bot.reply(message, "Dealer Hand" + card.rank + " " + card.suit);
+                    //    } else {
+                    //        assert.ok(false);
+                    //    }
+                    //});
+                    //if (is.positiveInt(player.bet)) {
+                    //    //yourHand = table.players[playerId].hand;
+                    //    bot.reply(message, 'your hand')
+                    //    yourHand = response.table.players[user.playerId].hand;
+                    //    _.forEach(yourHand, function (c) {
+                    //        if (is.str(c)) {
+                    //            //printf('    %s\n', c);
+                    //            bot.reply(message, c);
+                    //        } else if (is.int(c) && c > -1) {
+                    //            var card = Cards.getCard(c);
+                    //            //printf('%s of %s\n', card.rank, card.suit);
+                    //            bot.reply(message, "your hand" + card.rank + " " + card.suit);
+                    //        } else {
+                    //            assert.ok(false);
+                    //        }
+                    //    });
+                    //    bot.reply(message,
+                    //        {
+                    //            attachment: {
+                    //                type: "template",
+                    //                payload: {
+                    //                    template_type: "generic",
+                    //                    elements: [
+                    //                        {
+                    //                            title: "HIT or STAND?",
+                    //                            buttons: [
+                    //                                {
+                    //                                    type: "postback",
+                    //                                    title: "HIT",
+                    //                                    payload: "hit"
+                    //                                },
+                    //                                {
+                    //                                    type: "postback",
+                    //                                    title: "STAND",
+                    //                                    payload: "stand"
+                    //                                }
+                    //                            ]
+                    //                        }
+                    //                    ]
+                    //                }
+                    //            }
+                    //        }
+                    //    );
+                    //} else if (player.bet === -1 && is.obj(player.result)) {
+                    //    //displayHand('Your hand:', yourHand);
+                    //    //bot.reply(message, 'your hand : result' + player.result)
+                    //    yourHand = response.table.players[user.playerId].hand;
+                    //    _.forEach(yourHand, function (c) {
+                    //        if (is.str(c)) {
+                    //            //printf('    %s\n', c);
+                    //            bot.reply(message, c);
+                    //        } else if (is.int(c) && c > -1) {
+                    //            var card = Cards.getCard(c);
+                    //            //printf('%s of %s\n', card.rank, card.suit);
+                    //            bot.reply(message, 'Your card :' + card.rank + " " + card.suit);
+                    //
+                    //        } else {
+                    //            assert.ok(false);
+                    //        }
+                    //
+                    //    });
+                    //    bot.reply(message,
+                    //        {
+                    //            attachment: {
+                    //                type: "template",
+                    //                payload: {
+                    //                    template_type: "generic",
+                    //                    elements: [
+                    //                        {
+                    //                            title: "Would you like to play a again?",
+                    //                            buttons: [
+                    //                                {
+                    //                                    type: "postback",
+                    //                                    title: "YES",
+                    //                                    payload: "yes"
+                    //                                },
+                    //                                {
+                    //                                    type: "postback",
+                    //                                    title: "NO",
+                    //                                    payload: "no"
+                    //                                }
+                    //                            ]
+                    //                        }
+                    //                    ]
+                    //                }
+                    //            }
+                    //        }
+                    //    );
+                    //    if (player.result.players[user.playerId].push) {
+                    //        bot.reply(message, 'Push. You have ' + player.credits + ' credits.')
+                    //    } else {
+                    //        bot.reply(message, 'You ' + (player.result.players[user.playerId].win ? 'won' : 'lost') + '' +
+                    //            ' ' + player.result.players[user.playerId].bet + 'and currently have ' + player.credits + 'credits.'
+                    //        )
+                    //    }
+                    //}
 
                 })
             });
