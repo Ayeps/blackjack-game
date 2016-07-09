@@ -206,7 +206,6 @@ controller.hears(['hello', 'hi', 'Play', 'start', 'lets play', 'can we start?', 
             bot.startConversation(message, function (err, convo) {
                 if (!err) {
                     convo.ask('What should I call you?', function (response, convo) {
-
                         convo.ask('You want me to call you ' + response.text + '? (yes/no)', [{
                             pattern: 'yes',
                             callback: function (response, convo) {
@@ -422,6 +421,36 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
 
 });
 
+
+
+//(.*)(get|want|order|would like)(.*)pizza(.*)
+
+controller.hears(['(.*)(Lets) (.*)go(.*)'], 'message_received', function (bot, message) {
+    bot.reply(message, "Great, there you are – do you remember where we left off? – Just scroll" +
+        " above to check or type ,new game“…");
+    return false;
+});
+controller.hears(['With how many card games do we play'], 'message_received', function (bot, message) {
+    bot.reply(message, "We play with 2 decks of cards. That is less than in the typical casino" +
+        " and means your chances to win are higher!");
+    return false;
+});
+controller.hears(['are you hot?'], 'message_received', function (bot, message) {
+    bot.reply(message, "Definitely this is a picture of me , but i'm hear to play blackjack with you");
+    bot.reply(message, {
+        attachment: {
+            type: 'image',
+            payload: {
+                title: 'hi',
+                url: 'http://i.imgur.com/1WuDC6y.jpg'
+            }
+        }
+    })
+
+
+    return false;
+});
+
 controller.on('facebook_postback', function (bot, message) {
     switch (message.payload) {
         case 'yes':
@@ -434,7 +463,7 @@ controller.on('facebook_postback', function (bot, message) {
                 }
                 client.login(user.name, function (response) {
                     //tables = response;
-                    //user.playerId = response.player.id;
+                    user.playerId = response.player.id;
                     playerId = response.player.id;
                     bot.reply(message, "your Player Id :" + user.playerId)
                     //display tables and users in the table
@@ -696,40 +725,9 @@ controller.on('facebook_postback', function (bot, message) {
             });
             break
     }
-})
-
-//(.*)(get|want|order|would like)(.*)pizza(.*)
-
-controller.hears(['(.*)(Lets) (.*)go(.*)'], 'message_received', function (bot, message) {
-    bot.reply(message, "Great, there you are – do you remember where we left off? – Just scroll" +
-        " above to check or type ,new game“…");
-    return false;
 });
-
-controller.hears(['With how many card games do we play'], 'message_received', function (bot, message) {
-    bot.reply(message, "We play with 2 decks of cards. That is less than in the typical casino" +
-        " and means your chances to win are higher!");
-    return false;
-});
-controller.hears(['are you hot?'], 'message_received', function (bot, message) {
-    bot.reply(message, "Definitely this is a picture of me , but i'm hear to play blackjack with you");
-    bot.reply(message, {
-        attachment: {
-            type: 'image',
-            payload: {
-                title: 'hi',
-                url: 'http://i.imgur.com/1WuDC6y.jpg'
-            }
-        }
-    })
-
-
-    return false;
-});
-
-
-controller.on('message_received', function (bot, message) {
-    bot.reply(message, "I'm a day old still trying to absorb the internet");
-    bot.reply(message, "I really didn't get this. Is english ok for you?");
-    return false;
-});
+//controller.on('message_received', function (bot, message) {
+//    bot.reply(message, "I'm a day old still trying to absorb the internet");
+//    bot.reply(message, "I really didn't get this. Is english ok for you?");
+//    return false;
+//});
