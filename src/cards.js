@@ -14,13 +14,6 @@ var inspect = require('util').inspect;
 // MersenneTwister uses Date().getTime() as a default seed - good enough
 var generator = new MersenneTwister();
 
-
-var POKER_COLORS = {
-    4: '♠', 		// spade
-    3: '♥', 	// heart
-    2: '♣', 	// club
-    1: '♦' 		// diamond
-};
 // an ordered deck of all cards use to create shuffled decks to be dealt from.
 var DECK = [
     {suit: 'clubs', rank: 'Ace', value: [1, 10], code: 'AC ♣', image: 'http://deckofcardsapi.com/static/img/AC.png'},

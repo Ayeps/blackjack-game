@@ -39,7 +39,7 @@ displayHand = function (txt, hand, message, bot, _) {
         } else if (is.int(c) && c > -1) {
             var card = Cards.getCard(c);
             //printf('%s of %s\n', card.rank, card.suit);
-            bot.reply(message, txt + ":" + card.rank + " " + card.suit, "image:  " + card.image);
+            bot.reply(message, txt + ":" + card.rank + " " + card.suit + "image:  " + card.image);
             bot.reply(message, {
                 attachment: {
                     type: "template",
