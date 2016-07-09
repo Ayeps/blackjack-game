@@ -8,8 +8,8 @@ var Cards = require('./src/cards');
 var assert = require('assert');
 var is = require('is2');
 var _ = require('lodash');
-var playerId = 0;
-var tableid = 0;
+var playerId;
+var tableid;
 var username;
 var tableState;
 var tables;
@@ -303,9 +303,10 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
                 id: message.user,
             };
         }
-        console.log("player id" + user.playerId);
+        console.log("player id ===>" + user.playerId);
+        console.log("playerId id ===>" + playerId);
 
-        client.bet(user.playerId, 100, function (response) {
+        client.bet(playerId, 100, function (response) {
             console.log("player id " + response);
             if (response.success == true) {
                 //var dealerHand = response.table.dealer.hand;
@@ -551,6 +552,7 @@ controller.on('facebook_postback', function (bot, message) {
                         id: message.user,
                     };
                 }
+
                 client.hit(user.playerId, function (response) {
                     var option = displayHands(response, message, bot, user.playerId, _);
 
