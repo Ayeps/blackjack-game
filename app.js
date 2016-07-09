@@ -758,9 +758,11 @@ controller.hears(['are you hot?'], 'message_received', function (bot, message) {
     bot.reply(message, {
         attachment: {
             type: 'image',
-            payload: {
-                url: 'http://i.imgur.com/1WuDC6y.jpg'
-            }
+            elements: [
+                {
+                    title: "hi",
+                    image_url: "http://deckofcardsapi.com/static/img/AC.png",
+                }]
         }
     })
 
