@@ -39,7 +39,7 @@ displayHand = function (txt, hand, message, bot, _) {
         } else if (is.int(c) && c > -1) {
             var card = Cards.getCard(c);
             //printf('%s of %s\n', card.rank, card.suit);
-            bot.reply(message, txt + ":" + card.rank + " " + card.suit, " " + card.image);
+            bot.reply(message, txt + ":" + card.rank + " " + card.suit, "image:  " + card.image);
             bot.reply(message, {
                 attachment: {
                     type: "template",
@@ -758,11 +758,10 @@ controller.hears(['are you hot?'], 'message_received', function (bot, message) {
     bot.reply(message, {
         attachment: {
             type: 'image',
-            elements: [
-                {
-                    title: "hi",
-                    image_url: "http://deckofcardsapi.com/static/img/AC.png",
-                }]
+            payload: {
+                title: 'hi',
+                url: 'http://i.imgur.com/1WuDC6y.jpg'
+            }
         }
     })
 
