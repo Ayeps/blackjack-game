@@ -301,8 +301,9 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
             };
         }
         console.log("player id ===>" + user.playerId);
+        console.log("player id ===>" + playerId);
         //console.log("playerId id ===>" + playerId);
-        client.bet(1, 100, function (response) {
+        client.bet(playerId, 100, function (response) {
             console.log("player id " + response);
             if (response.success == true) {
                 displayHands(response, message, bot, user.playerId, _);
@@ -391,11 +392,12 @@ controller.on('facebook_postback', function (bot, message) {
                     //tables = response;
                     user.playerId = response.player.id;
                     playerId = response.player.id;
+                    controller.storage.users.save(user, function (err, id) {
+                    })
                     bot.reply(message, "your Player Id :" + user.playerId)
                     //display tables and users in the table
                     tables = response.tables;
-                    controller.storage.users.save(user, function (err, id) {
-                    })
+
                     bot.reply(message,
                         {
                             attachment: {
@@ -551,6 +553,7 @@ controller.on('facebook_postback', function (bot, message) {
                 console.log(playerId);
                 client.joinTable(user.playerId, 1, function (response) {
                     if (response.player.busted == false) {
+
                         bot.reply(message, "You are  on Table 1 with id" + playerId)
                         bot.reply(message, "You have credit of " + response.player.credits + " $")
                         bot.reply(message, "How much do you want to bet (eg. bet amount $)")
