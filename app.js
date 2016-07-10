@@ -38,21 +38,7 @@ displayHand = function (txt, hand, message, bot, _) {
         } else if (is.int(c) && c > -1) {
             var card = Cards.getCard(c);
             //printf('%s of %s\n', card.rank, card.suit);
-            bot.reply(message, txt + ":" + card.rank + " " + card.suit);
-            bot.reply(message, {
-                attachment: {
-                    type: "template",
-                    payload: {
-                        template_type: "generic",
-                        elements: [
-                            {
-                                title: txt,
-                                image_url: card.image,
-                                subtitle: card.rank + " " + card.suit,
-                            }]
-                    }
-                }
-            });
+            bot.reply(message, txt + ":" + card.rank + " " + card.suit + " " + card.code);
             bot.reply(message, {
                 attachment: {
                     type: 'image',
@@ -511,6 +497,7 @@ controller.on('facebook_postback', function (bot, message) {
                 }
 
                 client.hit(user.playerId, function (response) {
+                    //response, message, bot, playerId, _
                     var option = displayHands(response, message, bot, user.playerId, _);
 
                     if (option === 'playagain') {
@@ -661,8 +648,8 @@ controller.on('facebook_postback', function (bot, message) {
             break
     }
 });
-//controller.on('message_received', function (bot, message) {
-//    bot.reply(message, "I'm a day old still trying to absorb the internet");
-//    bot.reply(message, "I really didn't get this. Is english ok for you?");
-//    return false;
-//});
+controller.on('message_received', function (bot, message) {
+    bot.reply(message, "I didn't get that, I'm still trying to absorb the internet");
+
+    return false;
+});
