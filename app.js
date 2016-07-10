@@ -7,7 +7,7 @@ var Cards = require('./src/cards');
 var assert = require('assert');
 var is = require('is2');
 var _ = require('lodash');
-var player = require('getter-setter').node({playerid:'0'})
+var player = require('./src/player')
 var playerId = 0;
 var tableid;
 var username;
@@ -289,7 +289,7 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
         console.log("player id ===>" + user.playerId);
         console.log("player id from poet module ===>" + player.getId());
         console.log("playerId id ===>" + playerId);
-        client.bet(player.get('playerid'), 100, function (response) {
+        client.bet(playerId, 100, function (response) {
             console.log("player id " + response);
             if (response.success == true) {
                 displayHands(response, message, bot, user.playerId, _);
@@ -378,7 +378,7 @@ controller.on('facebook_postback', function (bot, message) {
                     //tables = response;
                     user.playerId = response.player.id;
                     playerId = response.player.id;
-                    player.set({'playerid': response.player.id});
+                    player.setId(response.player.id)
                     controller.storage.users.save(user, function (err, id) {
                     })
                     bot.reply(message, "your Player Id :" + user.playerId)
