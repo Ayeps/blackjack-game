@@ -53,7 +53,6 @@ displayHand = function (txt, hand, message, bot, _) {
                     }
                 }
             });
-
             bot.reply(message, {
                 attachment: {
                     type: 'image',
@@ -61,13 +60,11 @@ displayHand = function (txt, hand, message, bot, _) {
                         url: card.image
                     }
                 }
-            }
-        else
-            {
-                assert.ok(false);
-            }
+            })
+        } else {
+            assert.ok(false);
         }
-        );
+    });
 }
 
 gamepromt = function (bot, message) {
