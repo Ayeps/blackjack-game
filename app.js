@@ -1,8 +1,7 @@
 /**
  * Created by Softmasters on 6/1/2016.
  */
-
-var Botkit = require('botkit');
+var Botkit = require('./lib/Botkit');
 var client = require('./src/client');
 var Cards = require('./src/cards');
 var assert = require('assert');
@@ -39,7 +38,7 @@ displayHand = function (txt, hand, message, bot, _) {
         } else if (is.int(c) && c > -1) {
             var card = Cards.getCard(c);
             //printf('%s of %s\n', card.rank, card.suit);
-            bot.reply(message, txt + ":" + card.rank + " " + card.suit + "image:  " + card.image);
+            bot.reply(message, txt + ":" + card.rank + " " + card.suit);
             bot.reply(message, {
                 attachment: {
                     type: "template",
@@ -48,25 +47,29 @@ displayHand = function (txt, hand, message, bot, _) {
                         elements: [
                             {
                                 title: txt,
-                                image_url: "http://deckofcardsapi.com/static/img/AC.png",
+                                image_url: card.image,
                                 subtitle: card.rank + " " + card.suit,
                             }]
                     }
                 }
             });
-        } else {
-            assert.ok(false);
+
+            bot.reply(message, {
+                attachment: {
+                    type: 'image',
+                    payload: {
+                        url: card.image
+                    }
+                }
+            }
+        else
+            {
+                assert.ok(false);
+            }
         }
-    });
+        );
 }
 
-imagetemplate = function (response, message, bot, playerId) {
-
-}
-
-message = function (response, message, bot, playerId) {
-
-}
 gamepromt = function (bot, message) {
     bot.reply(message,
         {
@@ -291,9 +294,7 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
     // do something to respond to message
     var text = message.text;
     var amt = text.replace(/\D+/g, '');
-
     //var amt = text.match(/\d+/g).join("");
-
     console.log(amt)
     bot.reply(message, 'your' + message.text + 'recieved!');
     controller.storage.users.get(message.user, function (err, user) {
@@ -303,7 +304,7 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
             };
         }
         console.log("player id ===>" + user.playerId);
-        console.log("playerId id ===>" + playerId);
+        //console.log("playerId id ===>" + playerId);
         client.bet(1, 100, function (response) {
             console.log("player id " + response);
             if (response.success == true) {
@@ -510,7 +511,7 @@ controller.on('facebook_postback', function (bot, message) {
                     };
                 }
 
-                client.hit(playerId, function (response) {
+                client.hit(user.playerId, function (response) {
                     var option = displayHands(response, message, bot, user.playerId, _);
 
                     if (option === 'playagain') {
@@ -532,7 +533,7 @@ controller.on('facebook_postback', function (bot, message) {
                         id: message.user,
                     };
                 }
-                client.stand(playerId, function (response) {
+                client.stand(user.playerId, function (response) {
                     displayHands(response, message, bot, user.playerId, _);
                     if (option === 'playagain') {
                         gamepromt(bot, message)
@@ -551,7 +552,7 @@ controller.on('facebook_postback', function (bot, message) {
                     };
                 }
                 console.log(playerId);
-                client.joinTable(playerId, 1, function (response) {
+                client.joinTable(user.playerId, 1, function (response) {
                     if (response.player.busted == false) {
                         bot.reply(message, "You are  on Table 1 with id" + playerId)
                         bot.reply(message, "You have credit of " + response.player.credits + " $")
