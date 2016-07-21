@@ -8,7 +8,7 @@ var assert = require('assert');
 var is = require('is2');
 var _ = require('lodash');
 var player = require('./src/player')
-var playerId = 0;
+var playerId = 1;
 var tableid;
 var username;
 var tableState;
@@ -20,7 +20,6 @@ var controller = Botkit.facebookbot({
 })
 
 var bot = controller.spawn({});
-
 controller.setupWebserver(process.env.PORT || 5000, function (err, webserver) {
     controller.createWebhookEndpoints(controller.webserver, bot, function () {
         console.log('This bot is online!!!');
