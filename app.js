@@ -13,10 +13,13 @@ var tableid;
 var username;
 var tableState;
 var tables;
+var mongoStorage = require('botkit-storage-mongo')({mongoUri: process.env.mongo_uri});
+//var mongoUri = process.env.mongo_uri;
 
 var controller = Botkit.facebookbot({
     access_token: process.env.access_token,
     verify_token: process.env.verify_token,
+    storage: mongoStorage
 })
 
 var bot = controller.spawn({});
