@@ -291,10 +291,9 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
         }
         console.log("player id ===>" + user.playerId);
 
-        //console.log("player id from poet module ===>" + player.getId());
-        //console.log("playerId id ===>" + playerId);
+
         client.bet(user.playerId, 100, function (response) {
-            console.log("player id " + response);
+            console.log("player id " + response.playerId);
             if (response.success === true) {
                 displayHands(response, message, bot, user.playerId, _);
                 bot.reply(message,
@@ -330,6 +329,7 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
                     }
                 );
             } else {
+                console.log(response);
                 bot.reply(message, "Please type play to join a table");
             }
 
