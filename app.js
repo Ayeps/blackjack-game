@@ -292,7 +292,6 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
         console.log("player id ===>" + user.playerId);
         client.bet(user.playerId, 100, function (response) {
 
-
             //if (response.success === true) {
             displayHands(response, message, bot, user.playerId, _);
             bot.reply(message,
@@ -335,9 +334,6 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
     });
 
 });
-
-
-//(.*)(get|want|order|would like)(.*)pizza(.*)
 
 controller.hears(['(.*)(Lets) (.*)go(.*)'], 'message_received', function (bot, message) {
     bot.reply(message, "Great, there you are – do you remember where we left off? – Just scroll" +
@@ -546,9 +542,8 @@ controller.on('facebook_postback', function (bot, message) {
                 client.joinTable(user.playerId, 1, function (response) {
                     if (response.player.busted == false) {
                         bot.reply(message, "You are  on Table 1 with id" + playerId)
-                        bot.reply(message, "You have credit of " + response.player.credits + " $")
+                        bot.reply(message, "You have credit of " + response.player.credits + "$")
                         bot.reply(message, "How much do you want to bet (eg. bet amount $)")
-                        bot.reply(message, "example (eg. bet <amount> $)")
                     }
                 });
             });
