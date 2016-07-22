@@ -381,20 +381,20 @@ controller.on('facebook_postback', function (bot, message) {
                 client.login(user.name, function (response) {
                     //tables = response;
                     //console.log(response);
-                    console.log(response.playerId);
+                    console.log("palyer id" + response.playerId);
                     //if(response.tables[1])
                     //{
                     //
                     //}
                     user.playerId = response.playerId;
                     playerId = response.playerId;
-                    player.setId(response.playerId)
                     controller.storage.users.save(user, function (err, id) {
                     })
+
+
                     bot.reply(message, "your Player Id :" + user.playerId)
                     //display tables and users in the table
                     tables = response.tables;
-
                     bot.reply(message,
                         {
                             attachment: {
