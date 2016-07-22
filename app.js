@@ -380,10 +380,15 @@ controller.on('facebook_postback', function (bot, message) {
 
                 client.login(user.name, function (response) {
                     //tables = response;
-                    console.log(response);
-                    user.playerId = response.player.id;
-                    playerId = response.player.id;
-                    player.setId(response.player.id)
+                    //console.log(response);
+                    console.log(response.playerId);
+                    //if(response.tables[1])
+                    //{
+                    //
+                    //}
+                    user.playerId = response.playerId;
+                    playerId = response.playerId;
+                    player.setId(response.playerId)
                     controller.storage.users.save(user, function (err, id) {
                     })
                     bot.reply(message, "your Player Id :" + user.playerId)
@@ -486,7 +491,7 @@ controller.on('facebook_postback', function (bot, message) {
                     };
                 }
                 console.log(playerId);
-                
+
                 client.leaveTable(user.playerId, function (response) {
 
                 })
