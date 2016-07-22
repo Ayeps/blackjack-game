@@ -381,7 +381,7 @@ controller.on('facebook_postback', function (bot, message) {
 
                 client.login(user.name, function (response) {
                     //tables = response;
-                    //console.log(response);
+                    console.log(response);
                     console.log("palyer id" + response.playerId);
                     //if(response.tables[1])
                     //{
