@@ -290,9 +290,10 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
             };
         }
         console.log("player id ===>" + user.playerId);
-        console.log("player id from poet module ===>" + player.getId());
-        console.log("playerId id ===>" + playerId);
-        client.bet(playerId, 100, function (response) {
+
+        //console.log("player id from poet module ===>" + player.getId());
+        //console.log("playerId id ===>" + playerId);
+        client.bet(user.playerId, 100, function (response) {
             console.log("player id " + response);
             if (response.success == true) {
                 displayHands(response, message, bot, user.playerId, _);
