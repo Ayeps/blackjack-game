@@ -291,46 +291,45 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
         }
         console.log("player id ===>" + user.playerId);
         client.bet(user.playerId, 100, function (response) {
-            console.log("player id " + response.playerId);
-            console.log("request status:" + response.success);
-            if (response.success === true) {
-                displayHands(response, message, bot, user.playerId, _);
-                bot.reply(message,
-                    {
-                        attachment: {
-                            type: "template",
-                            payload: {
-                                template_type: "generic",
-                                elements: [
-                                    {
-                                        title: "Do you want to hit or Stand",
-                                        buttons: [
-                                            {
-                                                type: "postback",
-                                                title: "HIT",
-                                                payload: "hit"
-                                            },
-                                            {
-                                                type: "postback",
-                                                title: "STAND",
-                                                payload: "stand"
-                                            }
-                                            , {
-                                                type: "postback",
-                                                title: "Insurance",
-                                                payload: "insure"
-                                            }
-                                        ]
-                                    }
-                                ]
-                            }
+
+
+            //if (response.success === true) {
+            displayHands(response, message, bot, user.playerId, _);
+            bot.reply(message,
+                {
+                    attachment: {
+                        type: "template",
+                        payload: {
+                            template_type: "generic",
+                            elements: [
+                                {
+                                    title: "Do you want to hit or Stand",
+                                    buttons: [
+                                        {
+                                            type: "postback",
+                                            title: "HIT",
+                                            payload: "hit"
+                                        },
+                                        {
+                                            type: "postback",
+                                            title: "STAND",
+                                            payload: "stand"
+                                        }
+                                        , {
+                                            type: "postback",
+                                            title: "Insurance",
+                                            payload: "insure"
+                                        }
+                                    ]
+                                }
+                            ]
                         }
                     }
-                );
-            } else {
-                console.log(response);
-                bot.reply(message, "Please type play to join a table");
-            }
+                });
+            //} else {
+            //    console.log(response);
+            //    bot.reply(message, "Please type play to join a table");
+            //}
         });
 
     });
@@ -548,17 +547,15 @@ controller.on('facebook_postback', function (bot, message) {
                         id: message.user,
                     };
                 }
-                console.log(playerId);
+                console.log("before join" + user.playerId);
                 client.joinTable(user.playerId, 1, function (response) {
                     if (response.player.busted == false) {
-
                         bot.reply(message, "You are  on Table 1 with id" + playerId)
                         bot.reply(message, "You have credit of " + response.player.credits + " $")
                         bot.reply(message, "How much do you want to bet (eg. bet amount $)")
                         bot.reply(message, "example (eg. bet <amount> $)")
                     }
-                })
-
+                });
             });
             break
         case '2':

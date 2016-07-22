@@ -25,7 +25,7 @@ var client = new Client();
  *      prompt result with the name.
  */
 
-function displayHand(txt, hand, message, bot,_) {
+function displayHand(txt, hand, message, bot, _) {
     assert.ok(is.str(txt));
     assert.ok(is.nonEmptyArray(hand));
     console.log(hand);
@@ -45,20 +45,20 @@ function displayHand(txt, hand, message, bot,_) {
     });
 }
 
-function displayHands(response, message, bot,_) {
+function displayHands(response, message, bot, _) {
 
     var table = response.table;
     var player = response.player;
     assert.ok(is.nonEmptyObj(table));
     var dealerHand = table.dealer.hand;
     var yourHand;
-    displayHand('Dealers hand:', dealerHand, bot,_);
+    displayHand('Dealers hand:', dealerHand, bot, _);
     if (is.positiveInt(player.bet)) {
         yourHand = table.players[playerId].hand;
-        displayHand('Your hand:', yourHand, bot,_);
+        displayHand('Your hand:', yourHand, bot, _);
     } else if (player.bet === -1 && is.obj(player.result)) {
         yourHand = player.result.players[playerId].hand;
-        displayHand('Your hand:', yourHand, bot,_);
+        displayHand('Your hand:', yourHand, bot, _);
         if (player.result.players[playerId].push) {
             //console.log('Push. You have %s credits.', player.credits);
             bot.reply(message, 'Push. You have %s credits.', player.credits)
@@ -159,10 +159,10 @@ function bet(playerId, amt, cb) {
     }
     client.registerMethod("postMethod", URL + "bet", "POST");
     client.methods.postMethod(bet, function (data, response) {
-
         return cb(data);
     });
 }
+
 
 /**
  * Request a nother card from the dealer.
