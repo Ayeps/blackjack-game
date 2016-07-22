@@ -230,6 +230,7 @@ controller.hears(['hello', 'hi', '(.*)play(.*)', 'start', 'can we start?', 'Hall
                                     };
                                 }
                                 user.name = convo.extractResponse('nickname');
+
                                 controller.storage.users.save(user, function (err, id) {
                                     bot.reply(message, 'Got it. I will call you ' + user.name + ' from now on.');
                                     bot.reply(message,
@@ -365,7 +366,6 @@ controller.hears(['are you hot?'], 'message_received', function (bot, message) {
 
     return false;
 });
-
 controller.on('facebook_postback', function (bot, message) {
     switch (message.payload) {
         case 'yes':
@@ -651,8 +651,8 @@ controller.on('facebook_postback', function (bot, message) {
             break
     }
 });
-controller.on('message_received', function (bot, message) {
-    bot.reply(message, "I didn't get that, I'm still trying to absorb the internet");
-
-    return false;
-});
+//controller.on('message_received', function (bot, message) {
+//    bot.reply(message, "I didn't get that, I'm still trying to absorb the internet");
+//
+//    return false;
+//});
