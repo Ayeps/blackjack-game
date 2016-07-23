@@ -599,37 +599,37 @@ controller.hears(['bet'], 'message_received', function (bot, message) {
         client.bet(user.playerId, 100, function (response) {
             if (response.success === true) {
                 //displayHands(response, message, bot, user.playerId, _);
-                bot.reply(message,
-                    {
-                        attachment: {
-                            type: "template",
-                            payload: {
-                                template_type: "generic",
-                                elements: [
-                                    {
-                                        title: "Do you want to hit or Stand",
-                                        buttons: [
-                                            {
-                                                type: "postback",
-                                                title: "HIT",
-                                                payload: "hit"
-                                            },
-                                            {
-                                                type: "postback",
-                                                title: "STAND",
-                                                payload: "stand"
-                                            }
-                                            , {
-                                                type: "postback",
-                                                title: "Insurance",
-                                                payload: "insure"
-                                            }
-                                        ]
-                                    }
-                                ]
-                            }
-                        }
-                    });
+                //bot.reply(message,
+                //    {
+                //        attachment: {
+                //            type: "template",
+                //            payload: {
+                //                template_type: "generic",
+                //                elements: [
+                //                    {
+                //                        title: "Do you want to hit or Stand",
+                //                        buttons: [
+                //                            {
+                //                                type: "postback",
+                //                                title: "HIT",
+                //                                payload: "hit"
+                //                            },
+                //                            {
+                //                                type: "postback",
+                //                                title: "STAND",
+                //                                payload: "stand"
+                //                            }
+                //                            , {
+                //                                type: "postback",
+                //                                title: "Insurance",
+                //                                payload: "insure"
+                //                            }
+                //                        ]
+                //                    }
+                //                ]
+                //            }
+                //        }
+                //    });
             } else {
                 console.log(response);
                 bot.reply(message, "Please type play to join a table");
