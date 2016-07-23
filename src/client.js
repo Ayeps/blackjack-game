@@ -154,7 +154,7 @@ function leaveTable(playerId, cb) {
 function bet(playerId, amt, cb) {
     assert.ok(is.func(cb));
     var bet = {
-        data: {"playerId": playerId, "bet": amt}, // data passed to REST method (only useful in POST, PUT or PATCH methods)
+        data: {playerId: playerId, bet: amt}, // data passed to REST method (only useful in POST, PUT or PATCH methods)
         headers: {"Content-Type": "application/json"}
     }
     client.registerMethod("postMethod", URL + "bet", "POST");
