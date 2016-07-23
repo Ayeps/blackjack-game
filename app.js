@@ -590,7 +590,7 @@ controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, mess
     var amt = text.replace(/\D+/g, '');
     //var amt = text.match(/\d+/g).join("");
     console.log(amt)
-    bot.reply(message, 'your' + message.text + 'recieved!');
+    bot.reply(message, 'your bet has been recieved');
     controller.storage.users.get(message.user, function (err, user) {
         if (!user) {
             user = {
