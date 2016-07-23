@@ -582,129 +582,127 @@ controller.on('facebook_postback', function (bot, message) {
     }
 });
 //
-//controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, message) {
-//    // do something to respond to message
-//    var text = message.text;
-//    var amt = text.replace(/\D+/g, '');
-//    //var amt = text.match(/\d+/g).join("");
-//    console.log(amt)
-//    bot.reply(message, 'your bet has been recieved');
-//    controller.storage.users.get(message.user, function (err, user) {
-//        if (!user) {
-//            user = {
-//                id: message.user,
-//            };
-//        }
-//        //user.credit -= amt;
-//        //
-//        //controller.storage.users.save(user, function (err, id) {
-//        //})
-//        console.log("player id ===>" + user.playerId);
-//        client.bet(user.playerId, 100, function (response) {
-//            if (response.success === true) {
-//                displayHands(response, message, bot, user.playerId, _);
-//                bot.reply(message,
-//                    {
-//                        attachment: {
-//                            type: "template",
-//                            payload: {
-//                                template_type: "generic",
-//                                elements: [
-//                                    {
-//                                        title: "Do you want to hit or Stand",
-//                                        buttons: [
-//                                            {
-//                                                type: "postback",
-//                                                title: "HIT",
-//                                                payload: "hit"
-//                                            },
-//                                            {
-//                                                type: "postback",
-//                                                title: "STAND",
-//                                                payload: "stand"
-//                                            }
-//                                            , {
-//                                                type: "postback",
-//                                                title: "Insurance",
-//                                                payload: "insure"
-//                                            }
-//                                        ]
-//                                    }
-//                                ]
-//                            }
-//                        }
-//                    });
-//            } else {
-//                console.log(response);
-//                bot.reply(message, "Please type play to join a table");
-//            }
-//        });
-//
-//    });
-//});
-
-controller.on('message_received', function (bot, message) {
-
-
-    bot.reply(message, message.text);
-
-    var cmd = message.text.split(" ")[0];
-    var args = message.text.substr(1 + cmd.length).split(" ");
-    console.log(args);
-    switch (cmd) {
-        case "bet":
-            bot.reply(message, 'your bet has been received');
-            controller.storage.users.get(message.user, function (err, user) {
-                if (!user) {
-                    user = {
-                        id: message.user,
-                    };
-                }
-                //user.credit -= amt;
-                //controller.storage.users.save(user, function (err, id) {
-                //})
-                console.log("player id ===>" + user.playerId);
-                client.bet(user.playerId, 100, function (response) {
-                    if (response.success === true) {
-                        displayHands(response, message, bot, user.playerId, _);
-                        bot.reply(message,
-                            {
-                                attachment: {
-                                    type: "template",
-                                    payload: {
-                                        template_type: "generic",
-                                        elements: [
+controller.hears(['bet'], 'message_received', function (bot, message) {
+    // do something to respond to message
+    var text = message.text;
+    var amt = text.replace(/\D+/g, '');
+    //var amt = text.match(/\d+/g).join("");
+    console.log(amt)
+    bot.reply(message, 'your bet has been recieved');
+    controller.storage.users.get(message.user, function (err, user) {
+        if (!user) {
+            user = {
+                id: message.user,
+            };
+        }
+        //user.credit -= amt;
+        //
+        //controller.storage.users.save(user, function (err, id) {
+        //})
+        console.log("player id ===>" + user.playerId);
+        client.bet(user.playerId, 100, function (response) {
+            if (response.success === true) {
+                displayHands(response, message, bot, user.playerId, _);
+                bot.reply(message,
+                    {
+                        attachment: {
+                            type: "template",
+                            payload: {
+                                template_type: "generic",
+                                elements: [
+                                    {
+                                        title: "Do you want to hit or Stand",
+                                        buttons: [
                                             {
-                                                title: "Do you want to hit or Stand",
-                                                buttons: [
-                                                    {
-                                                        type: "postback",
-                                                        title: "HIT",
-                                                        payload: "hit"
-                                                    },
-                                                    {
-                                                        type: "postback",
-                                                        title: "STAND",
-                                                        payload: "stand"
-                                                    }
-                                                    , {
-                                                        type: "postback",
-                                                        title: "Insurance",
-                                                        payload: "insure"
-                                                    }
-                                                ]
+                                                type: "postback",
+                                                title: "HIT",
+                                                payload: "hit"
+                                            },
+                                            {
+                                                type: "postback",
+                                                title: "STAND",
+                                                payload: "stand"
+                                            }
+                                            , {
+                                                type: "postback",
+                                                title: "Insurance",
+                                                payload: "insure"
                                             }
                                         ]
                                     }
-                                }
-                            });
-                    } else {
-                        console.log(response);
-                        bot.reply(message, "Please type play to join a table");
-                    }
-                });
+                                ]
+                            }
+                        }
+                    });
+            } else {
+                console.log(response);
+                bot.reply(message, "Please type play to join a table");
+            }
+        });
 
-            });
-            break;
-    }
+    });
 });
+//
+//controller.on('message_received', function (bot, message) {
+//    bot.reply(message, message.text);
+//
+//    var cmd = message.text.split(" ")[0];
+//    var args = message.text.substr(1 + cmd.length).split(" ");
+//    console.log(args);
+//    switch (cmd) {
+//        case "bet":
+//            bot.reply(message, 'your bet has been received');
+//            controller.storage.users.get(message.user, function (err, user) {
+//                if (!user) {
+//                    user = {
+//                        id: message.user,
+//                    };
+//                }
+//                //user.credit -= amt;
+//                //controller.storage.users.save(user, function (err, id) {
+//                //})
+//                console.log("player id ===>" + user.playerId);
+//                client.bet(user.playerId, 100, function (response) {
+//                    if (response.success === true) {
+//                        displayHands(response, message, bot, user.playerId, _);
+//                        bot.reply(message,
+//                            {
+//                                attachment: {
+//                                    type: "template",
+//                                    payload: {
+//                                        template_type: "generic",
+//                                        elements: [
+//                                            {
+//                                                title: "Do you want to hit or Stand",
+//                                                buttons: [
+//                                                    {
+//                                                        type: "postback",
+//                                                        title: "HIT",
+//                                                        payload: "hit"
+//                                                    },
+//                                                    {
+//                                                        type: "postback",
+//                                                        title: "STAND",
+//                                                        payload: "stand"
+//                                                    }
+//                                                    , {
+//                                                        type: "postback",
+//                                                        title: "Insurance",
+//                                                        payload: "insure"
+//                                                    }
+//                                                ]
+//                                            }
+//                                        ]
+//                                    }
+//                                }
+//                            });
+//                    } else {
+//                        console.log(response);
+//                        bot.reply(message, "Please type play to join a table");
+//                    }
+//                });
+//
+//            });
+//            break;
+//    }
+//});
