@@ -275,65 +275,6 @@ controller.hears(['hello', 'hi', '(.*)play(.*)', 'start', 'can we start?', 'Hall
     });
 })
 
-controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, message) {
-
-    // do something to respond to message
-    var text = message.text;
-    var amt = text.replace(/\D+/g, '');
-    //var amt = text.match(/\d+/g).join("");
-    console.log(amt)
-    bot.reply(message, 'your' + message.text + 'recieved!');
-    controller.storage.users.get(message.user, function (err, user) {
-        if (!user) {
-            user = {
-                id: message.user,
-            };
-        }
-        console.log("player id ===>" + user.playerId);
-        client.bet(user.playerId, 100, function (response) {
-
-            if (response.success === true) {
-                displayHands(response, message, bot, user.playerId, _);
-                bot.reply(message,
-                    {
-                        attachment: {
-                            type: "template",
-                            payload: {
-                                template_type: "generic",
-                                elements: [
-                                    {
-                                        title: "Do you want to hit or Stand",
-                                        buttons: [
-                                            {
-                                                type: "postback",
-                                                title: "HIT",
-                                                payload: "hit"
-                                            },
-                                            {
-                                                type: "postback",
-                                                title: "STAND",
-                                                payload: "stand"
-                                            }
-                                            , {
-                                                type: "postback",
-                                                title: "Insurance",
-                                                payload: "insure"
-                                            }
-                                        ]
-                                    }
-                                ]
-                            }
-                        }
-                    });
-            } else {
-                console.log(response);
-                bot.reply(message, "Please type play to join a table");
-            }
-        });
-
-    });
-
-});
 
 controller.hears(['(.*)(Lets) (.*)go(.*)'], 'message_received', function (bot, message) {
     bot.reply(message, "Great, there you are – do you remember where we left off? – Just scroll" +
@@ -540,7 +481,7 @@ controller.on('facebook_postback', function (bot, message) {
                     if (response.player.busted == false) {
                         bot.reply(message, "You are  on Table 1 with id" + playerId)
                         bot.reply(message, "You have credit of " + response.player.credits + "$")
-                        bot.reply(message, "How much do you want to bet (eg. bet amount $)")
+
                     }
                 });
             });
@@ -558,7 +499,7 @@ controller.on('facebook_postback', function (bot, message) {
                     if (response.player.busted == false) {
                         bot.reply(message, "You are on Table 2")
                         bot.reply(message, "You have credit of " + response.player.credits + " $")
-                        bot.reply(message, "How much do you want to bet (bet amount $)")
+
                     }
                 })
             });
@@ -576,7 +517,7 @@ controller.on('facebook_postback', function (bot, message) {
                     if (response.player.busted == false) {
                         bot.reply(message, "You are on Table 3 ")
                         bot.reply(message, "You have credit of " + response.player.credits + " $")
-                        bot.reply(message, "How much do you want to bet (bet amount $)")
+
                     }
                 })
 
@@ -595,7 +536,6 @@ controller.on('facebook_postback', function (bot, message) {
                     if (response.player.busted == false) {
                         bot.reply(message, "You are on Table 5 ")
                         bot.reply(message, "You have credit of " + response.player.credits + " $")
-
 
                         bot.reply(message, "How much do you want to bet (bet amount $)")
                     }
@@ -635,13 +575,72 @@ controller.on('facebook_postback', function (bot, message) {
                     if (response.player.busted == false) {
                         bot.reply(message, "You are on Table 6 ")
                         bot.reply(message, "You have credit of " + response.player.credits + " $")
-                        bot.reply(message, "How much do you want to bet (bet amount $)")
+
                     }
                 })
 
             });
             break
     }
+});
+controller.hears(['bet', '^pattern$'], ['message_received'], function (bot, message) {
+
+    // do something to respond to message
+    var text = message.text;
+    var amt = text.replace(/\D+/g, '');
+    //var amt = text.match(/\d+/g).join("");
+    console.log(amt)
+    bot.reply(message, 'your' + message.text + 'recieved!');
+    controller.storage.users.get(message.user, function (err, user) {
+        if (!user) {
+            user = {
+                id: message.user,
+            };
+        }
+        console.log("player id ===>" + user.playerId);
+        client.bet(user.playerId, 100, function (response) {
+
+            if (response.success === true) {
+                displayHands(response, message, bot, user.playerId, _);
+                bot.reply(message,
+                    {
+                        attachment: {
+                            type: "template",
+                            payload: {
+                                template_type: "generic",
+                                elements: [
+                                    {
+                                        title: "Do you want to hit or Stand",
+                                        buttons: [
+                                            {
+                                                type: "postback",
+                                                title: "HIT",
+                                                payload: "hit"
+                                            },
+                                            {
+                                                type: "postback",
+                                                title: "STAND",
+                                                payload: "stand"
+                                            }
+                                            , {
+                                                type: "postback",
+                                                title: "Insurance",
+                                                payload: "insure"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    });
+            } else {
+                console.log(response);
+                bot.reply(message, "Please type play to join a table");
+            }
+        });
+
+    });
+
 });
 //controller.on('message_received', function (bot, message) {
 //    bot.reply(message, "I didn't get that, I'm still trying to absorb the internet");
