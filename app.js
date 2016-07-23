@@ -595,6 +595,7 @@ controller.hears(['bet'], 'message_received', function (bot, message) {
             };
         }
         console.log("player id ===>" + user.playerId);
+        bot.reply(message, "betting");
         //client.bet(user.playerId, 100, function (response) {
         //    if (response.success === true) {
         //        displayHands(response, message, bot, user.playerId, _);
