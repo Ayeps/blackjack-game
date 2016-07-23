@@ -13,7 +13,7 @@ var tableid;
 var username;
 var tableState;
 var tables;
-var clientCall = require('./src/clientRestCalls');
+//var clientCall = require('./src/clientRestCalls');
 var mongoStorage = require('botkit-storage-mongo')({mongoUri: process.env.mongo_uri});
 //var mongoUri = process.env.mongo_uri;
 
