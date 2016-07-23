@@ -644,6 +644,10 @@ controller.on('facebook_postback', function (bot, message) {
 //});
 
 controller.on('message_received', function (bot, message) {
+
+
+    bot.reply(message, message.text);
+
     var cmd = message.text.split(" ")[0];
     var args = message.text.substr(1 + cmd.length).split(" ");
     console.log(args);
