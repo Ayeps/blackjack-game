@@ -158,6 +158,7 @@ function bet(playerId, amt, cb) {
         headers: {"Content-Type": "application/json"}
     }
     client.registerMethod("postMethod", URL + "bet", "POST");
+
     client.methods.postMethod(bet, function (data, response) {
         return cb(data);
     });
