@@ -657,7 +657,9 @@ controller.on('message_received', function (bot, message) {
         //one material
         //proper shirts
         //
-        var args = message.text.substr(1 + cmd.length).split(" ");
+
+        console.log("cmd" + cmd);
+        //var args = message.text.substr(1 + cmd.length).split(" ");
         switch (cmd) {
             case
             "bet"
