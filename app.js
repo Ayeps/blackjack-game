@@ -303,73 +303,7 @@ controller.hears(['are you hot?'], 'message_received', function (bot, message) {
 
     return false;
 });
-controller.on('message_received', function (bot, message) {
-        var text = message.text;
-        console.log("incoming" + text);
 
-        //var cmd = message.text.split(" ")[0];
-        //var args = message.text.substr(1 + cmd.length).split(" ");
-        switch (cmd) {
-            case
-            "bet"
-            :
-                bot.reply(message, 'your money has been received');
-                controller.storage.users.get(message.user, function (err, user) {
-                    if (!user) {
-                        user = {
-                            id: message.user,
-                        };
-                    }
-                    console.log("player id ===>" + user.playerId);
-                    bot.reply(message, "betting");
-                    client.bet(user.playerId, 100, function (response) {
-                        if (response.success === true) {
-                            displayHands(response, message, bot, user.playerId, _);
-                            bot.reply(message,
-                                {
-                                    attachment: {
-                                        type: "template",
-                                        payload: {
-                                            template_type: "generic",
-                                            elements: [
-                                                {
-                                                    title: "Do you want to hit or Stand",
-                                                    buttons: [
-                                                        {
-                                                            type: "postback",
-                                                            title: "HIT",
-                                                            payload: "hit"
-                                                        },
-                                                        {
-                                                            type: "postback",
-                                                            title: "STAND",
-                                                            payload: "stand"
-                                                        }
-                                                        , {
-                                                            type: "postback",
-                                                            title: "Insurance",
-                                                            payload: "insure"
-                                                        }
-                                                    ]
-                                                }
-                                            ]
-                                        }
-                                    }
-                                });
-                        } else {
-                            console.log(response);
-                            bot.reply(message, "Please type play to join a table");
-                        }
-                    });
-
-                });
-                break;
-            default:
-                //channel.sendMessage('Unknown command');
-                break;
-        }
-    }
-);
 controller.on('facebook_postback', function (bot, message) {
     switch (message.payload) {
         case 'yes':
@@ -710,3 +644,70 @@ controller.on('facebook_postback', function (bot, message) {
 //    });
 //});
 
+controller.on('message_received', function (bot, message) {
+        var text = message.text;
+        console.log("incoming" + text);
+        var cmd = "bet";
+        //var cmd = message.text.split(" ")[0];
+        //var args = message.text.substr(1 + cmd.length).split(" ");
+        switch (cmd) {
+            case
+            "bet"
+            :
+                bot.reply(message, 'your money has been received');
+                controller.storage.users.get(message.user, function (err, user) {
+                    if (!user) {
+                        user = {
+                            id: message.user,
+                        };
+                    }
+                    console.log("player id ===>" + user.playerId);
+                    bot.reply(message, "betting");
+                    client.bet(user.playerId, 100, function (response) {
+                        if (response.success === true) {
+                            displayHands(response, message, bot, user.playerId, _);
+                            bot.reply(message,
+                                {
+                                    attachment: {
+                                        type: "template",
+                                        payload: {
+                                            template_type: "generic",
+                                            elements: [
+                                                {
+                                                    title: "Do you want to hit or Stand",
+                                                    buttons: [
+                                                        {
+                                                            type: "postback",
+                                                            title: "HIT",
+                                                            payload: "hit"
+                                                        },
+                                                        {
+                                                            type: "postback",
+                                                            title: "STAND",
+                                                            payload: "stand"
+                                                        }
+                                                        , {
+                                                            type: "postback",
+                                                            title: "Insurance",
+                                                            payload: "insure"
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    }
+                                });
+                        } else {
+                            console.log(response);
+                            bot.reply(message, "Please type play to join a table");
+                        }
+                    });
+
+                });
+                break;
+            default:
+                //channel.sendMessage('Unknown command');
+                break;
+        }
+    }
+);
