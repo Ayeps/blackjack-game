@@ -17,7 +17,7 @@
     "config-js": "^1.1.9",
     "express": "^4.13.4",
     "getter-setter": "^0.2.1",
-    "is2": "^1.0.5",
+    "is2": "^1.0.9",
     "lodash": "^4.13.1",
     "mersenne-twister": "^1.0.1",
     "node-of-cards": "^1.0.0",

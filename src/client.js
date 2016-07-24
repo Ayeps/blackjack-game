@@ -154,28 +154,13 @@ function leaveTable(playerId, cb) {
  */
 function bet(playerId, amt, cb) {
     assert.ok(is.func(cb));
-    //var bet = {
-    //    data: {playerId: playerId, bet: amt}, // data passed to REST method (only useful in POST, PUT or PATCH methods)
-    //    headers: {"Content-Type": "application/json"}
-    //}
-    //client.registerMethod("postMethod", URL + "bet", "POST");
-    //
-    //client.methods.postMethod(bet, function (data, response) {
-    //    return cb(data);
-    //});
-
-    var body = {playerId: playerId, bet: amt};
-    clientCall.bet(body, function (err, json) {
-        if (err) {
-            console.error(err.message.red);
-            return cb();
-        }
-        assert.ok(json.player.bet === amt);
-        tableId = json.player.tableId;
-        tableState = json.table.state;
-        assert.ok(is.obj(json.player));
-        assert.ok(is.array(json.player.hand));
-        cb(data);
+    var bet = {
+        data: {"playerId": playerId, "bet": amt}, // data passed to REST method (only useful in POST, PUT or PATCH methods)
+        headers: {"Content-Type": "application/json"}
+    }
+    client.registerMethod("postMethod", URL + "bet", "POST");
+    client.methods.postMethod(bet, function (data, response) {
+        return cb(data);
     });
 }
 
