@@ -648,7 +648,15 @@ controller.on('message_received', function (bot, message) {
         var text = message.text;
         console.log("incoming" + text);
         //var cmd = "bet";
-        var cmd = message.text.split(" ")[0];
+        var cmd;
+        if (message.text != 'undefined') {
+            cmd = message.text.split(" ")[0];
+        } else {
+            cmd = "bet";
+        }
+        //one material
+        //proper shirts
+        //
         var args = message.text.substr(1 + cmd.length).split(" ");
         switch (cmd) {
             case
