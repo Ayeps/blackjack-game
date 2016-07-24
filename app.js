@@ -649,8 +649,8 @@ controller.on('message_received', function (bot, message) {
         console.log("incoming" + text);
         //var cmd = "bet";
         var cmd;
-        if (message.text != 'undefined') {
-            cmd = message.text.split(" ")[0];
+        if (message.text != null) {
+            cmd = "no cmd";
         } else {
             cmd = "bet";
         }
