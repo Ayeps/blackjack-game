@@ -643,8 +643,11 @@ controller.on('facebook_postback', function (bot, message) {
 //});
 
 controller.on('message_received', function (bot, message) {
-        var cmd = message.text.split(" ")[0];
-        var args = message.text.substr(1 + cmd.length).split(" ");
+        var text = message.text;
+        console.log("incoming" + text);
+
+        //var cmd = message.text.split(" ")[0];
+        //var args = message.text.substr(1 + cmd.length).split(" ");
         switch (cmd) {
             case
             "bet"
