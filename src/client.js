@@ -168,8 +168,6 @@ function bet(playerId, amt, cb) {
     clientCall.bet(body, function (err, json) {
         if (err) {
             console.error(err.message.red);
-            logger.error('%s', err.message);
-            logger.error('stack: ', err.stack);
             return cb();
         }
         assert.ok(json.player.bet === amt);

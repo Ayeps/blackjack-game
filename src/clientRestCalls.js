@@ -5,13 +5,13 @@
  */
 'use strict';
 var request = require('request');
-var Config = require('config-js').Config;
+//var Config = require('config-js').Config;
 var path = require('path');
-var logPath = path.join(__dirname, '..', 'conf', 'config.js');
-var config = new Config(logPath);
+//var logPath = path.join(__dirname, '..', 'conf', 'config.js');
+//var config = new Config(logPath);
 
-var PORT = config.get('port', 4201);
-var HOST = config.get('host', 'localhost');
+//var PORT = config.get('port', 4201);
+//var HOST = config.get('host', 'localhost');
 var URL = "https://rocky-basin-58768.herokuapp.com/"
 
 /**
