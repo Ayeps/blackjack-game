@@ -1,7 +1,7 @@
 /**
  * Created by Softmasters on 6/1/2016.
  */
-var Botkit = require('./lib/Botkit');
+var Botkit = require('botkit');
 var client = require('./src/client');
 var Cards = require('./src/cards');
 var assert = require('assert');
@@ -647,9 +647,9 @@ controller.on('facebook_postback', function (bot, message) {
 controller.on('message_received', function (bot, message) {
         var text = message.text;
         console.log("incoming" + text);
-        var cmd = "bet";
-        //var cmd = message.text.split(" ")[0];
-        //var args = message.text.substr(1 + cmd.length).split(" ");
+        //var cmd = "bet";
+        var cmd = message.text.split(" ")[0];
+        var args = message.text.substr(1 + cmd.length).split(" ");
         switch (cmd) {
             case
             "bet"
