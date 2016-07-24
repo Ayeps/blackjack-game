@@ -7,6 +7,7 @@ var Cards = require('./src/cards');
 var assert = require('assert');
 var is = require('is2');
 var _ = require('lodash');
+var fs = require('fs');
 var player = require('./src/player')
 var playerId = 1;
 var tableid;
@@ -155,10 +156,10 @@ displayHands = function (response, message, bot, playerId, _) {
 }
 
 
-controller.on('facebook_optin', function (bot, message) {
-    bot.reply(message, "Welcome to Blackjack ...");
-    bot.reply(message, 'Hi, my name is Pepper and I am your Black Jack Dealer.!');
-});
+//controller.on('facebook_optin', function (bot, message) {
+//    bot.reply(message, "Welcome to Blackjack ...");
+//    bot.reply(message, 'Hi, my name is Pepper and I am your Black Jack Dealer.!');
+//});
 controller.hears(['hello', 'hi', '(.*)play(.*)', 'start', 'can we start?', 'Hallo', 'Give me a card', 'new game'], 'message_received', function (bot, message) {
     controller.storage.users.get(message.user, function (err, user) {
         if (user && user.name) {
@@ -302,6 +303,73 @@ controller.hears(['are you hot?'], 'message_received', function (bot, message) {
 
     return false;
 });
+controller.on('message_received', function (bot, message) {
+        var text = message.text;
+        console.log("incoming" + text);
+
+        //var cmd = message.text.split(" ")[0];
+        //var args = message.text.substr(1 + cmd.length).split(" ");
+        switch (cmd) {
+            case
+            "bet"
+            :
+                bot.reply(message, 'your money has been received');
+                controller.storage.users.get(message.user, function (err, user) {
+                    if (!user) {
+                        user = {
+                            id: message.user,
+                        };
+                    }
+                    console.log("player id ===>" + user.playerId);
+                    bot.reply(message, "betting");
+                    client.bet(user.playerId, 100, function (response) {
+                        if (response.success === true) {
+                            displayHands(response, message, bot, user.playerId, _);
+                            bot.reply(message,
+                                {
+                                    attachment: {
+                                        type: "template",
+                                        payload: {
+                                            template_type: "generic",
+                                            elements: [
+                                                {
+                                                    title: "Do you want to hit or Stand",
+                                                    buttons: [
+                                                        {
+                                                            type: "postback",
+                                                            title: "HIT",
+                                                            payload: "hit"
+                                                        },
+                                                        {
+                                                            type: "postback",
+                                                            title: "STAND",
+                                                            payload: "stand"
+                                                        }
+                                                        , {
+                                                            type: "postback",
+                                                            title: "Insurance",
+                                                            payload: "insure"
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    }
+                                });
+                        } else {
+                            console.log(response);
+                            bot.reply(message, "Please type play to join a table");
+                        }
+                    });
+
+                });
+                break;
+            default:
+                //channel.sendMessage('Unknown command');
+                break;
+        }
+    }
+);
 controller.on('facebook_postback', function (bot, message) {
     switch (message.payload) {
         case 'yes':
@@ -642,70 +710,3 @@ controller.on('facebook_postback', function (bot, message) {
 //    });
 //});
 
-controller.on('message_received', function (bot, message) {
-        var text = message.text;
-        console.log("incoming" + text);
-
-        //var cmd = message.text.split(" ")[0];
-        //var args = message.text.substr(1 + cmd.length).split(" ");
-        switch (cmd) {
-            case
-            "bet"
-            :
-                bot.reply(message, 'your money has been received');
-                controller.storage.users.get(message.user, function (err, user) {
-                    if (!user) {
-                        user = {
-                            id: message.user,
-                        };
-                    }
-                    console.log("player id ===>" + user.playerId);
-                    bot.reply(message, "betting");
-                    client.bet(user.playerId, 100, function (response) {
-                        if (response.success === true) {
-                            displayHands(response, message, bot, user.playerId, _);
-                            bot.reply(message,
-                                {
-                                    attachment: {
-                                        type: "template",
-                                        payload: {
-                                            template_type: "generic",
-                                            elements: [
-                                                {
-                                                    title: "Do you want to hit or Stand",
-                                                    buttons: [
-                                                        {
-                                                            type: "postback",
-                                                            title: "HIT",
-                                                            payload: "hit"
-                                                        },
-                                                        {
-                                                            type: "postback",
-                                                            title: "STAND",
-                                                            payload: "stand"
-                                                        }
-                                                        , {
-                                                            type: "postback",
-                                                            title: "Insurance",
-                                                            payload: "insure"
-                                                        }
-                                                    ]
-                                                }
-                                            ]
-                                        }
-                                    }
-                                });
-                        } else {
-                            console.log(response);
-                            bot.reply(message, "Please type play to join a table");
-                        }
-                    });
-
-                });
-                break;
-            default:
-                //channel.sendMessage('Unknown command');
-                break;
-        }
-    }
-)
