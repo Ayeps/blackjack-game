@@ -129,7 +129,7 @@ displayHands = function (response, message, bot, playerId, _) {
         return 'continue';
     } else if (player.bet === -1 && is.obj(player.result)) {
         yourHand = player.result.players[playerId].hand;
-        displayHand('Your hand:', yourHand, message, bot, yourHand, _);
+        displayHand('Your hand:', yourHand, message, bot, _);
         return 'playeagain';
         if (player.result.players[playerId].push) {
             //console.log('Push. You have %s credits.', player.credits);
@@ -432,15 +432,17 @@ controller.on('facebook_postback', function (bot, message) {
                         id: message.user,
                     };
                 }
-
                 client.hit(user.playerId, function (response) {
                     //response, message, bot, playerId, _
-                    var option = displayHands(response, message, bot, user.playerId, _);
 
+                    bot.reply(message, "hit function");
+                    var option = displayHands(response, message, bot, user.playerId, _);
                     if (option === 'playagain') {
+
                         gamepromt(bot, message)
                     }
                     else {
+
                         continuegame(bot, message);
                     }
 
@@ -457,7 +459,7 @@ controller.on('facebook_postback', function (bot, message) {
                     };
                 }
                 client.stand(user.playerId, function (response) {
-                    displayHands(response, message, bot, user.playerId, _);
+                    var option = displayHands(response, message, bot, user.playerId, _);
                     if (option === 'playagain') {
                         gamepromt(bot, message)
                     }
@@ -491,45 +493,6 @@ controller.on('facebook_postback', function (bot, message) {
                                             console.log("amount bet ==>" + amt);
                                             // since no further messages are queued after this,
                                             // the conversation will end naturally with status == 'completed'
-                                            //client.bet(user.playerId, 100, function (response) {
-                                            //    if (response.success === true) {
-                                            //        displayHands(response, message, bot, user.playerId, _);
-                                            //        bot.reply(message,
-                                            //            {
-                                            //                attachment: {
-                                            //                    type: "template",
-                                            //                    payload: {
-                                            //                        template_type: "generic",
-                                            //                        elements: [
-                                            //                            {
-                                            //                                title: "Do you want to hit or Stand",
-                                            //                                buttons: [
-                                            //                                    {
-                                            //                                        type: "postback",
-                                            //                                        title: "HIT",
-                                            //                                        payload: "hit"
-                                            //                                    },
-                                            //                                    {
-                                            //                                        type: "postback",
-                                            //                                        title: "STAND",
-                                            //                                        payload: "stand"
-                                            //                                    }
-                                            //                                    , {
-                                            //                                        type: "postback",
-                                            //                                        title: "Insurance",
-                                            //                                        payload: "insure"
-                                            //                                    }
-                                            //                                ]
-                                            //                            }
-                                            //                        ]
-                                            //                    }
-                                            //                }
-                                            //            });
-                                            //    } else {
-                                            //        console.log(response);
-                                            //        bot.reply(message, "Please type play to join a table");
-                                            //    }
-                                            //});
                                             convo.next();
                                         }
                                     }, {
@@ -559,7 +522,6 @@ controller.on('facebook_postback', function (bot, message) {
                                             }
                                             controller.storage.users.save(user, function (err, id) {
                                                 message.money -= 100;
-
                                                 client.bet(user.playerId, 100, function (response) {
                                                     if (response.success === true) {
                                                         displayHands(response, message, bot, user.playerId, _);
