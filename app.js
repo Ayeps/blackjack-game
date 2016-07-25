@@ -134,17 +134,14 @@ displayHands = function (response, message, bot, playerId, _) {
         playoption = 'playeagain';
         if (player.result.players[playerId].push) {
             //console.log('Push. You have %s credits.', player.credits);
-            bot.reply(message, 'Push. You have %s credits.', player.credits)
+            bot.reply(message, 'Push. You have' + player.credits + 'credits.')
             playoption = 'playagain';
         } else {
             //console.log('You %s %s and currently have %s credits.',
             //    (player.result.players[playerId].win ? 'won' : 'lost'),
             //    player.result.players[playerId].bet,
             //    player.credits);
-            bot.reply(message, 'You %s %s and currently have %s credits.',
-                (player.result.players[playerId].win ? 'won' : 'lost'),
-                player.result.players[playerId].bet,
-                player.credits);
+            bot.reply(message, 'You ' + (player.result.players[playerId].win ? 'won' : 'lost') + ',' + player.result.players[playerId].bet + ' and currently have ' + player.credits + ' credits.');
             //playeragain(bot, message);
             playoption = 'playagain';
         }
@@ -272,8 +269,6 @@ controller.hears(['hello', 'hi', '(.*)play(.*)', 'start', 'can we start?', 'Hall
         }
     });
 })
-
-
 controller.hears(['(.*)(Lets) (.*)go(.*)'], 'message_received', function (bot, message) {
     bot.reply(message, "Great, there you are – do you remember where we left off? – Just scroll" +
         " above to check or type ,new game“…");
@@ -299,7 +294,6 @@ controller.hears(['are you hot?'], 'message_received', function (bot, message) {
 
     return false;
 });
-
 controller.on('facebook_postback', function (bot, message) {
     switch (message.payload) {
         case 'yes':
@@ -420,6 +414,7 @@ controller.on('facebook_postback', function (bot, message) {
                 }
                 console.log(playerId);
                 client.leaveTable(user.playerId, function (response) {
+                    //response.
                 })
 
             });
@@ -438,6 +433,7 @@ controller.on('facebook_postback', function (bot, message) {
 
                     bot.reply(message, "hit function");
                     var option = displayHands(response, message, bot, user.playerId, _);
+                    //save mount player has
                     if (option === 'playagain') {
 
                         gamepromt(bot, message)
@@ -461,7 +457,10 @@ controller.on('facebook_postback', function (bot, message) {
                 }
                 client.stand(user.playerId, function (response) {
                     var option = displayHands(response, message, bot, user.playerId, _);
+                    //where to save player money
                     if (option === 'playagain') {
+
+
                         gamepromt(bot, message)
                     }
                     else {
@@ -521,8 +520,8 @@ controller.on('facebook_postback', function (bot, message) {
                                                     id: message.user,
                                                 };
                                             }
+                                            message.money -= 100;
                                             controller.storage.users.save(user, function (err, id) {
-                                                message.money -= 100;
                                                 client.bet(user.playerId, 100, function (response) {
                                                     if (response.success === true) {
                                                         displayHands(response, message, bot, user.playerId, _);
