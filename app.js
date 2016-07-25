@@ -133,8 +133,7 @@ displayHands = function (response, message, bot, playerId, _) {
         displayHand('Your hand:', yourHand, message, bot, _);
         playoption = 'playeagain';
         if (player.result.players[playerId].push) {
-            //console.log('Push. You have %s credits.', player.credits);
-            bot.reply(message, 'Push. You have' + player.credits + 'credits.')
+            bot.reply(message, 'Push. You have' + player.credits + 'credits.');
             playoption = 'playagain';
         } else {
             bot.reply(message, 'You ' + (player.result.players[playerId].win ? 'won' : 'lost') + ',' + player.result.players[playerId].bet + ' and currently have ' + player.credits + ' credits.');
@@ -435,7 +434,6 @@ controller.on('facebook_postback', function (bot, message) {
                         gamepromt(bot, message)
                     }
                     else {
-
                         continuegame(bot, message);
                     }
 
@@ -443,8 +441,6 @@ controller.on('facebook_postback', function (bot, message) {
             });
             break
         case 'stand':
-            //call function to perform stand operation
-
             controller.storage.users.get(message.user, function (err, user) {
                 if (!user) {
                     user = {
