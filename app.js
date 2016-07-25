@@ -122,19 +122,20 @@ displayHands = function (response, message, bot, playerId, _) {
     assert.ok(is.nonEmptyObj(table));
     var dealerHand = table.dealer.hand;
     var yourHand;
+    var playoption = null;
     displayHand('Dealers hand:', dealerHand, message, bot, _);
     if (is.positiveInt(player.bet)) {
         yourHand = table.players[playerId].hand;
         displayHand('Your hand:', yourHand, message, bot, _);
-        return 'continue';
+        playoption = 'continue';
     } else if (player.bet === -1 && is.obj(player.result)) {
         yourHand = player.result.players[playerId].hand;
         displayHand('Your hand:', yourHand, message, bot, _);
-        return 'playeagain';
+        playoption = 'playeagain';
         if (player.result.players[playerId].push) {
             //console.log('Push. You have %s credits.', player.credits);
             bot.reply(message, 'Push. You have %s credits.', player.credits)
-            return 'playagain';
+            playoption = 'playagain';
         } else {
             //console.log('You %s %s and currently have %s credits.',
             //    (player.result.players[playerId].win ? 'won' : 'lost'),
@@ -145,12 +146,12 @@ displayHands = function (response, message, bot, playerId, _) {
                 player.result.players[playerId].bet,
                 player.credits);
             //playeragain(bot, message);
-            return 'playagain';
+            playoption = 'playagain';
         }
+
     }
+    return playoption;
 }
-
-
 controller.on('facebook_optin', function (bot, message) {
     bot.reply(message, "Welcome to Blackjack ...");
     bot.reply(message, 'Hi, my name is Pepper and I am your Black Jack Dealer.!');
