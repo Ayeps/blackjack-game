@@ -143,6 +143,8 @@ displayHands = function (response, message, bot, playerId, _) {
             //    player.credits);
             bot.reply(message, 'You ' + (player.result.players[playerId].win ? 'won' : 'lost') + ',' + player.result.players[playerId].bet + ' and currently have ' + player.credits + ' credits.');
             //playeragain(bot, message);
+
+
             playoption = 'playagain';
         }
 
@@ -311,6 +313,7 @@ controller.on('facebook_postback', function (bot, message) {
                     console.log("login resposne");
                     console.log("player id" + response.playerId);
                     user.playerId = response.playerId;
+                    //user.money = response.playerId;
                     playerId = response.playerId;
                     controller.storage.users.save(user, function (err, id) {
                     })
@@ -436,6 +439,10 @@ controller.on('facebook_postback', function (bot, message) {
                     //save mount player has
                     if (option === 'playagain') {
 
+                        user.money += response.player.credits;
+                        //playerId = response.playerId;
+                        controller.storage.users.save(user, function (err, id) {
+                        })
                         gamepromt(bot, message)
                     }
                     else {
@@ -455,12 +462,18 @@ controller.on('facebook_postback', function (bot, message) {
                         id: message.user,
                     };
                 }
+                user.money = response.playerId;
+                //playerId = response.playerId;
+                controller.storage.users.save(user, function (err, id) {
+                })
                 client.stand(user.playerId, function (response) {
                     var option = displayHands(response, message, bot, user.playerId, _);
                     //where to save player money
                     if (option === 'playagain') {
-
-
+                        user.money += response.player.credits;
+                        //playerId = response.playerId;
+                        controller.storage.users.save(user, function (err, id) {
+                        })
                         gamepromt(bot, message)
                     }
                     else {
@@ -583,11 +596,97 @@ controller.on('facebook_postback', function (bot, message) {
                 console.log(playerId);
                 client.joinTable(user.playerId, 2, function (response) {
                     if (response.player.busted == false) {
-                        bot.reply(message, "You are on Table 2")
-                        bot.reply(message, "You have credit of " + response.player.credits + " $")
+                        bot.reply(message, "You are  on Table 2 with id" + playerId)
+                        bot.reply(message, "You have credit of " + response.player.credits + "$")
+                        bot.startConversation(message, function (err, convo) {
+                            if (!err) {
+                                convo.ask('How much do want to bet?', function (response, convo) {
+                                    convo.ask('You want me to call you ' + response.text + '? (yes/no)', [{
+                                        pattern: 'yes',
+                                        callback: function (response, convo) {
+                                            console.log(response.text);
+                                            var text = response.text;
+                                            var amt = text.replace(/\D+/g, '');
+                                            console.log("amount bet ==>" + amt);
+                                            // since no further messages are queued after this,
+                                            // the conversation will end naturally with status == 'completed'
+                                            convo.next();
+                                        }
+                                    }, {
+                                        pattern: 'no',
+                                        callback: function (response, convo) {
+                                            // stop the conversation. this will cause it to end with status == 'stopped'
+                                            convo.repeat();
+                                            convo.next();
+                                        }
+                                    }, {
+                                        default: true,
+                                        callback: function (response, convo) {
+                                            convo.repeat();
+                                            convo.next();
+                                        }
+                                    }]);
+                                    convo.next();
+                                }); // store the results in a field called nickname
+
+                                convo.on('end', function (convo) {
+                                    if (convo.status == 'completed') {
+                                        controller.storage.users.get(message.user, function (err, user) {
+                                            if (!user) {
+                                                user = {
+                                                    id: message.user,
+                                                };
+                                            }
+                                            message.money -= 100;
+                                            controller.storage.users.save(user, function (err, id) {
+                                                client.bet(user.playerId, 100, function (response) {
+                                                    if (response.success === true) {
+                                                        displayHands(response, message, bot, user.playerId, _);
+                                                        bot.reply(message,
+                                                            {
+                                                                attachment: {
+                                                                    type: "template",
+                                                                    payload: {
+                                                                        template_type: "generic",
+                                                                        elements: [
+                                                                            {
+                                                                                title: "Do you want to hit or Stand",
+                                                                                buttons: [
+                                                                                    {
+                                                                                        type: "postback",
+                                                                                        title: "HIT",
+                                                                                        payload: "hit"
+                                                                                    },
+                                                                                    {
+                                                                                        type: "postback",
+                                                                                        title: "STAND",
+                                                                                        payload: "stand"
+                                                                                    }
+                                                                                    , {
+                                                                                        type: "postback",
+                                                                                        title: "Insurance",
+                                                                                        payload: "insure"
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                }
+                                                            });
+                                                    } else {
+                                                        console.log(response);
+                                                        bot.reply(message, "Please type play to join a table");
+                                                    }
+                                                });
+                                            });
+                                        });
+                                    }
+                                });
+                            }
+                        });
 
                     }
-                })
+                });
             });
             break
         case '3':
@@ -601,10 +700,97 @@ controller.on('facebook_postback', function (bot, message) {
                 console.log(playerId);
                 client.joinTable(user.playerId, 3, function (response) {
                     if (response.player.busted == false) {
-                        bot.reply(message, "You are on Table 3 ")
-                        bot.reply(message, "You have credit of " + response.player.credits + " $")
+                        bot.reply(message, "You are  on Table 3 with id" + playerId)
+                        bot.reply(message, "You have credit of " + response.player.credits + "$")
+                        bot.startConversation(message, function (err, convo) {
+                            if (!err) {
+                                convo.ask('How much do want to bet?', function (response, convo) {
+                                    convo.ask('You want me to call you ' + response.text + '? (yes/no)', [{
+                                        pattern: 'yes',
+                                        callback: function (response, convo) {
+                                            console.log(response.text);
+                                            var text = response.text;
+                                            var amt = text.replace(/\D+/g, '');
+                                            console.log("amount bet ==>" + amt);
+                                            // since no further messages are queued after this,
+                                            // the conversation will end naturally with status == 'completed'
+                                            convo.next();
+                                        }
+                                    }, {
+                                        pattern: 'no',
+                                        callback: function (response, convo) {
+                                            // stop the conversation. this will cause it to end with status == 'stopped'
+                                            convo.repeat();
+                                            convo.next();
+                                        }
+                                    }, {
+                                        default: true,
+                                        callback: function (response, convo) {
+                                            convo.repeat();
+                                            convo.next();
+                                        }
+                                    }]);
+                                    convo.next();
+                                }); // store the results in a field called nickname
+
+                                convo.on('end', function (convo) {
+                                    if (convo.status == 'completed') {
+                                        controller.storage.users.get(message.user, function (err, user) {
+                                            if (!user) {
+                                                user = {
+                                                    id: message.user,
+                                                };
+                                            }
+                                            message.money -= 100;
+                                            controller.storage.users.save(user, function (err, id) {
+                                                client.bet(user.playerId, 100, function (response) {
+                                                    if (response.success === true) {
+                                                        displayHands(response, message, bot, user.playerId, _);
+                                                        bot.reply(message,
+                                                            {
+                                                                attachment: {
+                                                                    type: "template",
+                                                                    payload: {
+                                                                        template_type: "generic",
+                                                                        elements: [
+                                                                            {
+                                                                                title: "Do you want to hit or Stand",
+                                                                                buttons: [
+                                                                                    {
+                                                                                        type: "postback",
+                                                                                        title: "HIT",
+                                                                                        payload: "hit"
+                                                                                    },
+                                                                                    {
+                                                                                        type: "postback",
+                                                                                        title: "STAND",
+                                                                                        payload: "stand"
+                                                                                    }
+                                                                                    , {
+                                                                                        type: "postback",
+                                                                                        title: "Insurance",
+                                                                                        payload: "insure"
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                }
+                                                            });
+                                                    } else {
+                                                        console.log(response);
+                                                        bot.reply(message, "Please type play to join a table");
+                                                    }
+                                                });
+                                            });
+                                        });
+                                    }
+                                });
+                            }
+                        });
+
                     }
-                })
+                });
 
             });
             break
@@ -619,11 +805,97 @@ controller.on('facebook_postback', function (bot, message) {
                 console.log(playerId);
                 client.joinTable(user.playerId, 4, function (response) {
                     if (response.player.busted == false) {
-                        bot.reply(message, "You are on Table 5 ")
-                        bot.reply(message, "You have credit of " + response.player.credits + " $")
-                        bot.reply(message, "How much do you want to bet (bet amount $)")
+                        bot.reply(message, "You are  on Table 4 with id" + playerId)
+                        bot.reply(message, "You have credit of " + response.player.credits + "$")
+                        bot.startConversation(message, function (err, convo) {
+                            if (!err) {
+                                convo.ask('How much do want to bet?', function (response, convo) {
+                                    convo.ask('You want me to call you ' + response.text + '? (yes/no)', [{
+                                        pattern: 'yes',
+                                        callback: function (response, convo) {
+                                            console.log(response.text);
+                                            var text = response.text;
+                                            var amt = text.replace(/\D+/g, '');
+                                            console.log("amount bet ==>" + amt);
+                                            // since no further messages are queued after this,
+                                            // the conversation will end naturally with status == 'completed'
+                                            convo.next();
+                                        }
+                                    }, {
+                                        pattern: 'no',
+                                        callback: function (response, convo) {
+                                            // stop the conversation. this will cause it to end with status == 'stopped'
+                                            convo.repeat();
+                                            convo.next();
+                                        }
+                                    }, {
+                                        default: true,
+                                        callback: function (response, convo) {
+                                            convo.repeat();
+                                            convo.next();
+                                        }
+                                    }]);
+                                    convo.next();
+                                }); // store the results in a field called nickname
+
+                                convo.on('end', function (convo) {
+                                    if (convo.status == 'completed') {
+                                        controller.storage.users.get(message.user, function (err, user) {
+                                            if (!user) {
+                                                user = {
+                                                    id: message.user,
+                                                };
+                                            }
+                                            message.money -= 100;
+                                            controller.storage.users.save(user, function (err, id) {
+                                                client.bet(user.playerId, 100, function (response) {
+                                                    if (response.success === true) {
+                                                        displayHands(response, message, bot, user.playerId, _);
+                                                        bot.reply(message,
+                                                            {
+                                                                attachment: {
+                                                                    type: "template",
+                                                                    payload: {
+                                                                        template_type: "generic",
+                                                                        elements: [
+                                                                            {
+                                                                                title: "Do you want to hit or Stand",
+                                                                                buttons: [
+                                                                                    {
+                                                                                        type: "postback",
+                                                                                        title: "HIT",
+                                                                                        payload: "hit"
+                                                                                    },
+                                                                                    {
+                                                                                        type: "postback",
+                                                                                        title: "STAND",
+                                                                                        payload: "stand"
+                                                                                    }
+                                                                                    , {
+                                                                                        type: "postback",
+                                                                                        title: "Insurance",
+                                                                                        payload: "insure"
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                }
+                                                            });
+                                                    } else {
+                                                        console.log(response);
+                                                        bot.reply(message, "Please type play to join a table");
+                                                    }
+                                                });
+                                            });
+                                        });
+                                    }
+                                });
+                            }
+                        });
+
                     }
-                })
+                });
 
             });
             break
@@ -638,11 +910,97 @@ controller.on('facebook_postback', function (bot, message) {
                 console.log(playerId);
                 client.joinTable(user.playerId, 5, function (response) {
                     if (response.player.busted == false) {
-                        bot.reply(message, "You are on Table 5 ")
-                        bot.reply(message, "You have credit of " + response.player.credits + " $")
-                        bot.reply(message, "How much do you want to bet (bet amount $)")
+                        bot.reply(message, "You are  on Table 5 with id" + playerId)
+                        bot.reply(message, "You have credit of " + response.player.credits + "$")
+                        bot.startConversation(message, function (err, convo) {
+                            if (!err) {
+                                convo.ask('How much do want to bet?', function (response, convo) {
+                                    convo.ask('You want me to call you ' + response.text + '? (yes/no)', [{
+                                        pattern: 'yes',
+                                        callback: function (response, convo) {
+                                            console.log(response.text);
+                                            var text = response.text;
+                                            var amt = text.replace(/\D+/g, '');
+                                            console.log("amount bet ==>" + amt);
+                                            // since no further messages are queued after this,
+                                            // the conversation will end naturally with status == 'completed'
+                                            convo.next();
+                                        }
+                                    }, {
+                                        pattern: 'no',
+                                        callback: function (response, convo) {
+                                            // stop the conversation. this will cause it to end with status == 'stopped'
+                                            convo.repeat();
+                                            convo.next();
+                                        }
+                                    }, {
+                                        default: true,
+                                        callback: function (response, convo) {
+                                            convo.repeat();
+                                            convo.next();
+                                        }
+                                    }]);
+                                    convo.next();
+                                }); // store the results in a field called nickname
+
+                                convo.on('end', function (convo) {
+                                    if (convo.status == 'completed') {
+                                        controller.storage.users.get(message.user, function (err, user) {
+                                            if (!user) {
+                                                user = {
+                                                    id: message.user,
+                                                };
+                                            }
+                                            message.money -= 100;
+                                            controller.storage.users.save(user, function (err, id) {
+                                                client.bet(user.playerId, 100, function (response) {
+                                                    if (response.success === true) {
+                                                        displayHands(response, message, bot, user.playerId, _);
+                                                        bot.reply(message,
+                                                            {
+                                                                attachment: {
+                                                                    type: "template",
+                                                                    payload: {
+                                                                        template_type: "generic",
+                                                                        elements: [
+                                                                            {
+                                                                                title: "Do you want to hit or Stand",
+                                                                                buttons: [
+                                                                                    {
+                                                                                        type: "postback",
+                                                                                        title: "HIT",
+                                                                                        payload: "hit"
+                                                                                    },
+                                                                                    {
+                                                                                        type: "postback",
+                                                                                        title: "STAND",
+                                                                                        payload: "stand"
+                                                                                    }
+                                                                                    , {
+                                                                                        type: "postback",
+                                                                                        title: "Insurance",
+                                                                                        payload: "insure"
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                }
+                                                            });
+                                                    } else {
+                                                        console.log(response);
+                                                        bot.reply(message, "Please type play to join a table");
+                                                    }
+                                                });
+                                            });
+                                        });
+                                    }
+                                });
+                            }
+                        });
+
                     }
-                })
+                });
 
             });
             break
@@ -657,11 +1015,96 @@ controller.on('facebook_postback', function (bot, message) {
                 console.log(playerId);
                 client.joinTable(user.playerId, 6, function (response) {
                     if (response.player.busted == false) {
-                        bot.reply(message, "You are on Table 6 ")
-                        bot.reply(message, "You have credit of " + response.player.credits + " $")
+                        bot.reply(message, "You are  on Table 6 with id" + playerId)
+                        bot.reply(message, "You have credit of " + response.player.credits + "$")
+                        bot.startConversation(message, function (err, convo) {
+                            if (!err) {
+                                convo.ask('How much do want to bet?', function (response, convo) {
+                                    convo.ask('You want me to call you ' + response.text + '? (yes/no)', [{
+                                        pattern: 'yes',
+                                        callback: function (response, convo) {
+                                            console.log(response.text);
+                                            var text = response.text;
+                                            var amt = text.replace(/\D+/g, '');
+                                            console.log("amount bet ==>" + amt);
+                                            // since no further messages are queued after this,
+                                            // the conversation will end naturally with status == 'completed'
+                                            convo.next();
+                                        }
+                                    }, {
+                                        pattern: 'no',
+                                        callback: function (response, convo) {
+                                            // stop the conversation. this will cause it to end with status == 'stopped'
+                                            convo.repeat();
+                                            convo.next();
+                                        }
+                                    }, {
+                                        default: true,
+                                        callback: function (response, convo) {
+                                            convo.repeat();
+                                            convo.next();
+                                        }
+                                    }]);
+                                    convo.next();
+                                }); // store the results in a field called nickname
 
+                                convo.on('end', function (convo) {
+                                    if (convo.status == 'completed') {
+                                        controller.storage.users.get(message.user, function (err, user) {
+                                            if (!user) {
+                                                user = {
+                                                    id: message.user,
+                                                };
+                                            }
+                                            message.money -= 100;
+                                            controller.storage.users.save(user, function (err, id) {
+                                                client.bet(user.playerId, 100, function (response) {
+                                                    if (response.success === true) {
+                                                        displayHands(response, message, bot, user.playerId, _);
+                                                        bot.reply(message,
+                                                            {
+                                                                attachment: {
+                                                                    type: "template",
+                                                                    payload: {
+                                                                        template_type: "generic",
+                                                                        elements: [
+                                                                            {
+                                                                                title: "Do you want to hit or Stand",
+                                                                                buttons: [
+                                                                                    {
+                                                                                        type: "postback",
+                                                                                        title: "HIT",
+                                                                                        payload: "hit"
+                                                                                    },
+                                                                                    {
+                                                                                        type: "postback",
+                                                                                        title: "STAND",
+                                                                                        payload: "stand"
+                                                                                    }
+                                                                                    , {
+                                                                                        type: "postback",
+                                                                                        title: "Insurance",
+                                                                                        payload: "insure"
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                }
+                                                            });
+                                                    } else {
+                                                        console.log(response);
+                                                        bot.reply(message, "Please type play to join a table");
+                                                    }
+                                                });
+                                            });
+                                        });
+                                    }
+                                });
+                            }
+                        });
                     }
-                })
+                });
 
             });
             break
