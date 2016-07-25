@@ -137,14 +137,7 @@ displayHands = function (response, message, bot, playerId, _) {
             bot.reply(message, 'Push. You have' + player.credits + 'credits.')
             playoption = 'playagain';
         } else {
-            //console.log('You %s %s and currently have %s credits.',
-            //    (player.result.players[playerId].win ? 'won' : 'lost'),
-            //    player.result.players[playerId].bet,
-            //    player.credits);
             bot.reply(message, 'You ' + (player.result.players[playerId].win ? 'won' : 'lost') + ',' + player.result.players[playerId].bet + ' and currently have ' + player.credits + ' credits.');
-            //playeragain(bot, message);
-
-
             playoption = 'playagain';
         }
 
@@ -432,13 +425,9 @@ controller.on('facebook_postback', function (bot, message) {
                     };
                 }
                 client.hit(user.playerId, function (response) {
-                    //response, message, bot, playerId, _
-
-                    bot.reply(message, "hit function");
                     var option = displayHands(response, message, bot, user.playerId, _);
                     //save mount player has
                     if (option === 'playagain') {
-
                         user.money += response.player.credits;
                         //playerId = response.playerId;
                         controller.storage.users.save(user, function (err, id) {
@@ -462,10 +451,7 @@ controller.on('facebook_postback', function (bot, message) {
                         id: message.user,
                     };
                 }
-                user.money = response.playerId;
-                //playerId = response.playerId;
-                controller.storage.users.save(user, function (err, id) {
-                })
+
                 client.stand(user.playerId, function (response) {
                     var option = displayHands(response, message, bot, user.playerId, _);
                     //where to save player money
@@ -474,6 +460,7 @@ controller.on('facebook_postback', function (bot, message) {
                         //playerId = response.playerId;
                         controller.storage.users.save(user, function (err, id) {
                         })
+
                         gamepromt(bot, message)
                     }
                     else {
