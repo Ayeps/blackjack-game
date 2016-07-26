@@ -429,7 +429,8 @@ controller.on('facebook_postback', function (bot, message) {
                     var option = displayHands(response, message, bot, user.playerId, _);
                     //save mount player has
                     if (option === 'playagain') {
-                        user.money = parseInt(user.money) + parseInt(response.player.credits);
+                        user.money = 100;
+
                         console.log("amount paid" + (parseInt(user.money) + parseInt(response.player.credits)));
                         //playerId = response.playerId;
                         controller.storage.users.save(user, function (err, id) {
@@ -455,7 +456,10 @@ controller.on('facebook_postback', function (bot, message) {
                     var option = displayHands(response, message, bot, user.playerId, _);
                     //where to save player money
                     if (option === 'playagain') {
-                        user.money = parseInt(user.money) + parseInt(response.player.credits);
+                        user.money = response.player.credits;
+
+                        console.log(response.player.credits);
+                        console.log("amount paid" + (parseInt(user.money) + parseInt(response.player.credits)));
                         //playerId = response.playerId;
                         controller.storage.users.save(user, function (err, id) {
                         })
