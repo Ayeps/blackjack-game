@@ -151,6 +151,8 @@ controller.hears(['hello', 'hi', '(.*)play(.*)', 'start', 'can we start?', 'Hall
     controller.storage.users.get(message.user, function (err, user) {
         if (user && user.name) {
             bot.reply(message, 'Hello ' + user.name + '!!');
+            bot.reply(message, 'Welcome back back');
+            bot.reply(message, 'You have ' + user.money + '$');
             bot.reply(message,
                 {
                     attachment: {
@@ -428,6 +430,7 @@ controller.on('facebook_postback', function (bot, message) {
                     //save mount player has
                     if (option === 'playagain') {
                         user.money = parseInt(user.money) + parseInt(response.player.credits);
+                        console.log("amount paid" + (parseInt(user.money) + parseInt(response.player.credits)));
                         //playerId = response.playerId;
                         controller.storage.users.save(user, function (err, id) {
                         })
