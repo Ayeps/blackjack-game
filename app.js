@@ -290,6 +290,12 @@ controller.hears(['are you hot?'], 'message_received', function (bot, message) {
 
     return false;
 });
+controller.hears(['(.*)rules(.*)'], 'message_received', function (bot, message) {
+    var text = "BlackJackBot made by $\\large\\color{Orange}{ToastyStoemp}$\nAvailble commands: help, rules, join, leave, start, bet, hand, surrender, hit, stand, split, doubleDown" + "\nThe game is a 3-2 payout soft bet and stand till 17";
+    sendmessage(bot, message, text);
+});
+
+
 controller.on('facebook_postback', function (bot, message) {
     switch (message.payload) {
         case 'yes':
@@ -429,7 +435,8 @@ controller.on('facebook_postback', function (bot, message) {
                     var option = displayHands(response, message, bot, user.playerId, _);
                     //save mount player has
                     if (option === 'playagain') {
-                        user.money = 100;
+                        user.money = (parseInt(user.money) + parseInt(response.player.credits)) + "";
+                        ;
 
                         console.log("amount paid" + (parseInt(user.money) + parseInt(response.player.credits)));
                         //playerId = response.playerId;
@@ -456,7 +463,7 @@ controller.on('facebook_postback', function (bot, message) {
                     var option = displayHands(response, message, bot, user.playerId, _);
                     //where to save player money
                     if (option === 'playagain') {
-                        user.money = response.player.credits;
+                        user.money = (parseInt(user.money) + parseInt(response.player.credits)) + "";
 
                         console.log(response.player.credits);
                         console.log("amount paid" + (parseInt(user.money) + parseInt(response.player.credits)));
