@@ -291,7 +291,7 @@ controller.hears(['are you hot?'], 'message_received', function (bot, message) {
     return false;
 });
 controller.hears(['(.*)rules(.*)'], 'message_received', function (bot, message) {
-    var text = "BlackJackBot made by $\\large\\color{Orange}{ToastyStoemp}$\nAvailble commands: help, rules, join, leave, start, bet, hand, surrender, hit, stand, split, doubleDown" + "\nThe game is a 3-2 payout soft bet and stand till 17";
+    var text = "BlackJackBot available  commands: help, rules, join, leave, start, bet, hand, surrender, hit, stand, split, doubleDown The game is a 3-2 payout soft bet and stand till 17";
     sendmessage(bot, message, text);
 });
 
@@ -442,6 +442,10 @@ controller.on('facebook_postback', function (bot, message) {
                         //playerId = response.playerId;
                         controller.storage.users.save(user, function (err, id) {
                         })
+                        console.log(playerId);
+                        client.leaveTable(user.playerId, function (response) {
+                            //response.
+                        })
                         gamepromt(bot, message)
                     }
                     else {
@@ -471,6 +475,10 @@ controller.on('facebook_postback', function (bot, message) {
                         controller.storage.users.save(user, function (err, id) {
                         })
 
+                        console.log(playerId);
+                        client.leaveTable(user.playerId, function (response) {
+                            //response.
+                        })
                         gamepromt(bot, message)
                     }
                     else {
