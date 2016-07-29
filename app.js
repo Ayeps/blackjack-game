@@ -114,7 +114,9 @@ continuegame = function (bot, message) {
     );
 }
 
-
+sendmessage = function (bot, message, text) {
+    bot.reply(message, text);
+}
 displayHands = function (response, message, bot, playerId, _) {
     console.log(playerId + " is the player id");
     var table = response.table;
@@ -291,6 +293,12 @@ controller.hears(['are you hot?'], 'message_received', function (bot, message) {
     return false;
 });
 controller.hears(['(.*)rules(.*)'], 'message_received', function (bot, message) {
+    var text = "BlackJackBot available  commands: help, rules, join, leave, start, bet, hand, surrender, hit, stand, split, doubleDown The game is a 3-2 payout soft bet and stand till 17";
+    sendmessage(bot, message, text);
+});
+
+
+controller.hears(['data'], 'message_received', function (bot, message) {
     var text = "BlackJackBot available  commands: help, rules, join, leave, start, bet, hand, surrender, hit, stand, split, doubleDown The game is a 3-2 payout soft bet and stand till 17";
     sendmessage(bot, message, text);
 });
