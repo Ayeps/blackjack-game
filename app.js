@@ -325,7 +325,8 @@ controller.hears(['data'], 'message_received', function (bot, message) {
             money: 569
         };
 
-        history.push(historydata);
+
+        history.add(historydata);
 
         user.history = history;
 
