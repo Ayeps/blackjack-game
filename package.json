@@ -15,6 +15,7 @@
     "botkit": "^0.2.2",
     "botkit-storage-mongo": "^1.0.4",
     "config-js": "^1.1.9",
+    "dateformat": "^1.0.12",
     "express": "^4.13.4",
     "getter-setter": "^0.2.1",
     "is2": "^1.0.9",

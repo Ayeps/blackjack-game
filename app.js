@@ -9,6 +9,7 @@ var is = require('is2');
 var _ = require('lodash');
 var fs = require('fs');
 var player = require('./src/player')
+var dateFormat = require('dateformat')
 var playerId = 1;
 var tables;
 var mongoStorage = require('botkit-storage-mongo')({mongoUri: process.env.mongo_uri});
@@ -311,7 +312,9 @@ controller.hears(['data'], 'message_received', function (bot, message) {
         user.name = "Testing";
         //user.money = response.playerId;
 
-        var date = new Date();
+        var now = new Date();
+
+        var date = dateFormat(now, "dddd, mmmm dS, yyyy, h:MM:ss TT");
 
 
         user.lastdate = date;
