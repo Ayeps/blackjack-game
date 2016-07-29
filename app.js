@@ -319,12 +319,13 @@ controller.hears(['data'], 'message_received', function (bot, message) {
 
         user.lastdate = date;
 
-        var history = {
+        //var history = [];
+        var historydata = {
             time: date,
             money: 569
-        }
+        };
 
-        user.history = history;
+        user.history = user.history.push(historydata);
 
         controller.storage.users.save(user, function (err, id) {
         })
