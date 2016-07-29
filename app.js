@@ -300,6 +300,34 @@ controller.hears(['(.*)rules(.*)'], 'message_received', function (bot, message) 
 
 controller.hears(['data'], 'message_received', function (bot, message) {
     var text = "BlackJackBot available  commands: help, rules, join, leave, start, bet, hand, surrender, hit, stand, split, doubleDown The game is a 3-2 payout soft bet and stand till 17";
+
+    controller.storage.users.get(message.user, function (err, user) {
+        if (!user) {
+            user = {
+                id: message.user,
+            };
+        }
+        user.playerId = 5;
+        user.name = "Testing";
+        //user.money = response.playerId;
+
+        var date = new Date();
+
+
+        user.lastdate = date;
+
+        var history = {
+            time: date,
+            money: 569
+        }
+
+        user.history = history;
+
+        controller.storage.users.save(user, function (err, id) {
+        })
+    });
+
+
     sendmessage(bot, message, text);
 });
 
