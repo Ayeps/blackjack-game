@@ -223,7 +223,11 @@ controller.hears(['hello', 'hi', '(.*)play(.*)', 'start', 'can we start?', 'Hall
                                         id: message.user,
                                     };
                                 }
+                                var history = [];
                                 user.name = convo.extractResponse('nickname');
+                                user.money = 0;
+                                user.history = history;
+                                user.lastdate = "";
 
                                 controller.storage.users.save(user, function (err, id) {
                                     bot.reply(message, 'Got it. I will call you ' + user.name + ' from now on.');
@@ -313,25 +317,16 @@ controller.hears(['data'], 'message_received', function (bot, message) {
         //user.money = response.playerId;
 
         var now = new Date();
-
         var date = dateFormat(now, "dddd, mmmm dS, yyyy, h:MM:ss TT");
-
-
         user.lastdate = date;
-
-        var history = user.history ;
-
+        var history = user.history;
         var historydata = {
             time: date,
             money: 356
         };
-
-
         history.push(historydata);
         console.log(history);
-
         user.history = history;
-
         controller.storage.users.save(user, function (err, id) {
         })
     });
@@ -480,8 +475,18 @@ controller.on('facebook_postback', function (bot, message) {
                     var option = displayHands(response, message, bot, user.playerId, _);
                     //save mount player has
                     if (option === 'playagain') {
-                        user.money = (parseInt(user.money) + parseInt(response.player.credits)) + "";
-                        ;
+                        user.money = (parseInt(user.money) + parseInt(response.player.credits));
+                        var now = new Date();
+                        var date = dateFormat(now, "dddd, mmmm dS, yyyy, h:MM:ss TT");
+                        user.lastdate = date;
+                        var history = user.history;
+                        var historydata = {
+                            time: date,
+                            money: parseInt(response.player.credits) - 1000
+                        };
+                        history.push(historydata);
+                        console.log(history);
+                        user.history = history;
 
                         console.log("amount paid" + (parseInt(user.money) + parseInt(response.player.credits)));
                         //playerId = response.playerId;
@@ -512,14 +517,26 @@ controller.on('facebook_postback', function (bot, message) {
                     var option = displayHands(response, message, bot, user.playerId, _);
                     //where to save player money
                     if (option === 'playagain') {
-                        user.money = (parseInt(user.money) + parseInt(response.player.credits)) + "";
+                        user.money = (parseInt(user.money) + parseInt(response.player.credits));
 
                         console.log(response.player.credits);
                         console.log("amount paid" + (parseInt(user.money) + parseInt(response.player.credits)));
+
+
+                        var now = new Date();
+                        var date = dateFormat(now, "dddd, mmmm dS, yyyy, h:MM:ss TT");
+                        user.lastdate = date;
+                        var history = user.history;
+                        var historydata = {
+                            time: date,
+                            money: parseInt(response.player.credits) - 1000
+                        };
+                        history.push(historydata);
+                        console.log(history);
+                        user.history = history;
                         //playerId = response.playerId;
                         controller.storage.users.save(user, function (err, id) {
                         })
-
                         console.log(playerId);
                         client.leaveTable(user.playerId, function (response) {
                             //response.
