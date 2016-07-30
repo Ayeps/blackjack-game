@@ -283,7 +283,7 @@ controller.hears(['With how many card games do we play'], 'message_received', fu
         " and means your chances to win are higher!");
     return false;
 });
-controller.hears(['are you hot?'], 'message_received', function (bot, message) {
+controller.hears(['are you hot?',], 'message_received', function (bot, message) {
     bot.reply(message, "Definitely this is a picture of me , but i'm hear to play blackjack with you");
     bot.reply(message, {
         attachment: {
@@ -298,7 +298,7 @@ controller.hears(['are you hot?'], 'message_received', function (bot, message) {
 
     return false;
 });
-controller.hears(['(.*)rules(.*)'], 'message_received', function (bot, message) {
+controller.hears(['(.*)rules(.*)', '(.*)talk(*.)'], 'message_received', function (bot, message) {
     var text = "BlackJackBot available  commands: help, rules, join, leave, start, bet, hand, surrender, hit, stand, split, doubleDown The game is a 3-2 payout soft bet and stand till 17";
     sendmessage(bot, message, text);
 });
