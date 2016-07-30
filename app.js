@@ -28,7 +28,6 @@ controller.setupWebserver(process.env.PORT || 5000, function (err, webserver) {
     });
 });
 
-
 displayHand = function (txt, hand, message, bot, _) {
     assert.ok(is.str(txt));
     assert.ok(is.nonEmptyArray(hand));
@@ -330,6 +329,29 @@ controller.hears(['data'], 'message_received', function (bot, message) {
         user.history = history;
         controller.storage.users.save(user, function (err, id) {
         })
+    });
+
+
+    sendmessage(bot, message, text);
+});
+
+controller.hears(['data', '(.*)history(.*)'], 'message_received', function (bot, message) {
+
+    controller.storage.users.get(message.user, function (err, user) {
+        if (!user) {
+            user = {
+                id: message.user,
+            };
+        }
+        var text = user.history
+
+        _.forEach(text, function (c) {
+
+            text.money;
+            sendmessage(bot, message, text.money);
+        }
+        //sendmessage(bot, message, text);
+
     });
 
 
