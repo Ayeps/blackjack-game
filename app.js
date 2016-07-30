@@ -1198,6 +1198,7 @@ controller.on('facebook_postback', function (bot, message) {
                                                             });
                                                     } else {
                                                         console.log(response);
+                                                        bot.reply(message, "You do not have enough credit or table did not accept you bet");
                                                         bot.reply(message, "Please type play to join a table");
                                                     }
                                                 });
