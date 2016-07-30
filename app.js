@@ -40,14 +40,14 @@ displayHand = function (txt, hand, message, bot, _) {
             var card = Cards.getCard(c);
             //printf('%s of %s\n', card.rank, card.suit);
             bot.reply(message, txt + ":" + card.rank + " " + card.suit + " " + card.code);
-            //bot.reply(message, {
-            //    attachment: {
-            //        type: 'image',
-            //        payload: {
-            //            url: card.image
-            //        }
-            //    }
-            //})
+            bot.reply(message, {
+                attachment: {
+                    type: 'image',
+                    payload: {
+                        url: card.image
+                    }
+                }
+            })
         } else {
             assert.ok(false);
         }
@@ -150,7 +150,7 @@ controller.on('facebook_optin', function (bot, message) {
     bot.reply(message, "Welcome to Blackjack ...");
     bot.reply(message, 'Hi, my name is Pepper and I am your Black Jack Dealer.!');
 });
-controller.hears(['hello', '(.*)play(.*)', 'start', 'can we start?', 'Hallo', 'Give me a card', 'new game'], 'message_received', function (bot, message) {
+controller.hears(['hello', 'hi', '(.*)play(.*)', 'start', 'can we start?', 'Hallo', 'Give me a card', 'new game'], 'message_received', function (bot, message) {
     controller.storage.users.get(message.user, function (err, user) {
         if (user && user.name) {
             bot.reply(message, 'Hello ' + user.name + '!!');
@@ -560,7 +560,7 @@ controller.on('facebook_postback', function (bot, message) {
                 client.joinTable(user.playerId, 1, function (response) {
                     if (response.player.busted == false) {
                         bot.reply(message, "You are  on Table 1 with id" + playerId)
-                        bot.reply(message, "You have credit of " + message.money + "$")
+                        bot.reply(message, "You have credit of " + response.player.credits + "$")
                         bot.startConversation(message, function (err, convo) {
                             if (!err) {
                                 convo.ask('How much do want to bet?', function (response, convo) {
@@ -568,7 +568,8 @@ controller.on('facebook_postback', function (bot, message) {
                                         pattern: 'yes',
                                         callback: function (response, convo) {
                                             console.log(response.text);
-
+                                            var text = response.text;
+                                            var amt = text.replace(/\D+/g, '');
                                             console.log("amount bet ==>" + amt);
                                             // since no further messages are queued after this,
                                             // the conversation will end naturally with status == 'completed'
@@ -599,11 +600,9 @@ controller.on('facebook_postback', function (bot, message) {
                                                     id: message.user,
                                                 };
                                             }
-                                            var text = response.text;
-                                            var amt = text.replace(/\D+/g, '');
-                                            message.money -= parseInt(amt);
+                                            message.money -= 100;
                                             controller.storage.users.save(user, function (err, id) {
-                                                client.bet(user.playerId, parseInt(amt), function (response) {
+                                                client.bet(user.playerId, 100, function (response) {
                                                     if (response.success === true) {
                                                         displayHands(response, message, bot, user.playerId, _);
                                                         bot.reply(message,
