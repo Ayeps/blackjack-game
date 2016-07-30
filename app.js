@@ -12,6 +12,7 @@ var player = require('./src/player')
 var dateFormat = require('dateformat')
 var playerId = 1;
 var tables;
+var amt = 0;
 var mongoStorage = require('botkit-storage-mongo')({mongoUri: process.env.mongo_uri});
 var controller = Botkit.facebookbot({
     access_token: process.env.access_token,
@@ -564,13 +565,16 @@ controller.on('facebook_postback', function (bot, message) {
                         bot.startConversation(message, function (err, convo) {
                             if (!err) {
                                 convo.ask('How much do want to bet?', function (response, convo) {
+
+                                    console.log(response.text);
+                                    var text = response.text;
+                                    amt = text.replace(/\D+/g, '');
+                                    console.log("amount bet ==>" + amt);
                                     convo.ask('You want me to call you ' + response.text + '? (yes/no)', [{
+
                                         pattern: 'yes',
                                         callback: function (response, convo) {
-                                            console.log(response.text);
-                                            var text = response.text;
-                                            var amt = text.replace(/\D+/g, '');
-                                            console.log("amount bet ==>" + amt);
+
                                             // since no further messages are queued after this,
                                             // the conversation will end naturally with status == 'completed'
                                             convo.next();
@@ -600,6 +604,8 @@ controller.on('facebook_postback', function (bot, message) {
                                                     id: message.user,
                                                 };
                                             }
+
+                                            console.log("amount is ok" + amt);
                                             message.money -= 100;
                                             controller.storage.users.save(user, function (err, id) {
                                                 client.bet(user.playerId, 100, function (response) {
