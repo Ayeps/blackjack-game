@@ -347,13 +347,24 @@ controller.hears(['find'], 'message_received', function (bot, message) {
 
 
         Steps(
-            bot.reply(message, "Total amount of money you have is " + text.money),
-            bot.reply(message, "You have played the game " + text.length + " times"),
-            bot.reply(message, "and below is your score history:"),
-            _.forEach(text, function (c) {
-                bot.reply(message, "Date:" + c.time + " Credit won :" + c.money);
-            })
-        );
+            function (bot, message) {
+                bot.reply(message, "Total amount of money you have is " + text.money)
+            },
+            function (bot, message) {
+                bot.reply(message, "You have played the game " + text.length + " times")
+            }
+            ,
+            function (bot, message) {
+                bot.reply(message, "and below is your score history:")
+
+            },
+            function (bot, message, _) {
+                _.forEach(text, function (c) {
+                    bot.reply(message, "Date:" + c.time + " Credit won :" + c.money);
+                })
+            }
+        )
+        ;
         //bot.reply(message, "Total amount of money you have is " + text.money);
         //bot.reply(message, "You have played the game " + text.length + " times");
         //bot.reply(message, "and below is your score history:");
