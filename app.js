@@ -151,7 +151,7 @@ controller.on('facebook_optin', function (bot, message) {
     bot.reply(message, "Welcome to Blackjack ...");
     bot.reply(message, 'Hi, my name is Pepper and I am your Black Jack Dealer.!');
 });
-controller.hears(['(.*)play(.*)', 'start', 'can we start?', 'Hallo', 'Give me a card', 'new game','hello', 'hi'], 'message_received', function (bot, message) {
+controller.hears(['(.*)play(.*)', 'start', 'can we start?', 'Hallo', 'Give me a card', 'new game','hello'], 'message_received', function (bot, message) {
     controller.storage.users.get(message.user, function (err, user) {
         if (user && user.name) {
             bot.reply(message, 'Hello ' + user.name + '!!');
