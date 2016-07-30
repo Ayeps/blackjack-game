@@ -151,7 +151,7 @@ controller.on('facebook_optin', function (bot, message) {
     bot.reply(message, "Welcome to Blackjack ...");
     bot.reply(message, 'Hi, my name is Pepper and I am your Black Jack Dealer.!');
 });
-controller.hears(['(.*)play(.*)', 'start', 'can we start?', 'Hallo', 'Give me a card', 'new game', 'hi'], 'message_received', function (bot, message) {
+controller.hears(['(.*)play(.*)', 'start', 'can we start?', 'Hallo', 'Give me a card', 'new game','hello', 'hi'], 'message_received', function (bot, message) {
     controller.storage.users.get(message.user, function (err, user) {
         if (user && user.name) {
             bot.reply(message, 'Hello ' + user.name + '!!');
@@ -299,7 +299,7 @@ controller.hears(['are you hot?',], 'message_received', function (bot, message) 
     return false;
 });
 controller.hears(['(.*)rules(.*)', '(.*)talk(.*)'], 'message_received', function (bot, message) {
-    var text = "BlackJackBot available  commands: help, rules, join, leave, start, bet, hand, surrender, hit, stand, split, doubleDown The game is a 3-2 payout soft bet and stand till 17";
+    var text = "BlackJackBot available  commands: help, rules, play, leave, start, bet  The game is a 3-2 payout soft bet and stand till 17";
     sendmessage(bot, message, text);
 });
 
