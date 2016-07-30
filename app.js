@@ -598,57 +598,47 @@ controller.on('facebook_postback', function (bot, message) {
 
                                 convo.on('end', function (convo) {
                                     if (convo.status == 'completed') {
-                                        controller.storage.users.get(message.user, function (err, user) {
-                                            if (!user) {
-                                                user = {
-                                                    id: message.user,
-                                                };
-                                            }
 
-                                            console.log("amount is ok" + amt);
-                                            message.money -= 100;
-                                            controller.storage.users.save(user, function (err, id) {
-                                                client.bet(user.playerId, 100, function (response) {
-                                                    if (response.success === true) {
-                                                        displayHands(response, message, bot, user.playerId, _);
-                                                        bot.reply(message,
-                                                            {
-                                                                attachment: {
-                                                                    type: "template",
-                                                                    payload: {
-                                                                        template_type: "generic",
-                                                                        elements: [
+                                        console.log("amount is ok" + amt);
+                                        message.money -= 100;
+                                        controller.storage.users.save(user, function (err, id) {
+                                        });
+                                        client.bet(user.playerId, 100, function (response) {
+                                            if (response.success === true) {
+                                                displayHands(response, message, bot, user.playerId, _);
+                                                bot.reply(message,
+                                                    {
+                                                        attachment: {
+                                                            type: "template",
+                                                            payload: {
+                                                                template_type: "generic",
+                                                                elements: [
+                                                                    {
+                                                                        title: "Do you want to hit or Stand",
+                                                                        buttons: [
                                                                             {
-                                                                                title: "Do you want to hit or Stand",
-                                                                                buttons: [
-                                                                                    {
-                                                                                        type: "postback",
-                                                                                        title: "HIT",
-                                                                                        payload: "hit"
-                                                                                    },
-                                                                                    {
-                                                                                        type: "postback",
-                                                                                        title: "STAND",
-                                                                                        payload: "stand"
-                                                                                    }
-                                                                                    , {
-                                                                                        type: "postback",
-                                                                                        title: "Insurance",
-                                                                                        payload: "insure"
-                                                                                    }
-                                                                                ]
+                                                                                type: "postback",
+                                                                                title: "HIT",
+                                                                                payload: "hit"
+                                                                            },
+                                                                            {
+                                                                                type: "postback",
+                                                                                title: "STAND",
+                                                                                payload: "stand"
                                                                             }
+
                                                                         ]
                                                                     }
-                                                                }
-                                                            });
-                                                    } else {
-                                                        console.log(response);
-                                                        bot.reply(message, "Please type play to join a table");
-                                                    }
-                                                });
-                                            });
+                                                                ]
+                                                            }
+                                                        }
+                                                    });
+                                            } else {
+                                                console.log(response);
+                                                bot.reply(message, "Please type play to join a table");
+                                            }
                                         });
+
                                     }
                                 });
                             }
