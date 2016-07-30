@@ -151,11 +151,11 @@ controller.on('facebook_optin', function (bot, message) {
     bot.reply(message, "Welcome to Blackjack ...");
     bot.reply(message, 'Hi, my name is Pepper and I am your Black Jack Dealer.!');
 });
-controller.hears(['(.*)play(.*)', 'start', 'can we start?', 'Hallo', 'Give me a card', 'new game'], 'message_received', function (bot, message) {
+controller.hears(['(.*)play(.*)', 'start', 'can we start?', 'Hallo', 'Give me a card', 'new game', 'hi'], 'message_received', function (bot, message) {
     controller.storage.users.get(message.user, function (err, user) {
         if (user && user.name) {
             bot.reply(message, 'Hello ' + user.name + '!!');
-            bot.reply(message, 'Welcome back back');
+            bot.reply(message, 'Welcome back');
             bot.reply(message, 'You have ' + user.money + '$');
             bot.reply(message,
                 {
@@ -365,7 +365,8 @@ controller.hears(['(.*)history(.*)'], 'message_received', function (bot, message
         //    }
         //)
 
-        bot.reply(message, "Total amount of money you have is " + text.money);
+        bot.reply(message, "Total amount of money you have is " + user.money);
+        bot.reply(message, "The last time you played the game was " + user.lastdate);
         bot.reply(message, "You have played the game " + text.length + " times");
         bot.reply(message, "and below is your score history:");
         _.forEach(text, function (c) {
