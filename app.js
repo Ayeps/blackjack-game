@@ -603,7 +603,7 @@ controller.on('facebook_postback', function (bot, message) {
                                         message.money -= 100;
                                         controller.storage.users.save(user, function (err, id) {
                                         });
-                                        client.bet(user.playerId, 100, function (response) {
+                                        client.bet(user.playerId, parseInt(amt), function (response) {
                                             if (response.success === true) {
                                                 displayHands(response, message, bot, user.playerId, _);
                                                 bot.reply(message,
