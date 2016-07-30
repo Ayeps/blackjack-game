@@ -151,7 +151,7 @@ controller.on('facebook_optin', function (bot, message) {
     bot.reply(message, "Welcome to Blackjack ...");
     bot.reply(message, 'Hi, my name is Pepper and I am your Black Jack Dealer.!');
 });
-controller.hears(['hello', 'hi', '(.*)play(.*)', 'start', 'can we start?', 'Hallo', 'Give me a card', 'new game'], 'message_received', function (bot, message) {
+controller.hears(['(.*)play(.*)', 'start', 'can we start?', 'Hallo', 'Give me a card', 'new game'], 'message_received', function (bot, message) {
     controller.storage.users.get(message.user, function (err, user) {
         if (user && user.name) {
             bot.reply(message, 'Hello ' + user.name + '!!');
@@ -336,7 +336,7 @@ controller.hears(['data'], 'message_received', function (bot, message) {
     sendmessage(bot, message, text);
 });
 
-controller.hears(['find'], 'message_received', function (bot, message) {
+controller.hears(['(.*)history(.*)'], 'message_received', function (bot, message) {
     controller.storage.users.get(message.user, function (err, user) {
         if (!user) {
             user = {
@@ -345,32 +345,32 @@ controller.hears(['find'], 'message_received', function (bot, message) {
         }
         var text = user.history;
 
+        //
+        //Step(
+        //    function (bot, message) {
+        //        bot.reply(message, "Total amount of money you have is " + text.money)
+        //    },
+        //    function (bot, message) {
+        //        bot.reply(message, "You have played the game " + text.length + " times")
+        //    }
+        //    ,
+        //    function (bot, message) {
+        //        bot.reply(message, "and below is your score history:")
+        //
+        //    },
+        //    function (bot, message, _, text) {
+        //        _.forEach(text, function (c) {
+        //            bot.reply(message, "Date:" + c.time + " Credit won :" + c.money);
+        //        })
+        //    }
+        //)
 
-        Step(
-            function (bot, message) {
-                bot.reply(message, "Total amount of money you have is " + text.money)
-            },
-            function (bot, message) {
-                bot.reply(message, "You have played the game " + text.length + " times")
-            }
-            ,
-            function (bot, message) {
-                bot.reply(message, "and below is your score history:")
-
-            },
-            function (bot, message, _, text) {
-                _.forEach(text, function (c) {
-                    bot.reply(message, "Date:" + c.time + " Credit won :" + c.money);
-                })
-            }
-        )
-        ;
-        //bot.reply(message, "Total amount of money you have is " + text.money);
-        //bot.reply(message, "You have played the game " + text.length + " times");
-        //bot.reply(message, "and below is your score history:");
-        //_.forEach(text, function (c) {
-        //    bot.reply(message, "Date:" + c.time + " Credit won :" + c.money);
-        //});
+        bot.reply(message, "Total amount of money you have is " + text.money);
+        bot.reply(message, "You have played the game " + text.length + " times");
+        bot.reply(message, "and below is your score history:");
+        _.forEach(text, function (c) {
+            bot.reply(message, "Date:" + c.time + " Credit won :" + c.money);
+        });
         //sendmessage(bot, message, text);
 
     });
