@@ -336,7 +336,6 @@ controller.hears(['data'], 'message_received', function (bot, message) {
 });
 
 controller.hears(['data', '(.*)history(.*)'], 'message_received', function (bot, message) {
-
     controller.storage.users.get(message.user, function (err, user) {
         if (!user) {
             user = {
@@ -347,15 +346,13 @@ controller.hears(['data', '(.*)history(.*)'], 'message_received', function (bot,
 
         _.forEach(text, function (c) {
 
-            text.money;
-            sendmessage(bot, message, text.money);
-        }
+             console.log(c)
+            //bot.reply(message, c.money);
+
+        });
         //sendmessage(bot, message, text);
 
     });
-
-
-    sendmessage(bot, message, text);
 });
 
 
