@@ -7,7 +7,7 @@ var Cards = require('./src/cards');
 var assert = require('assert');
 var is = require('is2');
 var _ = require('lodash');
-var Steps = require('step');
+var Step = require('./lib/step');
 var fs = require('fs');
 var player = require('./src/player')
 var dateFormat = require('dateformat')
@@ -346,7 +346,7 @@ controller.hears(['find'], 'message_received', function (bot, message) {
         var text = user.history;
 
 
-        Steps(
+        Step(
             function (bot, message) {
                 bot.reply(message, "Total amount of money you have is " + text.money)
             },
