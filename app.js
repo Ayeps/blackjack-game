@@ -345,10 +345,7 @@ controller.hears(['find'], 'message_received', function (bot, message) {
         var text = user.history
 
         _.forEach(text, function (c) {
-
-             console.log(c)
-            //bot.reply(message, c.money);
-
+            bot.reply(message, "Date:" + c.time + "score :" + c.money);
         });
         //sendmessage(bot, message, text);
 
