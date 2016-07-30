@@ -342,10 +342,12 @@ controller.hears(['find'], 'message_received', function (bot, message) {
                 id: message.user,
             };
         }
-        var text = user.history
+        var text = user.history;
 
+
+        bot.reply(message, "You have played the game " + text.length + "times");
         _.forEach(text, function (c) {
-            bot.reply(message, "Date:" + c.time + "score :" + c.money);
+            bot.reply(message, "Date:" + c.time + " Credit won :" + c.money);
         });
         //sendmessage(bot, message, text);
 
