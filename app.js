@@ -336,7 +336,7 @@ controller.hears(['data'], 'message_received', function (bot, message) {
     sendmessage(bot, message, text);
 });
 
-controller.hears(['(.*)history(.*)'], 'message_received', function (bot, message) {
+controller.hears(['(.*)score(.*)'], 'message_received', function (bot, message) {
     controller.storage.users.get(message.user, function (err, user) {
         if (!user) {
             user = {
