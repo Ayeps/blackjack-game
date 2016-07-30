@@ -358,7 +358,7 @@ controller.hears(['find'], 'message_received', function (bot, message) {
                 bot.reply(message, "and below is your score history:")
 
             },
-            function (bot, message, _) {
+            function (bot, message, _, text) {
                 _.forEach(text, function (c) {
                     bot.reply(message, "Date:" + c.time + " Credit won :" + c.money);
                 })
