@@ -24,6 +24,7 @@
     "node-of-cards": "^1.0.0",
     "node-rest-client": "^2.0.1",
     "prompt": "^1.0.0",
-    "request": "^2.72.0"
+    "request": "^2.72.0",
+    "steps": "0.0.2"
   }
 }

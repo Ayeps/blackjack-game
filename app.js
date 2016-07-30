@@ -7,6 +7,7 @@ var Cards = require('./src/cards');
 var assert = require('assert');
 var is = require('is2');
 var _ = require('lodash');
+var Steps = require('step');
 var fs = require('fs');
 var player = require('./src/player')
 var dateFormat = require('dateformat')
@@ -345,11 +346,20 @@ controller.hears(['find'], 'message_received', function (bot, message) {
         var text = user.history;
 
 
-        bot.reply(message, "You have played the game " + text.length + "times");
-        bot.reply(message, "and below is your score history:");
-        _.forEach(text, function (c) {
-            bot.reply(message, "Date:" + c.time + " Credit won :" + c.money);
-        });
+        Steps(
+            bot.reply(message, "Total amount of money you have is " + text.money),
+            bot.reply(message, "You have played the game " + text.length + " times"),
+            bot.reply(message, "and below is your score history:"),
+            _.forEach(text, function (c) {
+                bot.reply(message, "Date:" + c.time + " Credit won :" + c.money);
+            })
+        );
+        //bot.reply(message, "Total amount of money you have is " + text.money);
+        //bot.reply(message, "You have played the game " + text.length + " times");
+        //bot.reply(message, "and below is your score history:");
+        //_.forEach(text, function (c) {
+        //    bot.reply(message, "Date:" + c.time + " Credit won :" + c.money);
+        //});
         //sendmessage(bot, message, text);
 
     });
